@@ -45,7 +45,7 @@ public class CColor {
 
     public CColor(int hex) {
         CColor rgb = hexToRgb(hex);
-        init(rgb.r, rgb.g, rgb.b, rgb.alpha);
+        init(rgb.r, rgb.g, rgb.b, 255);
     }
 
     private void init(int r, int g, int b, int alpha) {
@@ -93,6 +93,11 @@ public class CColor {
 
     public float getAlpha01() {
         return alpha / 255.0F;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("{r: %s, g: %s, b: %s, a: %s}", r, g, b, alpha);
     }
 
 }
