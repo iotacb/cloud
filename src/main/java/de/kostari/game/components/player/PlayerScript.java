@@ -1,19 +1,12 @@
 package de.kostari.game.components.player;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.plaf.RootPaneUI;
-
 import de.kostari.cloud.core.components.Bounds;
 import de.kostari.cloud.core.components.Component;
 import de.kostari.cloud.core.components.Transform;
 import de.kostari.cloud.core.objects.GameObject;
 import de.kostari.cloud.utilities.input.BasicControllings;
 import de.kostari.cloud.utilities.input.Keys;
-import de.kostari.cloud.utilities.math.Vec;
 import de.kostari.cloud.utilities.render.Render;
-import de.kostari.game.enitites.Bullet;
 
 public class PlayerScript extends Component {
 

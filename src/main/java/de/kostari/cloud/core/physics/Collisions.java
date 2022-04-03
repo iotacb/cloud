@@ -5,7 +5,7 @@ import de.kostari.cloud.core.physics.colliders.BoxCollider;
 import de.kostari.cloud.core.physics.colliders.CircleCollider;
 import de.kostari.cloud.core.physics.raycast.Ray;
 import de.kostari.cloud.core.physics.raycast.RaycastResult;
-import de.kostari.cloud.utilities.math.Maths;
+import de.kostari.cloud.utilities.math.CMath;
 import de.kostari.cloud.utilities.math.Vec;
 
 public class Collisions {
@@ -14,7 +14,7 @@ public class Collisions {
         float dy = line.getEnd().y - line.getStart().y;
         float dx = line.getEnd().x - line.getStart().x;
         if (dx == 0f) {
-            return Maths.compare(point.x, line.getStart().x);
+            return CMath.compare(point.x, line.getStart().x);
         }
         float m = dy / dx;
 
@@ -40,7 +40,7 @@ public class Collisions {
 
     public static boolean pointInBox2D(Vec point, BoxCollider box) {
         Vec pointLocalBoxSpace = new Vec(point);
-        Maths.rotate(pointLocalBoxSpace, box.getRigidbody().gameObject.transform.position,
+        CMath.rotate(pointLocalBoxSpace, box.getRigidbody().gameObject.transform.position,
                 box.getRigidbody().gameObject.transform.rotation);
 
         Vec min = box.getLocalMin();
@@ -100,8 +100,8 @@ public class Collisions {
         Vec center = box.getRigidbody().gameObject.transform.position;
         Vec localStart = new Vec(line.getStart());
         Vec localEnd = new Vec(line.getEnd());
-        Maths.rotate(localStart, center, theta);
-        Maths.rotate(localEnd, center, theta);
+        CMath.rotate(localStart, center, theta);
+        CMath.rotate(localEnd, center, theta);
 
         Line localLine = new Line(localStart, localEnd);
         AABBCollider aabb = new AABBCollider(box.getLocalMin(), box.getLocalMax());
@@ -185,8 +185,8 @@ public class Collisions {
         Vec size = box.getHalfSize();
         Vec xAxis = new Vec(1, 0);
         Vec yAxis = new Vec(0, 1);
-        Maths.rotate(xAxis, new Vec(0, 0), -box.getRigidbody().gameObject.transform.rotation);
-        Maths.rotate(yAxis, new Vec(0, 0), -box.getRigidbody().gameObject.transform.rotation);
+        CMath.rotate(xAxis, new Vec(0, 0), -box.getRigidbody().gameObject.transform.rotation);
+        CMath.rotate(yAxis, new Vec(0, 0), -box.getRigidbody().gameObject.transform.rotation);
 
         Vec p = new Vec(box.getRigidbody().gameObject.transform.position).sub(ray.getOrigin());
         Vec f = new Vec(
@@ -198,14 +198,14 @@ public class Collisions {
 
         float[] tArr = { 0, 0, 0, 0 };
         for (int i = 0; i < 2; i++) {
-            if (Maths.compare(f.get(i), 0)) {
-                if (-e.get(i) - size.get(i) > 0 || -e.get(i) + size.get(i) < 0) {
+            if (CMath.compare(f.getAxis(i), 0)) {
+                if (-e.getAxis(i) - size.getAxis(i) > 0 || -e.getAxis(i) + size.getAxis(i) < 0) {
                     return false;
                 }
                 f.set(i, 0.00001F);
             }
-            tArr[i * 2 + 0] = (e.get(i) + size.get(i)) / f.get(i);
-            tArr[i * 2 + 1] = (e.get(i) - size.get(i)) / f.get(i);
+            tArr[i * 2 + 0] = (e.getAxis(i) + size.getAxis(i)) / f.getAxis(i);
+            tArr[i * 2 + 1] = (e.getAxis(i) - size.getAxis(i)) / f.getAxis(i);
         }
 
         float tmin = Math.max(Math.min(tArr[0], tArr[1]), Math.min(tArr[2], tArr[3]));
@@ -265,7 +265,7 @@ public class Collisions {
         Vec max = new Vec(box.getHalfSize()).mul(2.0f);
 
         Vec r = new Vec(circle.getCenter()).sub(box.getRigidbody().gameObject.transform.position);
-        Maths.rotate(r, new Vec(), -box.getRigidbody().gameObject.transform.rotation);
+        CMath.rotate(r, new Vec(), -box.getRigidbody().gameObject.transform.rotation);
         Vec localCirclePos = new Vec(r).add(box.getHalfSize());
 
         Vec closestPointToCircle = new Vec(localCirclePos);
@@ -304,8 +304,8 @@ public class Collisions {
                 new Vec(0, 1), new Vec(1, 0),
                 new Vec(0, 1), new Vec(1, 0)
         };
-        Maths.rotate(axesToTest[2], new Vec(), b2.getRigidbody().gameObject.transform.rotation);
-        Maths.rotate(axesToTest[3], new Vec(), b2.getRigidbody().gameObject.transform.rotation);
+        CMath.rotate(axesToTest[2], new Vec(), b2.getRigidbody().gameObject.transform.rotation);
+        CMath.rotate(axesToTest[3], new Vec(), b2.getRigidbody().gameObject.transform.rotation);
         for (int i = 0; i < axesToTest.length; i++) {
             if (!overlapOnAxis(b1, b2, axesToTest[i])) {
                 return false;
@@ -319,8 +319,8 @@ public class Collisions {
                 new Vec(0, 1), new Vec(1, 0),
                 new Vec(0, 1), new Vec(1, 0)
         };
-        Maths.rotate(axesToTest[2], new Vec(), b2.getRigidbody().gameObject.transform.rotation);
-        Maths.rotate(axesToTest[3], new Vec(), b2.getRigidbody().gameObject.transform.rotation);
+        CMath.rotate(axesToTest[2], new Vec(), b2.getRigidbody().gameObject.transform.rotation);
+        CMath.rotate(axesToTest[3], new Vec(), b2.getRigidbody().gameObject.transform.rotation);
         for (int i = 0; i < axesToTest.length; i++) {
             if (!overlapOnAxis(b1, b2, axesToTest[i])) {
                 return false;

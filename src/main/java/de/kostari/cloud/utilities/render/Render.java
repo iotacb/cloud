@@ -27,10 +27,9 @@ import static org.lwjgl.opengl.GL11.glScaled;
 import static org.lwjgl.opengl.GL11.glTranslated;
 import static org.lwjgl.opengl.GL11.glVertex2f;
 
-import java.awt.Color;
-
 import de.kostari.cloud.core.window.Window;
-import de.kostari.cloud.utilities.math.Maths;
+import de.kostari.cloud.utilities.color.CColor;
+import de.kostari.cloud.utilities.math.CMath;
 import de.kostari.cloud.utilities.math.Vec;
 
 public class Render {
@@ -77,7 +76,7 @@ public class Render {
         enable(GL_SMOOTH);
     }
 
-    public static void endSmooth() {
+    public static void stopSmooth() {
         disable(GL_SMOOTH);
         disable(GL_POINT_SMOOTH);
         disable(GL_LINE_SMOOTH);
@@ -120,6 +119,10 @@ public class Render {
         glRotated(angle, x, y, z);
     }
 
+    public static void rotate(float angle) {
+        rotate(0, 0, 1, angle);
+    }
+
     public static void color(float red, float green, float blue, float alpha) {
         glColor4f(red, green, blue, alpha);
     }
@@ -128,20 +131,20 @@ public class Render {
         color(red, green, blue, 1);
     }
 
-    public static void color(Color color) {
-        color(color.getRed() / 255.0F, color.getGreen() / 255.0F, color.getBlue() / 255.0F, color.getAlpha() / 255.0F);
+    public static void color(CColor color) {
+        color(color.getRed01(), color.getGreen01(), color.getBlue01(), color.getAlpha01());
     }
 
     public static void lineWidth(float width) {
         glLineWidth((float) width);
     }
 
-    public static void rect(float x, float y, float width, float height, boolean filled, Color color) {
+    public static void rect(float x, float y, float width, float height, boolean filled, CColor color) {
         start();
         if (color != null)
             color(color);
         else
-            color(Color.WHITE);
+            color(CColor.WHITE);
         begin(filled ? GL_TRIANGLE_FAN : GL_LINES);
         {
             vertex(x, y);
@@ -159,15 +162,15 @@ public class Render {
         stop();
     }
 
-    public static void rect(Vec location, Vec size, boolean filled, Color color) {
+    public static void rect(Vec location, Vec size, boolean filled, CColor color) {
         rect(location.x, location.y, size.x, size.y, filled, color);
     }
 
-    public static void rect(float x, float y, Vec size, boolean filled, Color color) {
+    public static void rect(float x, float y, Vec size, boolean filled, CColor color) {
         rect(x, y, size.x, size.y, filled, color);
     }
 
-    public static void rect(Vec location, float width, float height, boolean filled, Color color) {
+    public static void rect(Vec location, float width, float height, boolean filled, CColor color) {
         rect(location.x, location.y, width, height, filled, color);
     }
 
@@ -187,19 +190,19 @@ public class Render {
         rect(location.x, location.y, width, height, filled);
     }
 
-    public static void rect(float x, float y, float width, float height, Color color) {
+    public static void rect(float x, float y, float width, float height, CColor color) {
         rect(x, y, width, height, true, color);
     }
 
-    public static void rect(Vec location, Vec size, Color color) {
+    public static void rect(Vec location, Vec size, CColor color) {
         rect(location, size, true, color);
     }
 
-    public static void rect(float x, float y, Vec size, Color color) {
+    public static void rect(float x, float y, Vec size, CColor color) {
         rect(x, y, size.x, size.y, color);
     }
 
-    public static void rect(Vec location, float width, float height, Color color) {
+    public static void rect(Vec location, float width, float height, CColor color) {
         rect(location.x, location.y, width, height, color);
     }
 
@@ -219,23 +222,23 @@ public class Render {
         rect(location.x, location.y, width, height);
     }
 
-    public static void rectCentered(float x, float y, float width, float height, boolean filled, Color color) {
+    public static void rectCentered(float x, float y, float width, float height, boolean filled, CColor color) {
         x -= width / 2;
         y -= height / 2;
         rect(x, y, width, height, filled, color);
     }
 
-    public static void rectCentered(Vec location, Vec size, boolean filled, Color color) {
+    public static void rectCentered(Vec location, Vec size, boolean filled, CColor color) {
         rect((location.x - size.x / 2), (location.y - size.y / 2), size.x, size.y, filled, color);
     }
 
-    public static void rectCentered(float x, float y, Vec size, boolean filled, Color color) {
+    public static void rectCentered(float x, float y, Vec size, boolean filled, CColor color) {
         x -= size.x / 2;
         y -= size.y / 2;
         rect(x, y, size.x, size.y, filled, color);
     }
 
-    public static void rectCentered(Vec location, float width, float height, boolean filled, Color color) {
+    public static void rectCentered(Vec location, float width, float height, boolean filled, CColor color) {
         rect((location.x - width / 2), (location.y - height / 2), width, height, filled, color);
     }
 
@@ -259,23 +262,23 @@ public class Render {
         rect(location.x - width / 2, location.y - height / 2, width, height, filled);
     }
 
-    public static void rectCentered(float x, float y, float width, float height, Color color) {
+    public static void rectCentered(float x, float y, float width, float height, CColor color) {
         x -= width / 2;
         y -= height / 2;
         rect(x, y, width, height, true, color);
     }
 
-    public static void rectCentered(Vec location, Vec size, Color color) {
+    public static void rectCentered(Vec location, Vec size, CColor color) {
         rect((location.x - size.x / 2), (location.y - size.y / 2), size, true, color);
     }
 
-    public static void rectCentered(float x, float y, Vec size, Color color) {
+    public static void rectCentered(float x, float y, Vec size, CColor color) {
         x -= size.x / 2;
         y -= size.y / 2;
         rect(x, y, size.x, size.y, color);
     }
 
-    public static void rectCentered(Vec location, float width, float height, Color color) {
+    public static void rectCentered(Vec location, float width, float height, CColor color) {
         rect(location.x - width / 2, location.y - height / 2, width, height, color);
     }
 
@@ -300,17 +303,17 @@ public class Render {
     }
 
     public static void polygon(float x, float y, float sideLength, float amountOfSides, boolean filled,
-            Color color) {
+            CColor color) {
         sideLength /= 2;
         start();
         if (color != null)
             color(color);
         else
-            color(Color.WHITE);
+            color(CColor.WHITE);
         begin(filled ? GL_TRIANGLE_FAN : GL_LINE_LOOP);
         {
             for (float i = 0; i <= amountOfSides; i++) {
-                float angle = i * Maths.TAU / amountOfSides;
+                float angle = i * CMath.TAU / amountOfSides;
                 vertex(x + (sideLength * (float) Math.cos(angle)) + sideLength,
                         y + (sideLength * (float) Math.sin(angle)) + sideLength);
             }
@@ -319,7 +322,7 @@ public class Render {
         stop();
     }
 
-    public static void polygon(Vec location, float sideLength, int amountOfSides, boolean filled, Color color) {
+    public static void polygon(Vec location, float sideLength, int amountOfSides, boolean filled, CColor color) {
         polygon(location.x, location.y, sideLength, amountOfSides, filled, color);
     }
 
@@ -331,11 +334,11 @@ public class Render {
         polygon(location, sideLength, amountOfSides, filled, null);
     }
 
-    public static void polygon(float x, float y, float sideLength, int amountOfSides, Color color) {
+    public static void polygon(float x, float y, float sideLength, int amountOfSides, CColor color) {
         polygon(x, y, sideLength, amountOfSides, true, color);
     }
 
-    public static void polygon(Vec location, float sideLength, int amountOfSides, Color color) {
+    public static void polygon(Vec location, float sideLength, int amountOfSides, CColor color) {
         polygon(location, sideLength, amountOfSides, true, color);
     }
 
@@ -348,14 +351,14 @@ public class Render {
     }
 
     public static void polygonCentered(float x, float y, float sideLength, int amountOfSides, boolean filled,
-            Color color) {
+            CColor color) {
         x -= sideLength / 2;
         y -= sideLength / 2;
         polygon(x, y, sideLength, amountOfSides, filled, color);
     }
 
     public static void polygonCentered(Vec location, float sideLength, int amountOfSides, boolean filled,
-            Color color) {
+            CColor color) {
         polygon(location.x - sideLength / 2, location.y - sideLength / 2, sideLength, amountOfSides, filled, color);
     }
 
@@ -369,13 +372,13 @@ public class Render {
         polygon((location.x - sideLength / 2), (location.y - sideLength / 2), sideLength, amountOfSides, filled, null);
     }
 
-    public static void polygonCentered(float x, float y, float sideLength, int amountOfSides, Color color) {
+    public static void polygonCentered(float x, float y, float sideLength, int amountOfSides, CColor color) {
         x -= sideLength / 2;
         y -= sideLength / 2;
         polygon(x, y, sideLength, amountOfSides, true, color);
     }
 
-    public static void polygonCentered(Vec location, float sideLength, int amountOfSides, Color color) {
+    public static void polygonCentered(Vec location, float sideLength, int amountOfSides, CColor color) {
         polygon((location.x - sideLength / 2), (location.y - sideLength / 2), sideLength, amountOfSides, true, color);
     }
 
@@ -389,11 +392,11 @@ public class Render {
         polygon((location.x - sideLength / 2), (location.y - sideLength / 2), sideLength, amountOfSides, true, null);
     }
 
-    public static void circle(float x, float y, float radius, boolean filled, Color color) {
+    public static void circle(float x, float y, float radius, boolean filled, CColor color) {
         polygon(x, y, radius, 360, filled, color);
     }
 
-    public static void circle(Vec location, float radius, boolean filled, Color color) {
+    public static void circle(Vec location, float radius, boolean filled, CColor color) {
         polygon(location, radius, 360, filled, color);
     }
 
@@ -405,11 +408,11 @@ public class Render {
         polygon(location, radius, 360, filled);
     }
 
-    public static void circle(float x, float y, float radius, Color color) {
+    public static void circle(float x, float y, float radius, CColor color) {
         polygon(x, y, radius, 360, color);
     }
 
-    public static void circle(Vec location, float radius, Color color) {
+    public static void circle(Vec location, float radius, CColor color) {
         polygon(location, radius, 360, color);
     }
 
@@ -421,13 +424,13 @@ public class Render {
         polygon(location, radius, 360);
     }
 
-    public static void circleCentered(float x, float y, float radius, boolean filled, Color color) {
+    public static void circleCentered(float x, float y, float radius, boolean filled, CColor color) {
         x -= radius / 2;
         y -= radius / 2;
         polygon(x, y, radius, 360, filled, color);
     }
 
-    public static void circleCentered(Vec location, float radius, boolean filled, Color color) {
+    public static void circleCentered(Vec location, float radius, boolean filled, CColor color) {
         polygon((location.x - radius / 2), (location.y - radius / 2), radius, 360, filled, color);
     }
 
@@ -441,13 +444,13 @@ public class Render {
         polygon((location.x - radius / 2), (location.y - radius / 2), radius, 360, filled);
     }
 
-    public static void circleCentered(float x, float y, float radius, Color color) {
+    public static void circleCentered(float x, float y, float radius, CColor color) {
         x -= radius / 2;
         y -= radius / 2;
         polygon(x, y, radius, 360, color);
     }
 
-    public static void circleCentered(Vec location, float radius, Color color) {
+    public static void circleCentered(Vec location, float radius, CColor color) {
         polygon((location.x - radius / 2), (location.y - radius / 2), radius, 360, color);
     }
 
@@ -461,11 +464,11 @@ public class Render {
         polygon((location.x - radius / 2), (location.y - radius / 2), radius, 360);
     }
 
-    public static void triangle(float x, float y, float sideLength, boolean filled, Color color) {
+    public static void triangle(float x, float y, float sideLength, boolean filled, CColor color) {
         polygon(x, y, sideLength, 3, filled, color);
     }
 
-    public static void triangle(Vec location, float sideLength, boolean filled, Color color) {
+    public static void triangle(Vec location, float sideLength, boolean filled, CColor color) {
         polygon(location, sideLength, 3, filled, color);
     }
 
@@ -477,11 +480,11 @@ public class Render {
         polygon(location, sideLength, 3, filled);
     }
 
-    public static void triangle(float x, float y, float sideLength, Color color) {
+    public static void triangle(float x, float y, float sideLength, CColor color) {
         polygon(x, y, sideLength, 3, color);
     }
 
-    public static void triangle(Vec location, float sideLength, Color color) {
+    public static void triangle(Vec location, float sideLength, CColor color) {
         polygon(location, sideLength, 3, color);
     }
 
@@ -493,13 +496,13 @@ public class Render {
         polygon(location, sideLength, 3);
     }
 
-    public static void triangleCentered(float x, float y, float sideLength, boolean filled, Color color) {
+    public static void triangleCentered(float x, float y, float sideLength, boolean filled, CColor color) {
         x -= sideLength / 2;
         y -= sideLength / 2;
         polygon(x, y, sideLength, 3, filled, color);
     }
 
-    public static void triangleCentered(Vec location, float sideLength, boolean filled, Color color) {
+    public static void triangleCentered(Vec location, float sideLength, boolean filled, CColor color) {
         polygon((location.x - sideLength / 2), (location.y - sideLength / 2), sideLength, 3, filled, color);
     }
 
@@ -513,13 +516,13 @@ public class Render {
         polygon((location.x - sideLength / 2), (location.y - sideLength / 2), sideLength, 3, filled);
     }
 
-    public static void triangleCentered(float x, float y, float sideLength, Color color) {
+    public static void triangleCentered(float x, float y, float sideLength, CColor color) {
         x -= sideLength / 2;
         y -= sideLength / 2;
         polygon(x, y, sideLength, 3, color);
     }
 
-    public static void triangleCentered(Vec location, float sideLength, Color color) {
+    public static void triangleCentered(Vec location, float sideLength, CColor color) {
         polygon((location.x - sideLength / 2), (location.y - sideLength / 2), sideLength, 3, color);
     }
 
@@ -533,12 +536,12 @@ public class Render {
         polygon((location.x - sideLength / 2), (location.y - sideLength / 2), sideLength, 3);
     }
 
-    public static void line(float firstX, float firstY, float secondX, float secondY, int lineWidth, Color color) {
+    public static void line(float firstX, float firstY, float secondX, float secondY, int lineWidth, CColor color) {
         start();
         if (color != null)
             color(color);
         else
-            color(Color.WHITE);
+            color(CColor.WHITE);
         lineWidth(lineWidth <= 0 ? 1 : lineWidth);
         begin(GL_LINES);
         {
@@ -549,7 +552,7 @@ public class Render {
         stop();
     }
 
-    public static void line(Vec firstLocation, Vec secondLocation, int lineWidth, Color color) {
+    public static void line(Vec firstLocation, Vec secondLocation, int lineWidth, CColor color) {
         line(firstLocation.x, firstLocation.y, secondLocation.x, secondLocation.y, lineWidth, color);
     }
 
@@ -561,11 +564,11 @@ public class Render {
         line(firstLocation.x, firstLocation.y, secondLocation.x, secondLocation.y, lineWidth, null);
     }
 
-    public static void line(float firstX, float firstY, float secondX, float secondY, Color color) {
+    public static void line(float firstX, float firstY, float secondX, float secondY, CColor color) {
         line(firstX, firstY, secondX, secondY, 0, color);
     }
 
-    public static void line(Vec firstLocation, Vec secondLocation, Color color) {
+    public static void line(Vec firstLocation, Vec secondLocation, CColor color) {
         line(firstLocation.x, firstLocation.y, secondLocation.x, secondLocation.y, 0, color);
     }
 

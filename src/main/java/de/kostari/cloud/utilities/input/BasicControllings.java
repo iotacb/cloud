@@ -1,31 +1,31 @@
 package de.kostari.cloud.utilities.input;
 
 import de.kostari.cloud.core.objects.GameObject;
-import de.kostari.cloud.utilities.math.Maths;
+import de.kostari.cloud.utilities.math.CMath;
 import de.kostari.cloud.utilities.math.Vec;
 
 public class BasicControllings {
 
     public static void moveTo(GameObject gameObject, float direction, float speed, int key) {
         if (gameObject.window.getInput().getKey(key) || key == -1) {
-            gameObject.transform.position.x += Maths.lengthDirX(speed, direction);
-            gameObject.transform.position.y += Maths.lengthDirY(speed, direction);
+            gameObject.transform.position.x += CMath.lengthDirX(speed, direction);
+            gameObject.transform.position.y += CMath.lengthDirY(speed, direction);
         }
     }
 
     public static void moveAway(GameObject gameObject, float direction, float speed, int key) {
         if (gameObject.window.getInput().getKey(key) || key == -1) {
-            gameObject.transform.position.x -= Maths.lengthDirX(speed, direction);
-            gameObject.transform.position.y -= Maths.lengthDirY(speed, direction);
+            gameObject.transform.position.x -= CMath.lengthDirX(speed, direction);
+            gameObject.transform.position.y -= CMath.lengthDirY(speed, direction);
         }
     }
 
     public static void moveToLocation(GameObject gameObject, float locationX, float locationY, float speed,
             float threshold,
             int key) {
-        float direction = Maths.direction(gameObject.transform.position.x, gameObject.transform.position.y, locationX,
+        float direction = CMath.direction(gameObject.transform.position.x, gameObject.transform.position.y, locationX,
                 locationY) - 90;
-        if (Maths.dist(gameObject.transform.position.x, gameObject.transform.position.y, locationX,
+        if (CMath.dist(gameObject.transform.position.x, gameObject.transform.position.y, locationX,
                 locationY) >= threshold)
             moveTo(gameObject, direction, speed, key);
     }
@@ -37,9 +37,9 @@ public class BasicControllings {
     public static void leaveLocation(GameObject gameObject, float locationX, float locationY, float speed,
             float threshold,
             int key) {
-        float direction = Maths.direction(gameObject.transform.position.x, gameObject.transform.position.y, locationX,
+        float direction = CMath.direction(gameObject.transform.position.x, gameObject.transform.position.y, locationX,
                 locationY);
-        if (Maths.dist(gameObject.transform.position.x, gameObject.transform.position.y, locationX,
+        if (CMath.dist(gameObject.transform.position.x, gameObject.transform.position.y, locationX,
                 locationY) > threshold)
             moveAway(gameObject, direction, speed, key);
     }

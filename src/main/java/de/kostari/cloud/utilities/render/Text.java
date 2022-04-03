@@ -10,19 +10,20 @@ import static org.lwjgl.opengl.GL11.glEnableClientState;
 import static org.lwjgl.opengl.GL11.glVertexPointer;
 import static org.lwjgl.stb.STBEasyFont.stb_easy_font_print;
 
-import java.awt.Color;
 import java.nio.ByteBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.stb.STBEasyFont;
 
+import de.kostari.cloud.utilities.color.CColor;
+
 public class Text {
 
 	private static int DEFAULT_SIZE = 16;
 
-	public static void drawText(String text, float x, float y, Color color, int size) {
+	public static void drawText(String text, float x, float y, CColor color, int size) {
 		if (color == null) {
-			color = Color.white;
+			color = CColor.WHITE;
 		}
 
 		ByteBuffer buffer = BufferUtils.createByteBuffer(text.length() * 300);
@@ -43,7 +44,7 @@ public class Text {
 		Render.stop();
 	}
 
-	public static void drawText(String text, float x, float y, Color color) {
+	public static void drawText(String text, float x, float y, CColor color) {
 		drawText(text, x, y, color, DEFAULT_SIZE);
 	}
 
@@ -51,7 +52,7 @@ public class Text {
 		drawText(text, x, y, null, DEFAULT_SIZE);
 	}
 
-	public static void drawCenteredText(String text, float x, float y, Color color) {
+	public static void drawCenteredText(String text, float x, float y, CColor color) {
 		drawText(text, x - getHalfWidth(text), y, color, DEFAULT_SIZE);
 	}
 

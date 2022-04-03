@@ -19,7 +19,6 @@ import static org.lwjgl.opengl.GL11.glTexCoord2d;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL11.glTexParameteri;
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +30,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL30;
 
+import de.kostari.cloud.utilities.color.CColor;
 import de.kostari.cloud.utilities.math.Vec;
 import de.kostari.cloud.utilities.time.Timer;
 
@@ -125,7 +125,7 @@ public class Image {
 		width /= 2;
 		height /= 2;
 
-		Render.color(Color.white);
+		Render.color(CColor.WHITE);
 		Render.enable(GL_TEXTURE_2D);
 		Render.enable(GL_BLEND);
 		Render.disable(GL_LIGHTING);

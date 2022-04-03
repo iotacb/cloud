@@ -1,9 +1,8 @@
 package de.kostari.cloud.core.physics.colliders;
 
-import java.awt.Color;
-
 import de.kostari.cloud.core.components.Bounds;
 import de.kostari.cloud.core.physics.Rigidbody;
+import de.kostari.cloud.utilities.color.CColor;
 import de.kostari.cloud.utilities.math.Vec;
 import de.kostari.cloud.utilities.render.Render;
 
@@ -48,7 +47,7 @@ public class CircleCollider extends Collider {
         super.draw(delta);
 
         Render.lineWidth(2);
-        Render.circleCentered(gameObject.transform.position, getSize(), false, Color.GREEN);
+        Render.circleCentered(gameObject.transform.position, getSize(), false, CColor.GREEN);
     }
 
 }

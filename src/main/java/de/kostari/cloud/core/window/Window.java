@@ -40,11 +40,18 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 import java.nio.DoubleBuffer;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowFocusCallback;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
+import org.lwjgl.openal.AL;
+import org.lwjgl.openal.ALC;
+import org.lwjgl.openal.ALC10;
+import org.lwjgl.openal.ALC11;
+import org.lwjgl.openal.ALCCapabilities;
+import org.lwjgl.openal.ALCapabilities;
 import org.lwjgl.opengl.GL;
 
 import de.kostari.cloud.core.objects.GameObject;
@@ -85,6 +92,9 @@ public class Window implements Observer {
 
 	FrameTimer timer;
 
+	private long audioContext;
+	private long audioDevice;
+
 	public Window(int width, int height, String title) {
 		createWindow(width, height, title, false, false);
 	}
@@ -98,6 +108,8 @@ public class Window implements Observer {
 		this.width = width;
 		this.height = height;
 		this.title = title;
+		this.windowFullscreen = fullscreen;
+		this.windowResizable = resizable;
 		this.sampling = 0;
 		this.size = new Vec(width, height);
 		this.mouseLocation = new Vec();
@@ -128,7 +140,7 @@ public class Window implements Observer {
 
 		setWindowHints();
 		makeWindow();
-		setGLFW();
+		initGLFW();
 		timer = new FrameTimer();
 		inputHandler = new Input(this.windowId, this, System.getProperty("os.name").contains("Windows"));
 		Render.window = this;
@@ -139,12 +151,13 @@ public class Window implements Observer {
 		framebufferSizeCallback.free();
 		windowSizeCallback.free();
 		windowFocusCallback.free();
+		ALC10.alcDestroyContext(audioContext);
+		ALC10.alcCloseDevice(audioDevice);
 		glfwTerminate();
 		glfwDestroyWindow(windowId);
 	}
 
 	private void drawScreen() throws Exception {
-
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		glViewport(0, 0, (int) width, (int) height);
@@ -214,15 +227,35 @@ public class Window implements Observer {
 		});
 	}
 
-	private void setGLFW() {
+	private void initGLFW() {
 		glfwMakeContextCurrent(windowId);
 		glfwSwapInterval(vsync ? 1 : 0);
 		glfwShowWindow(windowId);
+		initAudio();
 		GL.createCapabilities();
+	}
+
+	private void initAudio() {
+		// Initialize the audio device
+		String defaultDeviceName = ALC11.alcGetString(0, ALC11.ALC_DEFAULT_DEVICE_SPECIFIER);
+
+		audioDevice = ALC11.alcOpenDevice(defaultDeviceName);
+
+		int[] attributes = { 0 };
+		audioContext = ALC11.alcCreateContext(audioDevice, attributes);
+		ALC11.alcMakeContextCurrent(audioContext);
+
+		ALCCapabilities alcCapabilities = ALC.createCapabilities(audioDevice);
+		ALCapabilities alCapabilities = AL.createCapabilities(alcCapabilities);
+
+		if (!alCapabilities.OpenAL10) {
+			assert false : "Audio library not supported.";
+		}
 	}
 
 	private void setWindowHints() {
 		glfwDefaultWindowHints();
+		glfwWindowHint(GLFW.GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_FALSE);
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 		glfwWindowHint(GLFW_RESIZABLE, (this.windowResizable ? GLFW_TRUE : GLFW_FALSE));
 		if (sampling > 0) {

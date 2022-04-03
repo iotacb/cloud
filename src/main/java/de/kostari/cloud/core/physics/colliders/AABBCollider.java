@@ -1,10 +1,9 @@
 package de.kostari.cloud.core.physics.colliders;
 
-import java.awt.Color;
-
 import de.kostari.cloud.core.components.Bounds;
 import de.kostari.cloud.core.physics.Rigidbody;
-import de.kostari.cloud.utilities.math.Maths;
+import de.kostari.cloud.utilities.color.CColor;
+import de.kostari.cloud.utilities.math.CMath;
 import de.kostari.cloud.utilities.math.Vec;
 import de.kostari.cloud.utilities.render.Render;
 
@@ -62,7 +61,7 @@ public class AABBCollider extends Collider {
         if (getRigidbody().gameObject.transform.rotation != 0.0f) {
             for (Vec vert : vertices) {
                 // Rotates point(Vec) about center(Vec) by rotation(float in degrees)
-                Maths.rotate(vert, getRigidbody().gameObject.transform.position,
+                CMath.rotate(vert, getRigidbody().gameObject.transform.position,
                         getRigidbody().gameObject.transform.rotation);
             }
         }
@@ -83,7 +82,7 @@ public class AABBCollider extends Collider {
 
         super.draw(delta);
         Render.lineWidth(2);
-        Render.rect(gameObject.transform.position, getSize(), false, Color.GREEN);
+        Render.rect(gameObject.transform.position, getSize(), false, CColor.GREEN);
     }
 
 }

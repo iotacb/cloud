@@ -265,7 +265,7 @@ public class Vec {
         return this.y;
     }
 
-    public float get(int axis) {
+    public float getAxis(int axis) {
         switch (axis) {
             case 0:
                 return x;
@@ -276,7 +276,7 @@ public class Vec {
         }
     }
 
-    public Vec set(int axis, float value) {
+    public Vec setAxis(int axis, float value) {
         switch (axis) {
             case 0:
                 x = value;
@@ -287,6 +287,11 @@ public class Vec {
             default:
                 throw new IllegalArgumentException("Invalid axis: " + axis);
         }
+        return this;
+    }
+
+    public Vec rotate(Vec origin, float angleDeg) {
+        CMath.rotate(this, origin, angleDeg);
         return this;
     }
 

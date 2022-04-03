@@ -1,12 +1,11 @@
 package de.kostari.game.ui.player;
 
-import java.awt.Color;
-
 import de.kostari.cloud.core.components.Bounds;
 import de.kostari.cloud.core.gui.GUI;
 import de.kostari.cloud.core.objects.GameObject;
 import de.kostari.cloud.core.window.Window;
-import de.kostari.cloud.utilities.math.Maths;
+import de.kostari.cloud.utilities.color.CColor;
+import de.kostari.cloud.utilities.math.CMath;
 import de.kostari.cloud.utilities.render.Render;
 import de.kostari.game.components.player.HealthScript;
 
@@ -19,8 +18,8 @@ public class HealthBar extends GUI {
     private static float BAR_PADDING = 5;
     private static float DAMPING = 10;
 
-    private static Color BAR_COLOR = new Color(60, 60, 60);
-    private static Color HEALTH_COLOR = new Color(250, 60, 60);
+    private static CColor BAR_COLOR = new CColor(60, 60, 60);
+    private static CColor HEALTH_COLOR = new CColor(250, 60, 60);
 
     private float currentBarWidth = 0;
     private GameObject player;
@@ -36,7 +35,7 @@ public class HealthBar extends GUI {
     public void draw(float delta) {
         float wantedBarWidth = (getComponent(Bounds.class).width - (BAR_PADDING * 2))
                 * player.getComponent(HealthScript.class).getHealthPercentage();
-        currentBarWidth = Maths.lerp(currentBarWidth, wantedBarWidth, DAMPING * delta);
+        currentBarWidth = CMath.lerp(currentBarWidth, wantedBarWidth, DAMPING * delta);
 
         Render.rect(transform.position.x, transform.position.y, getComponent(Bounds.class).width,
                 getComponent(Bounds.class).height, BAR_COLOR);

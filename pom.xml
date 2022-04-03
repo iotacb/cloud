@@ -15,8 +15,33 @@
     <jacoco-maven-plugin.version>0.8.4</jacoco-maven-plugin.version>
     <maven-javadoc-plugin.version>3.0.0</maven-javadoc-plugin.version>
     <lwjgl.version>3.3.1</lwjgl.version>
-    <lwjgl.natives>natives-windows</lwjgl.natives>
   </properties>
+  <profiles>
+    <profile>
+      <id>lwjgl-natives-macos-x86_64</id>
+      <activation>
+        <os>
+          <family>mac</family>
+          <arch>x86_64</arch>
+        </os>
+      </activation>
+      <properties>
+        <lwjgl.natives>natives-macos</lwjgl.natives>
+      </properties>
+    </profile>
+    <profile>
+      <id>lwjgl-natives-windows-amd64</id>
+      <activation>
+        <os>
+          <family>windows</family>
+          <arch>amd64</arch>
+        </os>
+      </activation>
+      <properties>
+        <lwjgl.natives>natives-windows</lwjgl.natives>
+      </properties>
+    </profile>
+  </profiles>
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -43,6 +68,10 @@
     </dependency>
     <dependency>
       <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-openal</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.lwjgl</groupId>
       <artifactId>lwjgl-stb</artifactId>
     </dependency>
     <dependency>
@@ -58,6 +87,11 @@
     <dependency>
       <groupId>org.lwjgl</groupId>
       <artifactId>lwjgl-opengl</artifactId>
+      <classifier>${lwjgl.natives}</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-openal</artifactId>
       <classifier>${lwjgl.natives}</classifier>
     </dependency>
     <dependency>

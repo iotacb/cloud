@@ -1,12 +1,11 @@
 package de.kostari.cloud.core.scene;
 
-import java.awt.Color;
-
 import de.kostari.cloud.core.components.Bounds;
 import de.kostari.cloud.core.components.Transform;
 import de.kostari.cloud.core.objects.GameObject;
 import de.kostari.cloud.core.window.Window;
-import de.kostari.cloud.utilities.math.Maths;
+import de.kostari.cloud.utilities.color.CColor;
+import de.kostari.cloud.utilities.math.CMath;
 import de.kostari.cloud.utilities.render.Render;
 
 public class Camera extends GameObject {
@@ -28,10 +27,10 @@ public class Camera extends GameObject {
         posXDiff = object.transform.position.x - transform.position.x - xOffset + objCenterWidth;
         posYDiff = object.transform.position.y - transform.position.y - yOffset + objCenterHeight;
 
-        transform.position.x = Maths.lerp(transform.position.x,
+        transform.position.x = CMath.lerp(transform.position.x,
                 object.transform.position.x - xOffset + objCenterWidth,
                 damping);
-        transform.position.y = Maths.lerp(transform.position.y,
+        transform.position.y = CMath.lerp(transform.position.y,
                 object.transform.position.y - yOffset + objCenterHeight,
                 damping);
     }
@@ -49,8 +48,8 @@ public class Camera extends GameObject {
     public void draw(float delta) {
         if (!doDrawDebug())
             return;
-        Render.rect(window.getWidth() / 2, window.getHeight() / 2, posXDiff, 2, Color.GREEN);
-        Render.rect(window.getWidth() / 2, window.getHeight() / 2, 2, posYDiff, Color.RED);
+        Render.rect(window.getWidth() / 2, window.getHeight() / 2, posXDiff, 2, CColor.GREEN);
+        Render.rect(window.getWidth() / 2, window.getHeight() / 2, 2, posYDiff, CColor.RED);
         super.draw(delta);
     }
 
