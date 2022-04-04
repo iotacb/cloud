@@ -44,6 +44,10 @@ public class Text {
 		Render.stop();
 	}
 
+	public static void drawText(String text, float x, float y, int size) {
+		drawText(text, x, y, null, size);
+	}
+
 	public static void drawText(String text, float x, float y, CColor color) {
 		drawText(text, x, y, color, DEFAULT_SIZE);
 	}

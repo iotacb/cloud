@@ -10,7 +10,7 @@ public class App {
         Window window = new Window(1280, 720, "Cloud Demo");
 
         // Set additional window hints
-        window.setVSync(true);
+        // window.setVSync(true);
 
         // Set the scene
         window.setScene(MainScene.class);

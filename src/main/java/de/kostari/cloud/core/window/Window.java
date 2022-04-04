@@ -110,7 +110,7 @@ public class Window implements Observer {
 		this.title = title;
 		this.windowFullscreen = fullscreen;
 		this.windowResizable = resizable;
-		this.sampling = 0;
+		this.sampling = 32;
 		this.size = new Vec(width, height);
 		this.mouseLocation = new Vec();
 		this.lastMouseLocation = new Vec();
