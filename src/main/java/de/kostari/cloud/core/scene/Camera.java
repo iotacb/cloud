@@ -21,8 +21,8 @@ public class Camera extends GameObject {
         float xOffset = window.getWidth() / 2;
         float yOffset = window.getHeight() / 2;
 
-        float objCenterWidth = object.getComponent(Bounds.class).width / 2;
-        float objCenterHeight = object.getComponent(Bounds.class).height / 2;
+        float objCenterWidth = object.getComponent(Bounds.class).getWidth() / 2;
+        float objCenterHeight = object.getComponent(Bounds.class).getHeight() / 2;
 
         posXDiff = object.transform.position.x - transform.position.x - xOffset + objCenterWidth;
         posYDiff = object.transform.position.y - transform.position.y - yOffset + objCenterHeight;

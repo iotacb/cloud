@@ -7,14 +7,14 @@ import de.kostari.cloud.utilities.math.Vec;
 public class BasicControllings {
 
     public static void moveTo(GameObject gameObject, float direction, float speed, int key) {
-        if (gameObject.window.getInput().getKey(key) || key == -1) {
+        if (Input.getKey(key) || key == -1) {
             gameObject.transform.position.x += CMath.lengthDirX(speed, direction);
             gameObject.transform.position.y += CMath.lengthDirY(speed, direction);
         }
     }
 
     public static void moveAway(GameObject gameObject, float direction, float speed, int key) {
-        if (gameObject.window.getInput().getKey(key) || key == -1) {
+        if (Input.getKey(key) || key == -1) {
             gameObject.transform.position.x -= CMath.lengthDirX(speed, direction);
             gameObject.transform.position.y -= CMath.lengthDirY(speed, direction);
         }
@@ -50,10 +50,10 @@ public class BasicControllings {
 
     public static void moveWithKeys(GameObject gameObject, int keyLeft, int keyRight, int keyUp, int keyDown,
             float speed) {
-        int moveX = gameObject.window.getInput().getKey(keyLeft) ? -1
-                : gameObject.window.getInput().getKey(keyRight) ? 1 : 0;
-        int moveY = gameObject.window.getInput().getKey(keyUp) ? -1
-                : gameObject.window.getInput().getKey(keyDown) ? 1 : 0;
+        int moveX = Input.getKey(keyLeft) ? -1
+                : Input.getKey(keyRight) ? 1 : 0;
+        int moveY = Input.getKey(keyUp) ? -1
+                : Input.getKey(keyDown) ? 1 : 0;
 
         Vec input = new Vec(moveX, moveY);
         Vec direction = input.normalize();
@@ -71,10 +71,10 @@ public class BasicControllings {
     }
 
     public static void moveWithGamepad(GameObject gameObject, float speed, float threshold, int moveStick) {
-        float stickX = moveStick == 0 ? gameObject.window.getInput().getLeftJoystickX()
-                : gameObject.window.getInput().getRightJoystickX();
-        float stickY = moveStick == 0 ? gameObject.window.getInput().getLeftJoystickY()
-                : gameObject.window.getInput().getRightJoystickY();
+        float stickX = moveStick == 0 ? Input.getLeftJoystickX()
+                : Input.getRightJoystickX();
+        float stickY = moveStick == 0 ? Input.getLeftJoystickY()
+                : Input.getRightJoystickY();
 
         stickX = Math.abs(stickX) > threshold ? stickX : 0;
         stickY = Math.abs(stickY) > threshold ? stickY : 0;
@@ -88,7 +88,7 @@ public class BasicControllings {
     public static void moveWithDetectedInput(GameObject gameObject, int keyLeft, int keyRight, int keyUp, int keyDown,
             float speed, float threshold, int moveStick) {
 
-        if (gameObject.window.getInput().isUsingGamepad()) {
+        if (Input.getUsingInput() == InputTypes.GAMEPAD) {
             moveWithGamepad(gameObject, speed, threshold, moveStick);
         } else {
             moveWithKeys(gameObject, keyLeft, keyRight, keyUp, keyDown, speed);

@@ -17,7 +17,7 @@ public class CircleCollider extends Collider {
             Rigidbody rigidbody = gameObject.getComponent(Rigidbody.class);
 
             if (bounds != null) {
-                setSize(Math.max(bounds.width, bounds.height));
+                setSize(Math.max(bounds.getWidth(), bounds.getHeight()));
             }
 
             if (rigidbody != null) {

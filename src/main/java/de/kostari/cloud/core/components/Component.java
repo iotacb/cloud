@@ -1,19 +1,19 @@
 package de.kostari.cloud.core.components;
 
-import de.kostari.cloud.core.gui.GUI;
+import de.kostari.cloud.core.gui.UIComponent;
 import de.kostari.cloud.core.objects.GameObject;
 
 public abstract class Component {
 
     public GameObject gameObject;
-    public GUI gui;
+    public UIComponent ui;
 
     public Component(GameObject gameObject) {
         this.gameObject = gameObject;
     }
 
-    public Component(GUI gui) {
-        this.gui = gui;
+    public Component(UIComponent ui) {
+        this.ui = ui;
     }
 
     public Component() {

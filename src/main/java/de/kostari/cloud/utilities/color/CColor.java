@@ -34,6 +34,7 @@ public class CColor {
     public static CColor SLATE_GRAY = new CColor(112, 128, 144);
     public static CColor SKY_BLUE = new CColor(135, 206, 235);
     public static CColor LIGHT_BLUE = new CColor(173, 216, 230);
+    public static CColor TRANSPARENT = new CColor(0, 0, 0, 0);
 
     public CColor(int r, int g, int b, int alpha) {
         init(r, g, b, alpha);

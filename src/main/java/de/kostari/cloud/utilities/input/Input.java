@@ -18,27 +18,25 @@ import de.kostari.cloud.core.window.Window;
 
 public class Input {
 
-    private boolean[] buttons;
-    private boolean hasGamepad, usingGamepad;
+    private static Window window;
+    private static long windowId;
 
-    boolean isWindows;
+    private static boolean[] buttons;
+    private static boolean hasGamepad;
+    private static boolean[] keys, mouseButtons;
+    private static int lastKey;
 
-    public boolean[] keys, mouseButtons;
+    private static boolean isWindows;
 
-    public int lastKey;
+    private static InputTypes usingInput;
 
-    Window window;
-
-    long windowId;
-
-    public Input(long windowId, Window window, boolean isWindows) {
-        this.windowId = windowId;
-        this.window = window;
-        this.isWindows = isWindows;
-        this.keys = new boolean[GLFW_KEY_LAST];
-        this.mouseButtons = new boolean[2];
-        this.hasGamepad = glfwGetJoystickName(GLFW_JOYSTICK_1) != null;
-        this.usingGamepad = hasGamepad;
+    public static void initInput(Window window, boolean isWindows) {
+        Input.window = window;
+        Input.windowId = window.getWindowId();
+        Input.isWindows = isWindows;
+        Input.keys = new boolean[GLFW_KEY_LAST];
+        Input.mouseButtons = new boolean[2];
+        Input.hasGamepad = glfwGetJoystickName(GLFW_JOYSTICK_1) != null;
         for (int i = 0; i < GLFW_KEY_LAST; i++) {
             keys[i] = false;
         }
@@ -46,34 +44,36 @@ public class Input {
             mouseButtons[i] = false;
         }
         if (hasGamepad) {
-            this.buttons = new boolean[GLFW_GAMEPAD_BUTTON_LAST];
+            Input.buttons = new boolean[GLFW_GAMEPAD_BUTTON_LAST];
             for (int i = 0; i < GLFW_GAMEPAD_BUTTON_LAST; i++) {
                 buttons[i] = false;
             }
         }
     }
 
-    public float getLeftJoystickX() {
+    public static float getLeftJoystickX() {
         if (!hasGamepad)
             return 0;
         FloatBuffer axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1);
         float a = axes.get(0);
-        if (Math.abs(a) > 0.5)
-            usingGamepad = true;
+        if (Math.abs(a) > 0.5) {
+            usingInput = InputTypes.GAMEPAD;
+        }
         return a;
     }
 
-    public float getLeftJoystickY() {
+    public static float getLeftJoystickY() {
         if (!hasGamepad)
             return 0;
         FloatBuffer axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1);
         float a = axes.get(1);
-        if (Math.abs(a) > 0.5)
-            usingGamepad = true;
+        if (Math.abs(a) > 0.5) {
+            usingInput = InputTypes.GAMEPAD;
+        }
         return a;
     }
 
-    public float getLeftTrigger() {
+    public static float getLeftTrigger() {
         if (!hasGamepad)
             return 0;
         FloatBuffer axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1);
@@ -81,27 +81,29 @@ public class Input {
         return a;
     }
 
-    public float getRightJoystickX() {
+    public static float getRightJoystickX() {
         if (!hasGamepad)
             return 0;
         FloatBuffer axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1);
         float a = axes.get(2);
-        if (Math.abs(a) > 0.5)
-            usingGamepad = true;
+        if (Math.abs(a) > 0.5) {
+            usingInput = InputTypes.GAMEPAD;
+        }
         return a;
     }
 
-    public float getRightJoystickY() {
+    public static float getRightJoystickY() {
         if (!hasGamepad)
             return 0;
         FloatBuffer axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1);
         float a = axes.get(3);
-        if (Math.abs(a) > 0.5)
-            usingGamepad = true;
+        if (Math.abs(a) > 0.5) {
+            usingInput = InputTypes.GAMEPAD;
+        }
         return a;
     }
 
-    public float getRightTrigger() {
+    public static float getRightTrigger() {
         if (!hasGamepad)
             return 0;
         FloatBuffer axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1);
@@ -109,7 +111,7 @@ public class Input {
         return a;
     }
 
-    public boolean getButton(int buttonCode) {
+    public static boolean getButton(int buttonCode) {
         if (!hasGamepad)
             return false;
         boolean r = false;
@@ -135,7 +137,7 @@ public class Input {
         return r;
     }
 
-    public boolean getButtonDown(int buttonCode) {
+    public static boolean getButtonDown(int buttonCode) {
         if (!hasGamepad)
             return false;
 
@@ -143,7 +145,7 @@ public class Input {
         return isDown;
     }
 
-    public boolean getButtonUp(int buttonCode) {
+    public static boolean getButtonUp(int buttonCode) {
         if (!hasGamepad)
             return false;
 
@@ -151,74 +153,81 @@ public class Input {
         return isUp;
     }
 
-    public boolean getKey(int keyCode) {
+    public static boolean getKey(int keyCode) {
         return glfwGetKey(windowId, keyCode) == 1;
     }
 
-    public boolean getKeyDown(int keyCode) {
+    public static boolean getKeyDown(int keyCode) {
         boolean isDown = (getKey(keyCode) && !keys[keyCode]);
         if (hasGamepad) {
-            if (isDown)
-                usingGamepad = false;
+            if (isDown) {
+                usingInput = InputTypes.KEYBOARD;
+            }
         }
         return isDown;
     }
 
-    public boolean getKeyUp(int keyCode) {
+    public static boolean getKeyUp(int keyCode) {
         boolean isUp = (!getKey(keyCode) && keys[keyCode]);
         if (hasGamepad) {
-            if (isUp)
-                usingGamepad = false;
+            if (isUp) {
+                usingInput = InputTypes.KEYBOARD;
+            }
         }
         return isUp;
     }
 
-    public boolean isLeftTriggerPressed() {
+    public static boolean isLeftTriggerPressed() {
         if (!hasGamepad)
             return false;
         boolean isPressed = getLeftTrigger() == 1;
-        if (isPressed)
-            usingGamepad = true;
+        if (isPressed) {
+            usingInput = InputTypes.GAMEPAD;
+        }
         return isPressed;
     }
 
-    public boolean getMouseButton(int mouseButton) {
+    public static boolean getMouseButton(int mouseButton) {
         boolean isDown = glfwGetMouseButton(windowId, mouseButton) == 1;
         if (hasGamepad) {
-            if (isDown)
-                usingGamepad = false;
+            if (isDown) {
+                usingInput = InputTypes.KEYBOARD;
+            }
         }
         return isDown;
     }
 
-    public boolean getMouseButtonDown(int mouseButton) {
+    public static boolean getMouseButtonDown(int mouseButton) {
         boolean isDown = (getMouseButton(mouseButton) && !mouseButtons[mouseButton]);
         if (hasGamepad) {
-            if (isDown)
-                usingGamepad = false;
+            if (isDown) {
+                usingInput = InputTypes.KEYBOARD;
+            }
         }
         return isDown;
     }
 
-    public boolean getMouseButtonUp(int mouseButton) {
+    public static boolean getMouseButtonUp(int mouseButton) {
         boolean isUp = (!getMouseButton(mouseButton) && mouseButtons[mouseButton]);
         if (hasGamepad) {
-            if (isUp)
-                usingGamepad = false;
+            if (isUp) {
+                usingInput = InputTypes.KEYBOARD;
+            }
         }
         return isUp;
     }
 
-    public boolean isRightTriggerPressed() {
+    public static boolean isRightTriggerPressed() {
         if (!hasGamepad)
             return false;
         boolean isPressed = getRightTrigger() == 1;
-        if (isPressed)
-            usingGamepad = true;
+        if (isPressed) {
+            usingInput = InputTypes.GAMEPAD;
+        }
         return isPressed;
     }
 
-    public boolean noButtonPressed() {
+    public static boolean noButtonPressed() {
         if (!hasGamepad)
             return true;
         boolean r = true;
@@ -233,7 +242,7 @@ public class Input {
         return r;
     }
 
-    public boolean noKeyPressed() {
+    public static boolean noKeyPressed() {
         boolean r = true;
         for (int i = 0; i < GLFW_KEY_LAST; i++) {
             if (keys[i]) {
@@ -243,7 +252,7 @@ public class Input {
         return r;
     }
 
-    public List<String> listenInputs() {
+    public static List<String> listenInputs() {
         List<String> inputs = new ArrayList<>();
 
         for (int i = 0; i < GLFW_KEY_LAST; i++) {
@@ -265,17 +274,17 @@ public class Input {
         return inputs;
     }
 
-    public void update() {
-        this.hasGamepad = glfwGetJoystickName(GLFW_JOYSTICK_1) != null;
-        if (this.window.getLastMouseLocation().x != this.window.getMouseLocation().x
-                || this.window.getLastMouseLocation().y != this.window.getMouseLocation().y) {
-            this.usingGamepad = false;
+    public static void updateInput() {
+        hasGamepad = glfwGetJoystickName(GLFW_JOYSTICK_1) != null;
+        if (window.getLastMouseX() != window.getMouseX()
+                || window.getLastMouseY() != window.getMouseY()) {
+            usingInput = InputTypes.KEYBOARD;
         }
         for (int i = 0; i < GLFW_KEY_LAST; i++) {
             keys[i] = getKey(i);
             if (keys[i]) {
                 lastKey = i;
-                usingGamepad = false;
+                usingInput = InputTypes.KEYBOARD;
             }
         }
         for (int i = 0; i < 2; i++) {
@@ -284,7 +293,7 @@ public class Input {
 
         if (hasGamepad) {
             if (buttons == null) {
-                this.buttons = new boolean[GLFW_GAMEPAD_BUTTON_LAST];
+                buttons = new boolean[GLFW_GAMEPAD_BUTTON_LAST];
                 for (int i = 0; i < GLFW_GAMEPAD_BUTTON_LAST; i++) {
                     buttons[i] = false;
                 }
@@ -292,7 +301,7 @@ public class Input {
             for (int i = 0; i < GLFW_GAMEPAD_BUTTON_LAST; i++) {
                 buttons[i] = getButton(i);
                 if (buttons[i]) {
-                    usingGamepad = true;
+                    usingInput = InputTypes.GAMEPAD;
                 }
             }
             if (isWindows) {
@@ -306,12 +315,16 @@ public class Input {
         }
     }
 
-    public boolean isUsingGamepad() {
-        return usingGamepad;
+    public static int getLastKey() {
+        return lastKey;
     }
 
-    public boolean hasGamepad() {
+    public static boolean hasGamepad() {
         return hasGamepad;
+    }
+
+    public static InputTypes getUsingInput() {
+        return usingInput;
     }
 
 }

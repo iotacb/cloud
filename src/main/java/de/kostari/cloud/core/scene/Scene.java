@@ -3,6 +3,7 @@ package de.kostari.cloud.core.scene;
 import java.util.ArrayList;
 
 import de.kostari.cloud.core.components.Transform;
+import de.kostari.cloud.core.gui.UIComponent;
 import de.kostari.cloud.core.objects.GameObject;
 import de.kostari.cloud.core.observers.EventSystem;
 import de.kostari.cloud.core.observers.events.Event;
@@ -17,6 +18,7 @@ public abstract class Scene {
 	public Window window;
 
 	private ArrayList<GameObject> objects;
+	private ArrayList<UIComponent> uiComponents;
 	private Camera camera;
 
 	private boolean isPlaying = false;
@@ -27,11 +29,16 @@ public abstract class Scene {
 		this.window = window;
 
 		this.objects = new ArrayList<>();
+		this.uiComponents = new ArrayList<>();
 		this.camera = new Camera(window);
 
 		this.physicsEngine = new PhysicsEngine();
 
 		objects.sort((o1, o2) -> {
+			return o1.getzIndex() - o2.getzIndex();
+		});
+
+		uiComponents.sort((o1, o2) -> {
 			return o1.getzIndex() - o2.getzIndex();
 		});
 
@@ -46,6 +53,10 @@ public abstract class Scene {
 
 		objects.forEach(object -> {
 			object.update(delta);
+		});
+
+		uiComponents.forEach(uiComponent -> {
+			uiComponent.update(delta);
 		});
 	}
 
@@ -63,6 +74,10 @@ public abstract class Scene {
 				object.draw(delta);
 				object.transform = oldTransform;
 			}
+		});
+
+		uiComponents.forEach(uiComponent -> {
+			uiComponent.draw(delta);
 		});
 	}
 
@@ -107,27 +122,31 @@ public abstract class Scene {
 		}
 	}
 
-	public GameObject getObject(long id) {
-		for (GameObject obj : objects) {
-			if (obj.getId() == id) {
-				return obj;
-			}
-		}
-		return null;
+	public void addUI(UIComponent uiComponent, int zIndex) {
+		uiComponent.setZIndex(zIndex);
+		uiComponents.add(uiComponent);
+		uiComponents.sort((o1, o2) -> {
+			return o1.getzIndex() - o2.getzIndex();
+		});
 	}
 
-	public <T extends GameObject> T getObject(Class<T> objectClass) {
-		for (GameObject obj : objects) {
-			if (objectClass.isAssignableFrom(obj.getClass())) {
-				try {
-					return objectClass.cast(obj);
-				} catch (ClassCastException e) {
-					e.printStackTrace();
-					System.exit(-1);
-				}
+	public void addUI(UIComponent uiComponent) {
+		addUI(uiComponent, 0);
+	}
+
+	public void addUIs(UIComponent... uiComponents) {
+		for (UIComponent obj : uiComponents) {
+			addUI(obj);
+		}
+	}
+
+	public void removeUI(UIComponent uiComponent) {
+		for (int i = 0; i < uiComponents.size(); i++) {
+			UIComponent object = uiComponents.get(i);
+			if (object.equals(uiComponent)) {
+				objects.remove(i);
 			}
 		}
-		return null;
 	}
 
 	public ArrayList<GameObject> getObjects() {

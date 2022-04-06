@@ -9,6 +9,10 @@ import de.kostari.cloud.core.window.Window;
 
 public class GameObject {
     public Window window;
+
+    public String tag;
+    public Transform transform;
+
     private List<Component> components;
     private long id;
     private boolean ignoreCameraMovement = false;
@@ -16,9 +20,6 @@ public class GameObject {
     private int zIndex = 0;
 
     private boolean drawDebug;
-
-    public Transform transform;
-    public String tag;
 
     public GameObject(Window window) {
         init(window, -1, "tag", new Transform());
