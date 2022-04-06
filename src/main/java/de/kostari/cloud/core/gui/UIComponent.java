@@ -3,6 +3,8 @@ package de.kostari.cloud.core.gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.ConfigurationException;
+
 import de.kostari.cloud.core.components.Bounds;
 import de.kostari.cloud.core.components.Component;
 import de.kostari.cloud.core.components.Transform;
@@ -73,9 +75,25 @@ public class UIComponent {
     }
 
     public UIComponent addComponent(Component component) {
+        for (Component com : components) {
+            if (com.getClass() == component.getClass()) {
+                try {
+                    throw new ConfigurationException(
+                            String.format("Component '%s' already exists", component.getClass().getSimpleName()));
+                } catch (ConfigurationException e) {
+                    e.printStackTrace();
+                    System.exit(-1);
+                }
+            }
+        }
         component.ui = this;
+        component.start();
         components.add(component);
         return this;
+    }
+
+    public List<Component> getComponents() {
+        return components;
     }
 
     public UIComponent setZIndex(int zIndex) {

@@ -16,7 +16,7 @@ public class Bounds extends Component {
     public Bounds(Vec size) {
         this.width = size.x;
         this.height = size.y;
-        this.size = size;
+        this.size.set(size);
     }
 
     @Override
@@ -77,6 +77,11 @@ public class Bounds extends Component {
         this.size.y = height;
         this.height = height;
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return size.toString();
     }
 
 }

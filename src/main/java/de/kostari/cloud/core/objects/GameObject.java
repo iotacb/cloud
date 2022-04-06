@@ -3,6 +3,8 @@ package de.kostari.cloud.core.objects;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.ConfigurationException;
+
 import de.kostari.cloud.core.components.Component;
 import de.kostari.cloud.core.components.Transform;
 import de.kostari.cloud.core.window.Window;
@@ -90,6 +92,17 @@ public class GameObject {
     }
 
     public GameObject addComponent(Component component) {
+        for (Component com : components) {
+            if (com.getClass() == component.getClass()) {
+                try {
+                    throw new ConfigurationException(
+                            String.format("Component '%s' already exists", component.getClass().getSimpleName()));
+                } catch (ConfigurationException e) {
+                    e.printStackTrace();
+                    System.exit(-1);
+                }
+            }
+        }
         component.gameObject = this;
         component.start();
         components.add(component);
