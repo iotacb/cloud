@@ -1,25 +1,16 @@
 package de.kostari.cloud.core.window;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
-import static org.lwjgl.opengl.GL11.GL_PROJECTION;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glLoadIdentity;
-import static org.lwjgl.opengl.GL11.glMatrixMode;
-import static org.lwjgl.opengl.GL11.glOrtho;
-import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 import java.nio.DoubleBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
+import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.glfw.GLFWWindowFocusCallback;
-import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALC10;
@@ -28,6 +19,8 @@ import org.lwjgl.openal.ALCCapabilities;
 import org.lwjgl.openal.ALCapabilities;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.Platform;
+
+import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 
 import de.kostari.cloud.core.objects.GameObject;
 import de.kostari.cloud.core.observers.EventSystem;
@@ -40,13 +33,19 @@ import de.kostari.cloud.utilities.input.Input;
 import de.kostari.cloud.utilities.math.Vec;
 import de.kostari.cloud.utilities.render.Render;
 
+/**
+ * @author Kostari
+ * 
+ *         Create a object of the window class to create a window
+ *         and show it to the user
+ */
 public class Window implements Observer {
 
 	private String title;
 
 	private Vec size;
-	private float width;
-	private float height;
+	private int width;
+	private int height;
 
 	private float deltaTime;
 
@@ -66,13 +65,6 @@ public class Window implements Observer {
 	private boolean isFocused;
 	private boolean useVsync;
 
-	private Vec mousePosition;
-	private Vec lastMousePosition;
-
-	private GLFWWindowSizeCallback windowSizeCallback;
-	private GLFWWindowFocusCallback windowFocusCallback;
-	private GLFWFramebufferSizeCallback framebufferSizeCallback;
-
 	private Scene scene;
 	private Scene prevScene;
 
@@ -86,7 +78,7 @@ public class Window implements Observer {
 		createWindow(width, height, title, fullscreen, resizable);
 	}
 
-	private void createWindow(float width, float height, String title, boolean fullscreen,
+	private void createWindow(int width, int height, String title, boolean fullscreen,
 			boolean resizable) {
 		this.width = width;
 		this.height = height;
@@ -95,8 +87,6 @@ public class Window implements Observer {
 		this.isResizable = resizable;
 		this.sampling = 0;
 		this.size = new Vec(width, height);
-		this.mousePosition = new Vec();
-		this.lastMousePosition = new Vec();
 
 		this.scene = new Scene(this) {
 			@Override
@@ -118,8 +108,11 @@ public class Window implements Observer {
 	}
 
 	private void initialize() throws Exception {
-		if (!glfwInit())
-			return;
+		GLFWErrorCallback.createPrint(System.err).set();
+
+		if (!glfwInit()) {
+			throw new IllegalStateException("Unable to initialize GLFW.");
+		}
 
 		setWindowHints();
 		makeWindow();
@@ -131,27 +124,29 @@ public class Window implements Observer {
 	}
 
 	public void destroy() {
-		framebufferSizeCallback.free();
-		windowSizeCallback.free();
-		windowFocusCallback.free();
 		ALC10.alcDestroyContext(audioContext);
 		ALC10.alcCloseDevice(audioDevice);
-		glfwTerminate();
+		glfwFreeCallbacks(windowId);
 		glfwDestroyWindow(windowId);
+		glfwTerminate();
+
+		glfwSetErrorCallback(null).free();
 	}
 
 	private void drawScreen() throws Exception {
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		glViewport(0, 0, (int) width, (int) height);
+		glViewport(0, 0, width, height);
 		glOrtho(0, width, height, 0, -1, 1);
-		glMatrixMode(GL_MODELVIEW);
-
+		glClearColor(0, 0, 0, 0);
 		glClear(GL_COLOR_BUFFER_BIT);
-		scene.draw(getDeltaTime());
-		glfwSwapBuffers(this.windowId);
 
 		deltaTime = timer.getDelta();
+		if (deltaTime >= 0) {
+			// Renderer.bindShader(defaultShader);
+			scene.draw(deltaTime);
+		}
+		glfwSwapBuffers(windowId);
 		timer.updateFPS();
 	}
 
@@ -180,33 +175,23 @@ public class Window implements Observer {
 	}
 
 	private void setCallbacks() {
-		glfwSetFramebufferSizeCallback(windowId, framebufferSizeCallback = new GLFWFramebufferSizeCallback() {
-			@Override
-			public void invoke(long windowId, int width, int height) {
-				if (width > 0 && height > 0) {
-					framebufferWidth = width;
-					framebufferHeight = height;
-				}
-			}
+		glfwSetFramebufferSizeCallback(windowId, (id, newWidth, newHeight) -> {
+			framebufferWidth = newWidth;
+			framebufferHeight = newHeight;
 		});
 
-		glfwSetWindowSizeCallback(windowId, windowSizeCallback = new GLFWWindowSizeCallback() {
-			@Override
-			public void invoke(long windowId, int w, int h) {
-				if (w > 0 && h > 0) {
-					width = w;
-					height = h;
-					size.set(w, h);
-				}
-			}
+		glfwSetWindowSizeCallback(windowId, (id, newWidth, newHeight) -> {
+			width = newWidth;
+			height = newHeight;
+			size.set(width, height);
 		});
 
-		glfwSetWindowFocusCallback(windowId, windowFocusCallback = new GLFWWindowFocusCallback() {
+		glfwSetWindowFocusCallback(windowId, (id, focused) -> {
+			isFocused = focused;
+		});
 
-			@Override
-			public void invoke(long windowId, boolean focused) {
-				isFocused = focused;
-			}
+		glfwSetScrollCallback(windowId, (id, scrollX, scrollY) -> {
+			Input.setMouseScroll((float) scrollX, (float) scrollY);
 		});
 	}
 
@@ -254,11 +239,14 @@ public class Window implements Observer {
 		DoubleBuffer bufferX = BufferUtils.createDoubleBuffer(1);
 		DoubleBuffer bufferY = BufferUtils.createDoubleBuffer(1);
 		glfwGetCursorPos(windowId, bufferX, bufferY);
-		lastMousePosition.set(mousePosition);
-		mousePosition.set((float) bufferX.get(), (float) bufferY.get());
+		// lastMousePosition.set(mousePosition);
+		// mousePosition.set((float) bufferX.get(), (float) bufferY.get());
+		Input.setLastMousePosition(Input.getMouseX(), Input.getMouseY());
+		Input.setMousePosition((float) bufferX.get(), (float) bufferY.get());
 	}
 
 	private void updateScreen() throws Exception {
+		Input.setMouseScroll(0, 0);
 		glfwPollEvents();
 		updateCursor();
 		scene.update(getDeltaTime());
@@ -278,16 +266,26 @@ public class Window implements Observer {
 	@Override
 	public void onNotify(GameObject gameObject, Event event) {
 		if (event.type == EventType.START_PLAY) {
-			System.out.println("STARTING PLAY!");
+			System.out.println("Engine start");
 		} else if (event.type == EventType.STOP_PLAY) {
-			System.out.println("STOPPING PLAY!");
+			System.out.println("Engine stop");
 		}
 	}
 
+	/**
+	 * Set a maximum FPS cap.
+	 * 
+	 * @param fpsCap
+	 */
 	public void setFPSCap(int fpsCap) {
 		this.fpsCap = fpsCap;
 	}
 
+	/**
+	 * Add a icon to the window
+	 * 
+	 * @param path the path to the image file
+	 */
 	public void setIcon(String path) {
 		GLFWImage image = GLFWImage.malloc();
 		GLFWImage.Buffer imageBuffer = GLFWImage.malloc(1);
@@ -297,25 +295,50 @@ public class Window implements Observer {
 		glfwSetWindowIcon(windowId, imageBuffer);
 	}
 
+	/**
+	 * !Does not work currently
+	 * 
+	 * @param sampling
+	 */
 	public void setSampling(int sampling) {
 		this.sampling = sampling;
-		glfwWindowHint(GLFW_SAMPLES, sampling);
 	}
 
+	/**
+	 * Set the title of the window
+	 * 
+	 * @param title
+	 */
 	public void setTitle(String title) {
 		this.title = title;
 		glfwSetWindowTitle(windowId, title);
 	}
 
+	/**
+	 * Enable or disable vsync
+	 * 
+	 * @param vsync
+	 */
 	public void useVsync(boolean vsync) {
 		this.useVsync = vsync;
 		glfwSwapInterval(vsync ? 1 : 0);
 	}
 
+	/**
+	 * Set the opacity of the window
+	 * !Only works on Windows
+	 * 
+	 * @param opacity
+	 */
 	public void setWindowOpacity(float opacity) {
 		glfwSetWindowOpacity(windowId, opacity);
 	}
 
+	/**
+	 * Change the current displayed scene
+	 * 
+	 * @param scene the scene which should be displayed
+	 */
 	public void setScene(final Class<? extends Scene> scene) {
 		try {
 			this.scene = scene.getConstructor(getClass()).newInstance(this);
@@ -324,6 +347,11 @@ public class Window implements Observer {
 		}
 	}
 
+	/**
+	 * Change the current displayed scene
+	 * 
+	 * @param scene the scene which should be displayed
+	 */
 	public void setScene(Scene scene) {
 		this.scene = scene;
 	}
@@ -348,30 +376,6 @@ public class Window implements Observer {
 		return fpsCap;
 	}
 
-	public Vec getLastMousePosition() {
-		return lastMousePosition;
-	}
-
-	public int getLastMouseX() {
-		return (int) lastMousePosition.getX();
-	}
-
-	public int getLastMouseY() {
-		return (int) lastMousePosition.getY();
-	}
-
-	public Vec getMousePosition() {
-		return mousePosition;
-	}
-
-	public int getMouseX() {
-		return (int) mousePosition.getX();
-	}
-
-	public int getMouseY() {
-		return (int) mousePosition.getY();
-	}
-
 	public Vec getSize() {
 		return size;
 	}
@@ -380,11 +384,11 @@ public class Window implements Observer {
 		return size.clone().mul(0.5F);
 	}
 
-	public float getWidth() {
+	public int getWidth() {
 		return width;
 	}
 
-	public float getHeight() {
+	public int getHeight() {
 		return height;
 	}
 

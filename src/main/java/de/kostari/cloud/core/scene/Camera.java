@@ -17,6 +17,12 @@ public class Camera extends GameObject {
         ignoreCameraMovement();
     }
 
+    /**
+     * Will center the camera to a specific GameObject
+     * 
+     * @param object  the object to center the camera to
+     * @param damping the damping of the camera movement
+     */
     public void followObject(GameObject object, float damping) {
         float xOffset = window.getWidth() / 2;
         float yOffset = window.getHeight() / 2;
@@ -35,6 +41,11 @@ public class Camera extends GameObject {
                 damping);
     }
 
+    /**
+     * Will center the camera to a specific GameObject
+     * 
+     * @param object the object to center the camera to
+     */
     public void followObject(GameObject object) {
         followObject(object, 0.1F);
     }

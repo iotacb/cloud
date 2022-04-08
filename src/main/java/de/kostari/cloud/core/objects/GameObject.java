@@ -15,8 +15,9 @@ public class GameObject {
     public String tag;
     public Transform transform;
 
+    private int id;
+
     private List<Component> components;
-    private long id;
     private boolean ignoreCameraMovement = false;
 
     private int zIndex = 0;
@@ -39,15 +40,15 @@ public class GameObject {
         init(window, -1, tag, transform);
     }
 
-    public GameObject(Window window, long id, Transform transform) {
+    public GameObject(Window window, int id, Transform transform) {
         init(window, id, "tag", transform);
     }
 
-    public GameObject(Window window, long id, String tag, Transform transform) {
+    public GameObject(Window window, int id, String tag, Transform transform) {
         init(window, id, tag, transform);
     }
 
-    private void init(Window window, long id, String tag, Transform transform) {
+    private void init(Window window, int id, String tag, Transform transform) {
         this.window = window;
         this.id = id;
         this.tag = tag;
@@ -73,6 +74,13 @@ public class GameObject {
         });
     }
 
+    /**
+     * Search for a component in the components list and return it
+     * 
+     * @param <T>            The type of the component
+     * @param componentClass The class of the component
+     * @return
+     */
     public <T extends Component> T getComponent(Class<T> componentClass) {
         for (Component component : components) {
             if (componentClass.isAssignableFrom(component.getClass())) {
@@ -91,6 +99,12 @@ public class GameObject {
         return components;
     }
 
+    /**
+     * Add a component to the gameobject.
+     * 
+     * @param component the component to add
+     * @return
+     */
     public GameObject addComponent(Component component) {
         for (Component com : components) {
             if (com.getClass() == component.getClass()) {
@@ -117,11 +131,15 @@ public class GameObject {
         this.tag = tag;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public int getzIndex() {
         return zIndex;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
@@ -133,6 +151,12 @@ public class GameObject {
         return ignoreCameraMovement;
     }
 
+    /**
+     * Ignore the camera movement if the camera is following a object.
+     * Use it to decouple a gameobject from the camera movement.
+     * 
+     * @return
+     */
     public GameObject ignoreCameraMovement() {
         ignoreCameraMovement = true;
         return this;
@@ -142,9 +166,21 @@ public class GameObject {
         return drawDebug;
     }
 
+    /**
+     * Draw debug visuals for the gameobject.
+     * 
+     * @return
+     */
     public GameObject drawDebug() {
         drawDebug = true;
         return this;
+    }
+
+    /**
+     * Destroy the gameobject
+     */
+    public void destroy() {
+        window.getScene().removeObject(this);
     }
 
     public GameObject setTransform(Transform transform) {
@@ -160,6 +196,6 @@ public class GameObject {
             return false;
 
         GameObject gameObject = (GameObject) o;
-        return gameObject.equals(this) || gameObject.id == this.id;
+        return gameObject.id == this.id;
     }
 }

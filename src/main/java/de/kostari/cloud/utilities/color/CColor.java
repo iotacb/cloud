@@ -1,5 +1,7 @@
 package de.kostari.cloud.utilities.color;
 
+import de.kostari.cloud.utilities.math.CMath;
+
 public class CColor {
 
     private int r;
@@ -44,16 +46,24 @@ public class CColor {
         init(r, g, b, 255);
     }
 
+    public CColor(float r, float g, float b, float alpha) {
+        init((int) r, (int) g, (int) b, (int) alpha);
+    }
+
+    public CColor(float r, float g, float b) {
+        init((int) r, (int) g, (int) b, 255);
+    }
+
     public CColor(int hex) {
         CColor rgb = hexToRgb(hex);
         init(rgb.r, rgb.g, rgb.b, 255);
     }
 
     private void init(int r, int g, int b, int alpha) {
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.alpha = alpha;
+        this.r = CMath.clamp(r, 0, 255);
+        this.g = CMath.clamp(g, 0, 255);
+        this.b = CMath.clamp(b, 0, 255);
+        this.alpha = CMath.clamp(alpha, 0, 255);
     }
 
     public static CColor hexToRgb(int hex) {
@@ -62,6 +72,10 @@ public class CColor {
         int b = (hex & 0xFF);
         int a = (hex & 0xFF000000) >> 24;
         return new CColor(r, g, b, a);
+    }
+
+    public static CColor random() {
+        return new CColor((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255));
     }
 
     public int getRed() {

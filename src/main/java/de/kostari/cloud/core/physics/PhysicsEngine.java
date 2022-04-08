@@ -13,7 +13,6 @@ import de.kostari.cloud.core.components.Transform;
 import de.kostari.cloud.core.objects.GameObject;
 import de.kostari.cloud.core.physics.colliders.BoxCollider;
 import de.kostari.cloud.core.physics.colliders.CircleCollider;
-import de.kostari.cloud.utilities.math.Vec;
 
 public class PhysicsEngine {
 
@@ -21,13 +20,15 @@ public class PhysicsEngine {
     private World world;
 
     private float physicsTimeDelta = 0.0F;
-    private float physicsTimeStep = 0.02F;
+    private float physicsTimeStep = 1F / 60F;
     private int velocityIterations = 8;
     private int positionIterations = 3;
+    private int physicsUpdates = 6;
 
-    public PhysicsEngine() {
-        this.gravity = new Vec2(0, 981F);
+    public PhysicsEngine(int physicsUpdates) {
+        this.gravity = new Vec2(0, 10F);
         this.world = new World(gravity);
+        this.physicsUpdates = physicsUpdates;
     }
 
     public void add(GameObject gameObject) {
@@ -48,6 +49,7 @@ public class PhysicsEngine {
         bodyDef.gravityScale = rigidbody.getGravityScale();
         bodyDef.angularVelocity = rigidbody.getAngularVelocity();
         bodyDef.userData = rigidbody.gameObject;
+        bodyDef.allowSleep = rigidbody.allowSleeping();
 
         bodyDef.type = rigidbody.getBodyType();
 
@@ -81,9 +83,11 @@ public class PhysicsEngine {
     public void update(float delta) {
         physicsTimeDelta += delta;
 
-        if (physicsTimeDelta >= 0.0F) {
+        if (physicsTimeDelta > 0.0F) {
+            for (int i = 0; i < physicsUpdates; i++) {
+                world.step(physicsTimeStep, velocityIterations, positionIterations);
+            }
             physicsTimeDelta -= physicsTimeStep;
-            world.step(physicsTimeStep, velocityIterations, positionIterations);
         }
     }
 
@@ -107,9 +111,8 @@ public class PhysicsEngine {
             return;
 
         PolygonShape shape = new PolygonShape();
-        Vec offset = boxCollider.getOffset();
         shape.setAsBox(boxCollider.getHalfSize().x, boxCollider.getHalfSize().y,
-                new Vec2(offset.x + boxCollider.getHalfSize().x, offset.y + boxCollider.getHalfSize().y), 0);
+                new Vec2(), 0);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
@@ -158,6 +161,14 @@ public class PhysicsEngine {
             fixture = fixture.m_next;
         }
         return size;
+    }
+
+    public int getPhysicsUpdates() {
+        return physicsUpdates;
+    }
+
+    public void setPhysicsUpdates(int physicsUpdates) {
+        this.physicsUpdates = physicsUpdates;
     }
 
 }

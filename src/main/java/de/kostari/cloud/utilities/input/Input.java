@@ -1,13 +1,6 @@
 package de.kostari.cloud.utilities.input;
 
-import static org.lwjgl.glfw.GLFW.GLFW_GAMEPAD_BUTTON_LAST;
-import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_LAST;
-import static org.lwjgl.glfw.GLFW.glfwGetJoystickAxes;
-import static org.lwjgl.glfw.GLFW.glfwGetJoystickButtons;
-import static org.lwjgl.glfw.GLFW.glfwGetJoystickName;
-import static org.lwjgl.glfw.GLFW.glfwGetKey;
-import static org.lwjgl.glfw.GLFW.glfwGetMouseButton;
+import static org.lwjgl.glfw.GLFW.*;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -15,32 +8,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.kostari.cloud.core.window.Window;
+import de.kostari.cloud.utilities.math.Vec;
 
 public class Input {
 
-    private static Window window;
     private static long windowId;
 
     private static boolean[] buttons;
     private static boolean hasGamepad;
     private static boolean[] keys, mouseButtons;
+
     private static int lastKey;
+
+    private static Vec mousePosition = new Vec();
+    private static Vec lastMousePosition = new Vec();
+    private static Vec mouseScroll = new Vec();
 
     private static boolean isWindows;
 
     private static InputTypes usingInput;
 
     public static void initInput(Window window, boolean isWindows) {
-        Input.window = window;
         Input.windowId = window.getWindowId();
         Input.isWindows = isWindows;
         Input.keys = new boolean[GLFW_KEY_LAST];
-        Input.mouseButtons = new boolean[2];
+        Input.mouseButtons = new boolean[GLFW_MOUSE_BUTTON_LAST];
         Input.hasGamepad = glfwGetJoystickName(GLFW_JOYSTICK_1) != null;
-        for (int i = 0; i < GLFW_KEY_LAST; i++) {
+        for (int i = 32; i < GLFW_KEY_LAST; i++) {
             keys[i] = false;
         }
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < GLFW_MOUSE_BUTTON_LAST; i++) {
             mouseButtons[i] = false;
         }
         if (hasGamepad) {
@@ -188,13 +185,7 @@ public class Input {
     }
 
     public static boolean getMouseButton(int mouseButton) {
-        boolean isDown = glfwGetMouseButton(windowId, mouseButton) == 1;
-        if (hasGamepad) {
-            if (isDown) {
-                usingInput = InputTypes.KEYBOARD;
-            }
-        }
-        return isDown;
+        return glfwGetMouseButton(windowId, mouseButton) == 1;
     }
 
     public static boolean getMouseButtonDown(int mouseButton) {
@@ -244,7 +235,7 @@ public class Input {
 
     public static boolean noKeyPressed() {
         boolean r = true;
-        for (int i = 0; i < GLFW_KEY_LAST; i++) {
+        for (int i = 32; i < GLFW_KEY_LAST; i++) {
             if (keys[i]) {
                 r = false;
             }
@@ -260,7 +251,7 @@ public class Input {
                 inputs.add("KEY: " + i);
             }
         }
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < GLFW_MOUSE_BUTTON_LAST; i++) {
             if (getMouseButton(i)) {
                 inputs.add("MOUSE: " + i);
             }
@@ -276,18 +267,18 @@ public class Input {
 
     public static void updateInput() {
         hasGamepad = glfwGetJoystickName(GLFW_JOYSTICK_1) != null;
-        if (window.getLastMouseX() != window.getMouseX()
-                || window.getLastMouseY() != window.getMouseY()) {
+        if (getLastMouseX() != getMouseX()
+                || getLastMouseY() != getMouseY()) {
             usingInput = InputTypes.KEYBOARD;
         }
-        for (int i = 0; i < GLFW_KEY_LAST; i++) {
+        for (int i = 32; i < GLFW_KEY_LAST; i++) {
             keys[i] = getKey(i);
             if (keys[i]) {
                 lastKey = i;
                 usingInput = InputTypes.KEYBOARD;
             }
         }
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < GLFW_MOUSE_BUTTON_LAST; i++) {
             mouseButtons[i] = getMouseButton(i);
         }
 
@@ -327,4 +318,47 @@ public class Input {
         return usingInput;
     }
 
+    public static int getMouseX() {
+        return (int) mousePosition.x;
+    }
+
+    public static int getMouseY() {
+        return (int) mousePosition.y;
+    }
+
+    public static int getLastMouseX() {
+        return (int) lastMousePosition.x;
+    }
+
+    public static int getLastMouseY() {
+        return (int) lastMousePosition.y;
+    }
+
+    public static int getScrollX() {
+        return (int) mouseScroll.x;
+    }
+
+    public static int getScrollY() {
+        return (int) mouseScroll.y;
+    }
+
+    public static Vec getMousePosition() {
+        return mousePosition;
+    }
+
+    public static Vec getLastMousePosition() {
+        return lastMousePosition;
+    }
+
+    public static void setMousePosition(float x, float y) {
+        Input.mousePosition.set(x, y);
+    }
+
+    public static void setLastMousePosition(float x, float y) {
+        Input.lastMousePosition.set(x, y);
+    }
+
+    public static void setMouseScroll(float x, float y) {
+        Input.mouseScroll.set(x, y);
+    }
 }

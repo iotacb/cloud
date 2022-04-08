@@ -38,10 +38,11 @@ public class Collisions {
                 point.y <= max.y && min.y <= point.y;
     }
 
-    public static boolean pointInBox2D(Vec point, BoxCollider box) {
+    public static boolean pointInBox(Vec point, BoxCollider box) {
+        // Translate the point into local space
         Vec pointLocalBoxSpace = new Vec(point);
-        CMath.rotate(pointLocalBoxSpace, box.getRigidbody().gameObject.transform.position,
-                box.getRigidbody().gameObject.transform.rotation);
+        CMath.rotate(pointLocalBoxSpace, box.gameObject.transform.position,
+                -box.getRigidbody().gameObject.transform.rotation);
 
         Vec min = box.getLocalMin();
         Vec max = box.getLocalMax();

@@ -82,7 +82,7 @@ public class AABBCollider extends Collider {
 
         super.draw(delta);
         Render.lineWidth(2);
-        Render.rect(gameObject.transform.position, getSize(), false, CColor.GREEN);
+        Render.rectOutlined(gameObject.transform.position, getSize(), CColor.GREEN);
     }
 
 }

@@ -47,7 +47,7 @@ public class CircleCollider extends Collider {
         super.draw(delta);
 
         Render.lineWidth(2);
-        Render.circleCentered(gameObject.transform.position, getSize(), false, CColor.GREEN);
+        Render.polygonOutlined(gameObject.transform.position, getSize(), CColor.GREEN, 180);
     }
 
 }

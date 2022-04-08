@@ -5,66 +5,32 @@ import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyType;
 
 import de.kostari.cloud.core.components.Component;
-import de.kostari.cloud.utilities.math.Vec;
 
 public class Rigidbody extends Component {
 
-    private Vec velocity = new Vec();
-    private float angularDamping = 0.8f;
-    private float linearDamping = 0.9f;
-    private float mass = 0;
+    private float angularDamping = 0.0f;
+    private float linearDamping = 0.0f;
+    private float mass = 1;
     private BodyType bodyType = BodyType.DYNAMIC;
     private float friction = 0.1f;
-    public float angularVelocity = 0.0f;
-    public float gravityScale = 1.0f;
+    private float angularVelocity = 0.0f;
+    private float gravityScale = 1.0f;
     private boolean isSensor = false;
+    private boolean allowSleeping = false;
 
     private boolean fixedRotation = false;
-    private boolean continuousCollision = true;
+    private boolean continuousCollision = false;
 
     private transient Body physicsBody = null;
 
     @Override
     public void update(float dt) {
-        if (physicsBody != null) {
-            this.gameObject.transform.position.set(
-                    physicsBody.getPosition().x, physicsBody.getPosition().y);
-            this.gameObject.transform.rotation = (float) Math.toDegrees(physicsBody.getAngle());
-        }
-    }
+        if (physicsBody == null)
+            return;
+        this.gameObject.transform.position.set(
+                physicsBody.getPosition().x, physicsBody.getPosition().y);
+        this.gameObject.transform.rotation = (float) Math.toDegrees(physicsBody.getAngle());
 
-    public Rigidbody addVelocity(Vec forceToAdd) {
-        if (physicsBody != null) {
-            physicsBody.applyForceToCenter(new Vec2(velocity.x, velocity.y));
-        }
-        return this;
-    }
-
-    public Rigidbody addImpulse(Vec impulse) {
-        if (physicsBody != null) {
-            physicsBody.applyLinearImpulse(new Vec2(velocity.x, velocity.y), physicsBody.getWorldCenter());
-        }
-        return this;
-    }
-
-    public Vec getVelocity() {
-        return velocity;
-    }
-
-    public Rigidbody setVelocity(Vec velocity) {
-        this.velocity.set(velocity);
-        if (physicsBody != null) {
-            this.physicsBody.setLinearVelocity(new Vec2(velocity.x, velocity.y));
-        }
-        return this;
-    }
-
-    public Rigidbody setAngularVelocity(float angularVelocity) {
-        this.angularVelocity = angularVelocity;
-        if (physicsBody != null) {
-            this.physicsBody.setAngularVelocity(angularVelocity);
-        }
-        return this;
     }
 
     public Rigidbody setGravityScale(float gravityScale) {
@@ -132,6 +98,15 @@ public class Rigidbody extends Component {
         return continuousCollision;
     }
 
+    public boolean allowSleeping() {
+        return allowSleeping;
+    }
+
+    public Rigidbody setAllowSleeping(boolean allowSleeping) {
+        this.allowSleeping = allowSleeping;
+        return this;
+    }
+
     public Rigidbody setContinuousCollision(boolean continuousCollision) {
         this.continuousCollision = continuousCollision;
         return this;
@@ -152,6 +127,35 @@ public class Rigidbody extends Component {
 
     public float getAngularVelocity() {
         return angularVelocity;
+    }
+
+    public Rigidbody addVelocity(float x, float y) {
+        if (physicsBody == null)
+            return this;
+        physicsBody.applyForceToCenter(new Vec2(x, y));
+        return this;
+    }
+
+    public Rigidbody addImpulse(float x, float y) {
+        if (physicsBody == null)
+            return this;
+        physicsBody.applyLinearImpulse(new Vec2(x, y), physicsBody.getWorldCenter());
+        return this;
+    }
+
+    public Rigidbody setVelocity(float x, float y) {
+        if (physicsBody == null)
+            return this;
+        physicsBody.setLinearVelocity(new Vec2(x, y));
+        return this;
+    }
+
+    public Rigidbody setAngularVelocity(float angularVelocity) {
+        this.angularVelocity = angularVelocity;
+        if (physicsBody != null) {
+            this.physicsBody.setAngularVelocity(angularVelocity);
+        }
+        return this;
     }
 
 }

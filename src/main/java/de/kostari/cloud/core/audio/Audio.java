@@ -18,6 +18,13 @@ public class Audio {
 
     private boolean playing;
 
+    /**
+     * Create a audio object
+     * Currently only .ogg audio files are supported
+     * 
+     * @param filePath  the path to the audio file
+     * @param loopAudio will play the audio in a loop
+     */
     public Audio(String filePath, boolean loopAudio) {
         this.filePath = new File(filePath).getAbsolutePath();
 
@@ -96,6 +103,10 @@ public class Audio {
         return filePath;
     }
 
+    /**
+     * 
+     * @return true if the audio is playing
+     */
     public boolean isPlaying() {
         int state = AL10.alGetSourcei(sourceId, AL10.AL_SOURCE_STATE);
         if (state == AL10.AL_STOPPED) {

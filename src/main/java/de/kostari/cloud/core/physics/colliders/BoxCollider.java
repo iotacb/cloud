@@ -77,7 +77,7 @@ public class BoxCollider extends Collider {
             return;
 
         Render.lineWidth(2);
-        Render.rect(gameObject.transform.position, getSize(), false, CColor.GREEN);
+        Render.rectOutlined(gameObject.transform.position, getSize(), CColor.GREEN);
         super.draw(delta);
     }
 
