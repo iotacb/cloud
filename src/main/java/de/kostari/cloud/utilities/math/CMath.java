@@ -159,8 +159,20 @@ public class CMath {
 		return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
 	}
 
-	public static float lerp(float v0, float v1, float t) {
-		return (1 - t) * v0 + t * v1;
+	public static float lerp(float current, float target, float time) {
+		return (1 - time) * current + time * target;
+	}
+
+	public static float quad(float progress, float start, float end, float duration) {
+		float tmpEnd = end;
+		if (start > tmpEnd) {
+			tmpEnd = start;
+			start = tmpEnd;
+		}
+
+		if ((progress /= duration / 2) < 1)
+			return end / 2 * progress * progress + start;
+		return -end / 2 * ((--progress) * (progress - 2) - 1) + start;
 	}
 
 	public static void rotate(Vec vec, Vec origin, float angleDeg) {

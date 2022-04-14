@@ -1,7 +1,7 @@
 package de.kostari.cloud.core.components;
 
-import de.kostari.cloud.core.gui.UIComponent;
 import de.kostari.cloud.core.objects.GameObject;
+import de.kostari.cloud.core.ui.UIComponent;
 
 public abstract class Component {
 

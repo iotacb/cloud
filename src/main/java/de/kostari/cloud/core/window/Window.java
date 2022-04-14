@@ -85,7 +85,7 @@ public class Window implements Observer {
 		this.title = title;
 		this.isFullscreen = fullscreen;
 		this.isResizable = resizable;
-		this.sampling = 0;
+		this.sampling = 4;
 		this.size = new Vec(width, height);
 
 		this.scene = new Scene(this) {
@@ -143,7 +143,6 @@ public class Window implements Observer {
 
 		deltaTime = timer.getDelta();
 		if (deltaTime >= 0) {
-			// Renderer.bindShader(defaultShader);
 			scene.draw(deltaTime);
 		}
 		glfwSwapBuffers(windowId);
@@ -228,10 +227,12 @@ public class Window implements Observer {
 
 		if (Platform.get() == Platform.MACOSX) {
 			glfwWindowHint(GLFW.GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_FALSE);
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
-			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+			// ?: No context found on MacOSX when using this:
+			// glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+			// glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+			// glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+			// glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		}
 	}
 

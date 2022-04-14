@@ -10,6 +10,7 @@ public class App {
 
         // Enable vsync
         window.useVsync(true);
+        window.setIcon("logo.png");
 
         // Set the scene
         window.setScene(MainScene.class);

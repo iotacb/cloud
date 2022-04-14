@@ -58,6 +58,7 @@ public class Audio {
         }
 
         bufferId = AL10.alGenBuffers();
+
         AL10.alBufferData(bufferId, openALFormat, rawAudioBuffer, sampleRate);
 
         sourceId = AL10.alGenSources();

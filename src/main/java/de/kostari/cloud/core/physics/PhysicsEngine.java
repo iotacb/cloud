@@ -21,14 +21,13 @@ public class PhysicsEngine {
 
     private float physicsTimeDelta = 0.0F;
     private float physicsTimeStep = 1F / 60F;
-    private int velocityIterations = 8;
-    private int positionIterations = 3;
-    private int physicsUpdates = 6;
+    private int velocityIterations = 6;
+    private int positionIterations = 2;
+    private int physicsUpdates = 1;
 
-    public PhysicsEngine(int physicsUpdates) {
-        this.gravity = new Vec2(0, 10F);
+    public PhysicsEngine() {
+        this.gravity = new Vec2(0, 16F);
         this.world = new World(gravity);
-        this.physicsUpdates = physicsUpdates;
     }
 
     public void add(GameObject gameObject) {
@@ -48,8 +47,8 @@ public class PhysicsEngine {
         bodyDef.bullet = rigidbody.isContinuousCollision();
         bodyDef.gravityScale = rigidbody.getGravityScale();
         bodyDef.angularVelocity = rigidbody.getAngularVelocity();
+        bodyDef.allowSleep = rigidbody.isSleepingAllowed();
         bodyDef.userData = rigidbody.gameObject;
-        bodyDef.allowSleep = rigidbody.allowSleeping();
 
         bodyDef.type = rigidbody.getBodyType();
 
@@ -142,7 +141,7 @@ public class PhysicsEngine {
             return;
 
         CircleShape shape = new CircleShape();
-        shape.setRadius(circleCollider.getSize() / 2);
+        shape.setRadius(circleCollider.getSize());
         shape.m_p.set(circleCollider.getOffset().x, circleCollider.getOffset().y);
 
         FixtureDef fixtureDef = new FixtureDef();
@@ -169,6 +168,14 @@ public class PhysicsEngine {
 
     public void setPhysicsUpdates(int physicsUpdates) {
         this.physicsUpdates = physicsUpdates;
+    }
+
+    public void setPhysicsTimeStep(float physicsTimeStep) {
+        this.physicsTimeStep = physicsTimeStep;
+    }
+
+    public float getPhysicsTimeStep() {
+        return physicsTimeStep;
     }
 
 }

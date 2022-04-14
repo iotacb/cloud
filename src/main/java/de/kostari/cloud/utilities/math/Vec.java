@@ -138,6 +138,12 @@ public class Vec {
         return cross(vec.x, vec.y);
     }
 
+    /**
+     * Creates a vector that points into the given angle
+     * 
+     * @param angle the angle in degrees
+     * @return
+     */
     public static Vec fromAngle(float angle) {
         angle = (float) Math.toRadians(angle);
         float x = (float) Math.cos(angle);

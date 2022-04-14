@@ -3,16 +3,16 @@ package de.kostari.cloud.core.scene;
 import java.util.ArrayList;
 
 import de.kostari.cloud.core.components.Transform;
-import de.kostari.cloud.core.gui.UIComponent;
 import de.kostari.cloud.core.objects.GameObject;
 import de.kostari.cloud.core.observers.EventSystem;
 import de.kostari.cloud.core.observers.events.Event;
 import de.kostari.cloud.core.observers.events.EventType;
 import de.kostari.cloud.core.physics.PhysicsEngine;
 import de.kostari.cloud.core.physics.Rigidbody;
+import de.kostari.cloud.core.ui.UIComponent;
 import de.kostari.cloud.core.window.Window;
 import de.kostari.cloud.utilities.math.Vec;
-import de.kostari.cloud.utilities.render.Renderer;
+import de.kostari.cloud.utilities.render.tmp.Renderer;
 
 public abstract class Scene {
 
@@ -42,7 +42,7 @@ public abstract class Scene {
 
 		this.camera = new Camera(window);
 
-		this.physicsEngine = new PhysicsEngine(6);
+		this.physicsEngine = new PhysicsEngine();
 
 		objects.sort((o1, o2) -> {
 			return o1.getzIndex() - o2.getzIndex();
@@ -56,30 +56,44 @@ public abstract class Scene {
 	}
 
 	public void update(float delta) {
-		if (!isPlaying)
-			return;
+		updateGameObjects(delta);
+		updateUIComponents(delta);
+	}
 
-		objectsToRemove.forEach(object -> {
+	public void updateGameObjects(float delta) {
+		for (int i = 0; i < objectsToRemove.size(); i++) {
+			GameObject object = objectsToRemove.get(i);
 			objects.remove(object);
-		});
-
-		uiComponentsToRemove.forEach(ui -> {
-			uiComponents.remove(ui);
-		});
-
+		}
 		physicsEngine.update(delta);
-
-		objects.forEach(object -> {
+		for (int i = 0; i < objects.size(); i++) {
+			GameObject object = objects.get(i);
 			object.update(delta);
-		});
+		}
+	}
 
-		uiComponents.forEach(uiComponent -> {
-			uiComponent.update(delta);
-		});
+	public void updateUIComponents(float delta) {
+		for (int i = 0; i < uiComponentsToRemove.size(); i++) {
+			UIComponent ui = uiComponentsToRemove.get(i);
+			uiComponents.remove(ui);
+		}
+		for (int i = 0; i < uiComponents.size(); i++) {
+			UIComponent ui = uiComponents.get(i);
+			if (ui.isDisabled())
+				continue;
+			ui.update(delta);
+		}
 	}
 
 	public void draw(float delta) {
-		objects.forEach(object -> {
+		drawGameObjects(delta);
+		drawUIComponents(delta);
+	}
+
+	public void drawGameObjects(float delta) {
+		for (int i = 0; i < objects.size(); i++) {
+			GameObject object = objects.get(i);
+
 			if (object.isIgnoringCameraMovement()) {
 				object.draw(delta);
 			} else {
@@ -93,13 +107,16 @@ public abstract class Scene {
 				object.draw(delta);
 				object.transform = oldTransform;
 			}
-		});
+		}
+	}
 
-		uiComponents.forEach(uiComponent -> {
-			uiComponent.draw(delta);
-		});
-		Renderer.render();
-		Renderer.clearBatches();
+	public void drawUIComponents(float delta) {
+		for (int i = 0; i < uiComponents.size(); i++) {
+			UIComponent ui = uiComponents.get(i);
+			if (ui.isDisabled())
+				continue;
+			ui.draw(delta);
+		}
 	}
 
 	public void pause() {

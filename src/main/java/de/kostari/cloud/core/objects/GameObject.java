@@ -105,7 +105,8 @@ public class GameObject {
      * @param component the component to add
      * @return
      */
-    public GameObject addComponent(Component component) {
+    @SuppressWarnings("unchecked")
+    public <T extends Component> T addComponent(Component component) {
         for (Component com : components) {
             if (com.getClass() == component.getClass()) {
                 try {
@@ -120,7 +121,16 @@ public class GameObject {
         component.gameObject = this;
         component.start();
         components.add(component);
-        return this;
+
+        if (component.getClass().isAssignableFrom(component.getClass())) {
+            try {
+                return (T) component.getClass().cast(component);
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+                System.exit(-1);
+            }
+        }
+        return null;
     }
 
     public void setZIndex(int zIndex) {

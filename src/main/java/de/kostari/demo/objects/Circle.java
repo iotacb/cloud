@@ -14,12 +14,14 @@ public class Circle extends GameObject {
 
     private CColor color;
 
+    private Bounds bounds;
+
     public Circle(Window window, float radius, BodyType bodyType) {
         super(window);
 
         this.color = CColor.random();
 
-        addComponent(new Bounds(radius, radius));
+        this.bounds = addComponent(new Bounds(radius, radius));
         addComponent(new Rigidbody().setBodyType(bodyType));
         addComponent(new CircleCollider());
     }
@@ -30,11 +32,8 @@ public class Circle extends GameObject {
         Render.push();
         Render.translate(transform.position);
         Render.rotate(transform.rotation);
-        Render.circleCentered(0, 0, getComponent(Bounds.class).getWidth(), false,
-                color);
+        Render.circleOutlined(0, 0, bounds.getWidth(), 1, color);
         Render.pop();
-        // Render.polygonOutlined(transform.position,
-        // getComponent(Bounds.class).getWidth(), color, 20);
     }
 
     @Override

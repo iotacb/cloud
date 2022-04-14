@@ -26,7 +26,6 @@ public class Collisions {
     public static boolean pointInCircle(Vec point, CircleCollider circle) {
         Vec circleCenter = circle.getCenter();
         Vec centerToPoint = new Vec(point).sub(circleCenter);
-
         return centerToPoint.getMagnitudeSq() <= circle.getSize() * circle.getSize();
     }
 
@@ -42,7 +41,7 @@ public class Collisions {
         // Translate the point into local space
         Vec pointLocalBoxSpace = new Vec(point);
         CMath.rotate(pointLocalBoxSpace, box.gameObject.transform.position,
-                -box.getRigidbody().gameObject.transform.rotation);
+                -box.gameObject.transform.rotation);
 
         Vec min = box.getLocalMin();
         Vec max = box.getLocalMax();
@@ -97,8 +96,8 @@ public class Collisions {
     }
 
     public static boolean lineAndBoxCollider(Line line, AABBCollider box) {
-        float theta = -box.getRigidbody().gameObject.transform.rotation;
-        Vec center = box.getRigidbody().gameObject.transform.position;
+        float theta = -box.gameObject.transform.rotation;
+        Vec center = box.gameObject.transform.position;
         Vec localStart = new Vec(line.getStart());
         Vec localEnd = new Vec(line.getEnd());
         CMath.rotate(localStart, center, theta);
@@ -114,18 +113,18 @@ public class Collisions {
         RaycastResult.reset(result);
 
         Vec originToCircle = new Vec(circle.getCenter()).sub(ray.getOrigin());
-        float radiusSquared = circle.getSize() * circle.getSize();
+        float diameterSquared = circle.getSize() * circle.getSize();
         float originToCircleLengthSquared = originToCircle.getMagnitudeSq();
 
         float a = originToCircle.dot(ray.getDirection());
         float bSq = originToCircleLengthSquared - (a * a);
-        if (radiusSquared - bSq < 0.0f) {
+        if (diameterSquared - bSq < 0.0f) {
             return false;
         }
 
-        float f = (float) Math.sqrt(radiusSquared - bSq);
+        float f = (float) Math.sqrt(diameterSquared - bSq);
         float t = 0;
-        if (originToCircleLengthSquared < radiusSquared) {
+        if (originToCircleLengthSquared < diameterSquared) {
             t = a + f;
         } else {
             t = a - f;
@@ -186,10 +185,10 @@ public class Collisions {
         Vec size = box.getHalfSize();
         Vec xAxis = new Vec(1, 0);
         Vec yAxis = new Vec(0, 1);
-        CMath.rotate(xAxis, new Vec(0, 0), -box.getRigidbody().gameObject.transform.rotation);
-        CMath.rotate(yAxis, new Vec(0, 0), -box.getRigidbody().gameObject.transform.rotation);
+        CMath.rotate(xAxis, new Vec(0, 0), -box.gameObject.transform.rotation);
+        CMath.rotate(yAxis, new Vec(0, 0), -box.gameObject.transform.rotation);
 
-        Vec p = new Vec(box.getRigidbody().gameObject.transform.position).sub(ray.getOrigin());
+        Vec p = new Vec(box.gameObject.transform.position).sub(ray.getOrigin());
         Vec f = new Vec(
                 xAxis.dot(ray.getDirection()),
                 yAxis.dot(ray.getDirection()));
@@ -236,8 +235,8 @@ public class Collisions {
 
     public static boolean circleAndCircle(CircleCollider c1, CircleCollider c2) {
         Vec vecBetweenCenters = new Vec(c1.getCenter()).sub(c2.getCenter());
-        float radiiSum = c1.getSize() + c2.getSize();
-        return vecBetweenCenters.getMagnitudeSq() <= radiiSum * radiiSum;
+        float diameterSum = (c1.getSize() / 2) + (c2.getSize() / 2);
+        return vecBetweenCenters.getMagnitudeSq() <= diameterSum * diameterSum;
     }
 
     public static boolean circleAndAABB(CircleCollider circle, AABBCollider box) {
@@ -258,15 +257,15 @@ public class Collisions {
         }
 
         Vec circleToBox = new Vec(circle.getCenter()).sub(closestPointToCircle);
-        return circleToBox.getMagnitudeSq() <= circle.getSize() * circle.getSize();
+        return circleToBox.getMagnitudeSq() <= (circle.getSize() * circle.getSize());
     }
 
     public static boolean circleAndBoxCollider(CircleCollider circle, BoxCollider box) {
         Vec min = new Vec();
         Vec max = new Vec(box.getHalfSize()).mul(2.0f);
 
-        Vec r = new Vec(circle.getCenter()).sub(box.getRigidbody().gameObject.transform.position);
-        CMath.rotate(r, new Vec(), -box.getRigidbody().gameObject.transform.rotation);
+        Vec r = new Vec(circle.getCenter()).sub(box.gameObject.transform.position);
+        CMath.rotate(r, new Vec(), -box.gameObject.transform.rotation);
         Vec localCirclePos = new Vec(r).add(box.getHalfSize());
 
         Vec closestPointToCircle = new Vec(localCirclePos);
@@ -283,7 +282,10 @@ public class Collisions {
         }
 
         Vec circleToBox = new Vec(localCirclePos).sub(closestPointToCircle);
-        return circleToBox.getMagnitudeSq() <= circle.getSize() * circle.getSize();
+
+        float diameterSum = (circle.getSize() / 2);
+
+        return circleToBox.getMagnitudeSq() <= diameterSum * diameterSum;
     }
 
     public static boolean AABBAndCircle(AABBCollider box, CircleCollider circle) {
@@ -305,8 +307,8 @@ public class Collisions {
                 new Vec(0, 1), new Vec(1, 0),
                 new Vec(0, 1), new Vec(1, 0)
         };
-        CMath.rotate(axesToTest[2], new Vec(), b2.getRigidbody().gameObject.transform.rotation);
-        CMath.rotate(axesToTest[3], new Vec(), b2.getRigidbody().gameObject.transform.rotation);
+        CMath.rotate(axesToTest[2], new Vec(), b2.gameObject.transform.rotation);
+        CMath.rotate(axesToTest[3], new Vec(), b2.gameObject.transform.rotation);
         for (int i = 0; i < axesToTest.length; i++) {
             if (!overlapOnAxis(b1, b2, axesToTest[i])) {
                 return false;
@@ -320,8 +322,8 @@ public class Collisions {
                 new Vec(0, 1), new Vec(1, 0),
                 new Vec(0, 1), new Vec(1, 0)
         };
-        CMath.rotate(axesToTest[2], new Vec(), b2.getRigidbody().gameObject.transform.rotation);
-        CMath.rotate(axesToTest[3], new Vec(), b2.getRigidbody().gameObject.transform.rotation);
+        CMath.rotate(axesToTest[2], new Vec(), b2.gameObject.transform.rotation);
+        CMath.rotate(axesToTest[3], new Vec(), b2.gameObject.transform.rotation);
         for (int i = 0; i < axesToTest.length; i++) {
             if (!overlapOnAxis(b1, b2, axesToTest[i])) {
                 return false;

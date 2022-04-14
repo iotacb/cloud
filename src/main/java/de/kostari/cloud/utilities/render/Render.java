@@ -1,30 +1,6 @@
 package de.kostari.cloud.utilities.render;
 
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
-import static org.lwjgl.opengl.GL11.GL_LIGHTING;
-import static org.lwjgl.opengl.GL11.GL_LINE_SMOOTH;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_POINT_SMOOTH;
-import static org.lwjgl.opengl.GL11.GL_POLYGON_SMOOTH;
-import static org.lwjgl.opengl.GL11.GL_SMOOTH;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glBegin;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glColor4f;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glEnd;
-import static org.lwjgl.opengl.GL11.glLineWidth;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glRotated;
-import static org.lwjgl.opengl.GL11.glScaled;
-import static org.lwjgl.opengl.GL11.glTranslated;
-import static org.lwjgl.opengl.GL11.glVertex2f;
-
-import org.lwjgl.opengl.GL11;
+import static org.lwjgl.opengl.GL11.*;
 
 import de.kostari.cloud.core.window.Window;
 import de.kostari.cloud.utilities.color.CColor;
@@ -138,712 +114,859 @@ public class Render {
         glLineWidth((float) width);
     }
 
-    public static void rect(Vec pos, Vec size, float rotation, CColor color) {
-        RenderObject renderObject = new RenderObject(pos.x, pos.y, size.x, size.y, rotation, color, false, 0);
-        Renderer.add(renderObject);
-    }
-
-    public static void rect(float x, float y, Vec size, float rotation, CColor color) {
-        RenderObject renderObject = new RenderObject(x, y, size.x, size.y, rotation, color, false, 0);
-        Renderer.add(renderObject);
-    }
-
-    public static void rect(Vec pos, float width, float height, float rotation, CColor color) {
-        RenderObject renderObject = new RenderObject(pos.x, pos.y, width, height, rotation, color, false, 0);
-        Renderer.add(renderObject);
-    }
-
-    public static void rect(float x, float y, float width, float height, float rotation, CColor color) {
-        RenderObject renderObject = new RenderObject(x, y, width, height, rotation, color, false, 0);
-        Renderer.add(renderObject);
-    }
-
-    public static void rectOutlined(Vec pos, Vec size, float rotation, CColor color) {
-        RenderObject renderObject = new RenderObject(pos.x, pos.y, size.x, size.y, rotation, color, true, 0);
-        Renderer.add(renderObject);
-    }
-
-    public static void rectOutlined(float x, float y, Vec size, float rotation, CColor color) {
-        RenderObject renderObject = new RenderObject(x, y, size.x, size.y, rotation, color, true, 0);
-        Renderer.add(renderObject);
-    }
-
-    public static void rectOutlined(Vec pos, float width, float height, float rotation, CColor color) {
-        RenderObject renderObject = new RenderObject(pos.x, pos.y, width, height, rotation, color, true, 0);
-        Renderer.add(renderObject);
-    }
-
-    public static void rectOutlined(float x, float y, float width, float height, float rotation, CColor color) {
-        RenderObject renderObject = new RenderObject(x, y, width, height, rotation, color, true, 0);
-        Renderer.add(renderObject);
-    }
-
-    public static void rect(Vec pos, Vec size, float rotation) {
-        RenderObject renderObject = new RenderObject(pos.x, pos.y, size.x, size.y, rotation, CColor.WHITE, false, 0);
-        Renderer.add(renderObject);
-    }
-
-    public static void rect(float x, float y, Vec size, float rotation) {
-        RenderObject renderObject = new RenderObject(x, y, size.x, size.y, rotation, CColor.WHITE, false, 0);
-        Renderer.add(renderObject);
-    }
-
-    public static void rect(Vec pos, float width, float height, float rotation) {
-        RenderObject renderObject = new RenderObject(pos.x, pos.y, width, height, rotation, CColor.WHITE, false, 0);
-        Renderer.add(renderObject);
-    }
-
-    public static void rect(float x, float y, float width, float height, float rotation) {
-        RenderObject renderObject = new RenderObject(x, y, width, height, rotation, CColor.WHITE, false, 0);
-        Renderer.add(renderObject);
-    }
-
-    public static void rectOutlined(Vec pos, Vec size, float rotation) {
-        RenderObject renderObject = new RenderObject(pos.x, pos.y, size.x, size.y, rotation, CColor.WHITE, true, 0);
-        Renderer.add(renderObject);
-    }
-
-    public static void rectOutlined(float x, float y, Vec size, float rotation) {
-        RenderObject renderObject = new RenderObject(x, y, size.x, size.y, rotation, CColor.WHITE, true, 0);
-        Renderer.add(renderObject);
-    }
-
-    public static void rectOutlined(Vec pos, float width, float height, float rotation) {
-        RenderObject renderObject = new RenderObject(pos.x, pos.y, width, height, rotation, CColor.WHITE, true, 0);
-        Renderer.add(renderObject);
-    }
-
-    public static void rectOutlined(float x, float y, float width, float height, float rotation) {
-        RenderObject renderObject = new RenderObject(x, y, width, height, rotation, CColor.WHITE, true, 0);
-        Renderer.add(renderObject);
-    }
-
-    public static void rect(Vec pos, Vec size, CColor color) {
-        RenderObject renderObject = new RenderObject(pos.x, pos.y, size.x, size.y, 0, color, false, 0);
-        Renderer.add(renderObject);
-    }
-
-    public static void rect(float x, float y, Vec size, CColor color) {
-        RenderObject renderObject = new RenderObject(x, y, size.x, size.y, 0, color, false, 0);
-        Renderer.add(renderObject);
-    }
-
-    public static void rect(Vec pos, float width, float height, CColor color) {
-        RenderObject renderObject = new RenderObject(pos.x, pos.y, width, height, 0, color, false, 0);
-        Renderer.add(renderObject);
-    }
-
-    public static void rect(float x, float y, float width, float height, CColor color) {
-        RenderObject renderObject = new RenderObject(x, y, width, height, 0, color, false, 0);
-        Renderer.add(renderObject);
-    }
-
-    public static void rectOutlined(Vec pos, Vec size, CColor color) {
-        RenderObject renderObject = new RenderObject(pos.x, pos.y, size.x, size.y, 0, color, true, 0);
-        Renderer.add(renderObject);
-    }
-
-    public static void rectOutlined(float x, float y, Vec size, CColor color) {
-        RenderObject renderObject = new RenderObject(x, y, size.x, size.y, 0, color, true, 0);
-        Renderer.add(renderObject);
-    }
-
-    public static void rectOutlined(Vec pos, float width, float height, CColor color) {
-        RenderObject renderObject = new RenderObject(pos.x, pos.y, width, height, 0, color, true, 0);
-        Renderer.add(renderObject);
-    }
-
-    public static void rectOutlined(float x, float y, float width, float height, CColor color) {
-        RenderObject renderObject = new RenderObject(x, y, width, height, 0, color, true, 0);
-        Renderer.add(renderObject);
-    }
-
-    public static void polygon(Vec pos, float len, float rotation, CColor color, int amountOfSides) {
-        len /= 2;
-        RenderObject renderObject = new RenderObject(pos.x, pos.y, len, 0, rotation, color, false, amountOfSides);
-        Renderer.add(renderObject);
-    }
-
-    public static void polygon(float x, float y, float len, float rotation, CColor color, int amountOfSides) {
-        len /= 2;
-        RenderObject renderObject = new RenderObject(x, y, len, 0, rotation, color, false, amountOfSides);
-        Renderer.add(renderObject);
-    }
-
-    public static void polygonOutlined(Vec pos, float len, float rotation, CColor color, int amountOfSides) {
-        len /= 2;
-        RenderObject renderObject = new RenderObject(pos.x, pos.y, len, 0, rotation, color, true, amountOfSides);
-        Renderer.add(renderObject);
-    }
-
-    public static void polygonOutlined(float x, float y, float len, float rotation, CColor color, int amountOfSides) {
-        len /= 2;
-        RenderObject renderObject = new RenderObject(x, y, len, 0, rotation, color, true, amountOfSides);
-        Renderer.add(renderObject);
-    }
-
-    public static void polygon(Vec pos, float len, float rotation, int amountOfSides) {
-        len /= 2;
-        RenderObject renderObject = new RenderObject(pos.x, pos.y, len, 0, rotation, CColor.WHITE, false,
-                amountOfSides);
-        Renderer.add(renderObject);
-    }
-
-    public static void polygon(float x, float y, float len, float rotation, int amountOfSides) {
-        len /= 2;
-        RenderObject renderObject = new RenderObject(x, y, len, 0, rotation, CColor.WHITE, false, amountOfSides);
-        Renderer.add(renderObject);
-    }
-
-    public static void polygonOutlined(Vec pos, float len, float rotation, int amountOfSides) {
-        len /= 2;
-        RenderObject renderObject = new RenderObject(pos.x, pos.y, len, 0, rotation, CColor.WHITE, true, amountOfSides);
-        Renderer.add(renderObject);
-    }
-
-    public static void polygonOutlined(float x, float y, float len, float rotation, int amountOfSides) {
-        len /= 2;
-        RenderObject renderObject = new RenderObject(x, y, len, 0, rotation, CColor.WHITE, true, amountOfSides);
-        Renderer.add(renderObject);
-    }
-
-    public static void polygon(Vec pos, float len, CColor color, int amountOfSides) {
-        len /= 2;
-        RenderObject renderObject = new RenderObject(pos.x, pos.y, len, 0, 0, color, false, amountOfSides);
-        Renderer.add(renderObject);
-    }
-
-    public static void polygon(float x, float y, float len, CColor color, int amountOfSides) {
-        len /= 2;
-        RenderObject renderObject = new RenderObject(x, y, len, 0, 0, color, false, amountOfSides);
-        Renderer.add(renderObject);
-    }
-
-    public static void polygonOutlined(float x, float y, float len, CColor color, int amountOfSides) {
-        len /= 2;
-        RenderObject renderObject = new RenderObject(x, y, len, 0, 0, color, true, amountOfSides);
-        Renderer.add(renderObject);
-    }
-
-    public static void polygonOutlined(Vec pos, float len, CColor color, int amountOfSides) {
-        len /= 2;
-        RenderObject renderObject = new RenderObject(pos.x, pos.y, len, 0, 0, color, true, amountOfSides);
-        Renderer.add(renderObject);
-    }
-
-    // public static void rect(float x, float y, float width, float height, boolean
-    // filled, CColor color) {
-    // start();
-    // if (color != null)
-    // color(color);
-    // else
-    // color(CColor.WHITE);
-    // begin(filled ? GL_TRIANGLE_FAN : GL_LINES);
-    // {
-    // vertex(x, y);
-    // vertex(x + width, y);
-    // vertex(x + width, y + height);
-    // vertex(x, y + height);
-    // if (!filled) {
-    // vertex(x, y);
-    // vertex(x, y + height);
-    // vertex(x + width, y);
-    // vertex(x + width, y + height);
-    // }
-    // }
-    // end();
-    // stop();
-    // }
-
-    // public static void rect(Vec location, Vec size, boolean filled, CColor color)
-    // {
-    // rect(location.x, location.y, size.x, size.y, filled, color);
-    // }
-
-    // public static void rect(float x, float y, Vec size, boolean filled, CColor
+    // public static RenderObject rect(Vec pos, Vec size, float rotation, CColor
     // color) {
-    // rect(x, y, size.x, size.y, filled, color);
-    // }
-
-    // public static void rect(Vec location, float width, float height, boolean
-    // filled, CColor color) {
-    // rect(location.x, location.y, width, height, filled, color);
-    // }
-
-    // public static void rect(float x, float y, float width, float height, boolean
-    // filled) {
-    // rect(x, y, width, height, filled, null);
-    // }
-
-    // public static void rect(Vec location, Vec size, boolean filled) {
-    // rect(location, size, filled, null);
-    // }
-
-    // public static void rect(float x, float y, Vec size, boolean filled) {
-    // rect(x, y, size.x, size.y, filled);
-    // }
-
-    // public static void rect(Vec location, float width, float height, boolean
-    // filled) {
-    // rect(location.x, location.y, width, height, filled);
-    // }
-
-    // public static void rect(float x, float y, float width, float height, CColor
-    // color) {
-    // rect(x, y, width, height, true, color);
-    // }
-
-    // public static void rect(Vec location, Vec size, CColor color) {
-    // rect(location, size, true, color);
-    // }
-
-    // public static void rect(float x, float y, Vec size, CColor color) {
-    // rect(x, y, size.x, size.y, color);
-    // }
-
-    // public static void rect(Vec location, float width, float height, CColor
-    // color) {
-    // rect(location.x, location.y, width, height, color);
-    // }
-
-    // public static void rect(float x, float y, float width, float height) {
-    // rect(x, y, width, height, true, null);
-    // }
-
-    // public static void rect(Vec location, Vec size) {
-    // rect(location, size, true, null);
-    // }
-
-    // public static void rect(float x, float y, Vec size) {
-    // rect(x, y, size.x, size.y);
-    // }
-
-    // public static void rect(Vec location, float width, float height) {
-    // rect(location.x, location.y, width, height);
-    // }
-
-    // public static void rectCentered(float x, float y, float width, float height,
-    // boolean filled, CColor color) {
-    // x -= width / 2;
-    // y -= height / 2;
-    // rect(x, y, width, height, filled, color);
-    // }
-
-    // public static void rectCentered(Vec location, Vec size, boolean filled,
-    // CColor color) {
-    // rect((location.x - size.x / 2), (location.y - size.y / 2), size.x, size.y,
-    // filled, color);
-    // }
-
-    // public static void rectCentered(float x, float y, Vec size, boolean filled,
-    // CColor color) {
-    // x -= size.x / 2;
-    // y -= size.y / 2;
-    // rect(x, y, size.x, size.y, filled, color);
-    // }
-
-    // public static void rectCentered(Vec location, float width, float height,
-    // boolean filled, CColor color) {
-    // rect((location.x - width / 2), (location.y - height / 2), width, height,
-    // filled, color);
-    // }
-
-    // public static void rectCentered(float x, float y, float width, float height,
-    // boolean filled) {
-    // x -= width / 2;
-    // y -= height / 2;
-    // rect(x, y, width, height, filled, null);
-    // }
-
-    // public static void rectCentered(Vec location, Vec size, boolean filled) {
-    // rect((location.x - size.x / 2), (location.y - size.y / 2), size, filled,
-    // null);
-    // }
-
-    // public static void rectCentered(float x, float y, Vec size, boolean filled) {
-    // x -= size.x / 2;
-    // y -= size.y / 2;
-    // rect(x, y, size.x, size.y, filled);
-    // }
-
-    // public static void rectCentered(Vec location, float width, float height,
-    // boolean filled) {
-    // rect(location.x - width / 2, location.y - height / 2, width, height, filled);
-    // }
-
-    // public static void rectCentered(float x, float y, float width, float height,
-    // CColor color) {
-    // x -= width / 2;
-    // y -= height / 2;
-    // rect(x, y, width, height, true, color);
-    // }
-
-    // public static void rectCentered(Vec location, Vec size, CColor color) {
-    // rect((location.x - size.x / 2), (location.y - size.y / 2), size, true,
+    // RenderObject renderObject = new FilledRenderObject(pos.x + size.x / 2, pos.y
+    // + size.y / 2, size.x, size.y,
+    // rotation,
     // color);
+    // Renderer.add(renderObject);
+    // return renderObject;
     // }
 
-    // public static void rectCentered(float x, float y, Vec size, CColor color) {
-    // x -= size.x / 2;
-    // y -= size.y / 2;
-    // rect(x, y, size.x, size.y, color);
-    // }
-
-    // public static void rectCentered(Vec location, float width, float height,
+    // public static RenderObject rect(float x, float y, Vec size, float rotation,
     // CColor color) {
-    // rect(location.x - width / 2, location.y - height / 2, width, height, color);
+    // RenderObject renderObject = new FilledRenderObject(x + size.x / 2, y + size.y
+    // / 2, size.x, size.y, rotation,
+    // color);
+    // Renderer.add(renderObject);
+    // return renderObject;
     // }
 
-    // public static void rectCentered(float x, float y, float width, float height)
-    // {
-    // x -= width / 2;
-    // y -= height / 2;
-    // rect(x, y, width, height, true, null);
+    // public static RenderObject rect(Vec pos, float width, float height, float
+    // rotation, CColor color) {
+    // RenderObject renderObject = new FilledRenderObject(pos.x + width / 2, pos.y +
+    // height / 2, width, height,
+    // rotation,
+    // color);
+    // Renderer.add(renderObject);
+    // return renderObject;
     // }
 
-    // public static void rectCentered(Vec location, Vec size) {
-    // rect((location.x - size.x / 2), (location.y - size.y / 2), size, true, null);
+    // public static RenderObject rect(float x, float y, float width, float height,
+    // float rotation, CColor color) {
+    // RenderObject renderObject = new FilledRenderObject(x + width / 2, y + height
+    // / 2, width, height, rotation,
+    // color);
+    // Renderer.add(renderObject);
+    // return renderObject;
     // }
 
-    // public static void rectCentered(float x, float y, Vec size) {
-    // x -= size.x / 2;
-    // y -= size.y / 2;
-    // rect(x, y, size.x, size.y);
+    // public static RenderObject rectOutlined(Vec pos, Vec size, float rotation,
+    // CColor color) {
+    // RenderObject renderObject = new OutlinedRenderObject(pos.x + size.x / 2,
+    // pos.y + size.y / 2, size.x, size.y,
+    // rotation,
+    // color);
+    // Renderer.add(renderObject);
+    // return renderObject;
     // }
 
-    // public static void rectCentered(Vec location, float width, float height) {
-    // rect(location.x - width / 2, location.y - height / 2, width, height);
+    // public static RenderObject rectOutlined(float x, float y, Vec size, float
+    // rotation, CColor color) {
+    // RenderObject renderObject = new OutlinedRenderObject(x + size.x / 2, y +
+    // size.y / 2, size.x, size.y, rotation,
+    // color);
+    // Renderer.add(renderObject);
+    // return renderObject;
     // }
 
-    public static void polygonOld(float x, float y, float sideLength, float amountOfSides, boolean filled,
+    // public static RenderObject rectOutlined(Vec pos, float width, float height,
+    // float rotation, CColor color) {
+    // RenderObject renderObject = new OutlinedRenderObject(pos.x + width / 2, pos.y
+    // + height / 2, width, height,
+    // rotation,
+    // color);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectOutlined(float x, float y, float width, float
+    // height, float rotation, CColor color) {
+    // RenderObject renderObject = new OutlinedRenderObject(x + width / 2, y +
+    // height / 2, width, height, rotation,
+    // color);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rect(Vec pos, Vec size, float rotation) {
+    // RenderObject renderObject = new OutlinedRenderObject(pos.x + size.x / 2,
+    // pos.y + size.y / 2, size.x, size.y,
+    // rotation,
+    // CColor.WHITE);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rect(float x, float y, Vec size, float rotation) {
+    // RenderObject renderObject = new OutlinedRenderObject(x + size.x / 2, y +
+    // size.y / 2, size.x, size.y, rotation,
+    // CColor.WHITE);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rect(Vec pos, float width, float height, float
+    // rotation) {
+    // RenderObject renderObject = new OutlinedRenderObject(pos.x + width / 2, pos.y
+    // + height / 2, width, height,
+    // rotation,
+    // CColor.WHITE);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rect(float x, float y, float width, float height,
+    // float rotation) {
+    // RenderObject renderObject = new OutlinedRenderObject(x + width / 2, y +
+    // height / 2, width, height, rotation,
+    // CColor.WHITE);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectOutlined(Vec pos, Vec size, float rotation) {
+    // RenderObject renderObject = new OutlinedRenderObject(pos.x + size.x / 2,
+    // pos.y + size.y / 2, size.x, size.y,
+    // rotation,
+    // CColor.WHITE);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectOutlined(float x, float y, Vec size, float
+    // rotation) {
+    // RenderObject renderObject = new OutlinedRenderObject(x + size.x / 2, y +
+    // size.y / 2, size.x, size.y, rotation,
+    // CColor.WHITE);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectOutlined(Vec pos, float width, float height,
+    // float rotation) {
+    // RenderObject renderObject = new OutlinedRenderObject(pos.x + width / 2, pos.y
+    // + height / 2, width, height,
+    // rotation,
+    // CColor.WHITE);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectOutlined(float x, float y, float width, float
+    // height, float rotation) {
+    // RenderObject renderObject = new OutlinedRenderObject(x + width / 2, y +
+    // height / 2, width, height, rotation,
+    // CColor.WHITE);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rect(Vec pos, Vec size, CColor color) {
+    // RenderObject renderObject = new FilledRenderObject(pos.x + size.x / 2, pos.y
+    // + size.y / 2, size.x, size.y, 0,
+    // color);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rect(float x, float y, Vec size, CColor color) {
+    // RenderObject renderObject = new FilledRenderObject(x + size.x / 2, y + size.y
+    // / 2, size.x, size.y, 0, color);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rect(Vec pos, float width, float height, CColor
+    // color) {
+    // RenderObject renderObject = new FilledRenderObject(pos.x + width / 2, pos.y +
+    // height / 2, width, height, 0,
+    // color);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rect(float x, float y, float width, float height,
+    // CColor color) {
+    // RenderObject renderObject = new FilledRenderObject(x + width / 2, y + height
+    // / 2, width, height, 0, color);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectOutlined(Vec pos, Vec size, CColor color) {
+    // RenderObject renderObject = new OutlinedRenderObject(pos.x + size.x / 2,
+    // pos.y + size.y / 2, size.x, size.y, 0,
+    // color);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectOutlined(float x, float y, Vec size, CColor
+    // color) {
+    // RenderObject renderObject = new OutlinedRenderObject(x + size.x / 2, y +
+    // size.y / 2, size.x, size.y, 0, color);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectOutlined(Vec pos, float width, float height,
+    // CColor color) {
+    // RenderObject renderObject = new OutlinedRenderObject(pos.x + width / 2, pos.y
+    // + height / 2, width, height, 0,
+    // color);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectOutlined(float x, float y, float width, float
+    // height, CColor color) {
+    // RenderObject renderObject = new OutlinedRenderObject(x - width / 2, y -
+    // height / 2, width, height, 0, color);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject polygon(Vec pos, float len, float rotation, CColor
+    // color, int amountOfSides) {
+    // len /= 2;
+    // RenderObject renderObject = new PolygonRenderObject(pos.x, pos.y, len,
+    // rotation, color, amountOfSides);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject polygon(float x, float y, float len, float
+    // rotation, CColor color, int amountOfSides) {
+    // len /= 2;
+    // RenderObject renderObject = new PolygonRenderObject(x, y, len, rotation,
+    // color, amountOfSides);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject polygonOutlined(Vec pos, float len, float
+    // rotation, CColor color, int amountOfSides) {
+    // len /= 2;
+    // RenderObject renderObject = new PolygonRenderObject(pos.x, pos.y, len,
+    // rotation, color, amountOfSides);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject polygonOutlined(float x, float y, float len, float
+    // rotation, CColor color,
+    // int amountOfSides) {
+    // len /= 2;
+    // RenderObject renderObject = new PolygonRenderObject(x, y, len, rotation,
+    // color, amountOfSides);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject polygon(Vec pos, float len, float rotation, int
+    // amountOfSides) {
+    // len /= 2;
+    // RenderObject renderObject = new PolygonRenderObject(pos.x, pos.y, len,
+    // rotation, CColor.WHITE,
+    // amountOfSides);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject polygon(float x, float y, float len, float
+    // rotation, int amountOfSides) {
+    // len /= 2;
+    // RenderObject renderObject = new PolygonRenderObject(x, y, len, rotation,
+    // CColor.WHITE, amountOfSides);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject polygonOutlined(Vec pos, float len, float
+    // rotation, int amountOfSides) {
+    // len /= 2;
+    // RenderObject renderObject = new OutlinedPolygonRenderObject(pos.x, pos.y,
+    // len, rotation, CColor.WHITE,
+    // amountOfSides);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject polygonOutlined(float x, float y, float len, float
+    // rotation, int amountOfSides) {
+    // len /= 2;
+    // RenderObject renderObject = new OutlinedPolygonRenderObject(x, y, len,
+    // rotation, CColor.WHITE, amountOfSides);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject polygon(Vec pos, float len, CColor color, int
+    // amountOfSides) {
+    // len /= 2;
+    // RenderObject renderObject = new PolygonRenderObject(pos.x, pos.y, len, 0,
+    // color, amountOfSides);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject polygon(float x, float y, float len, CColor color,
+    // int amountOfSides) {
+    // len /= 2;
+    // RenderObject renderObject = new PolygonRenderObject(x, y, len, 0, color,
+    // amountOfSides);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject polygonOutlined(float x, float y, float len,
+    // CColor color, int amountOfSides) {
+    // len /= 2;
+    // RenderObject renderObject = new OutlinedPolygonRenderObject(x, y, len, 0,
+    // color, amountOfSides);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject polygonOutlined(Vec pos, float len, CColor color,
+    // int amountOfSides) {
+    // len /= 2;
+    // RenderObject renderObject = new OutlinedPolygonRenderObject(pos.x, pos.y,
+    // len, 0, color, amountOfSides);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectCentered(Vec pos, Vec size, float rotation,
+    // CColor color) {
+    // RenderObject renderObject = new FilledRenderObject(pos.x, pos.y, size.x,
+    // size.y, rotation, color);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectCentered(float x, float y, Vec size, float
+    // rotation, CColor color) {
+    // RenderObject renderObject = new FilledRenderObject(x, y, size.x, size.y,
+    // rotation, color);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectCentered(Vec pos, float width, float height,
+    // float rotation, CColor color) {
+    // RenderObject renderObject = new FilledRenderObject(pos.x, pos.y, width,
+    // height, rotation, color);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectCentered(float x, float y, float width, float
+    // height, float rotation, CColor color) {
+    // RenderObject renderObject = new FilledRenderObject(x, y, width, height,
+    // rotation, color);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectOutlinedCentered(Vec pos, Vec size, float
+    // rotation, CColor color) {
+    // RenderObject renderObject = new OutlinedRenderObject(pos.x, pos.y, size.x,
+    // size.y, rotation, color);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectOutlinedCentered(float x, float y, Vec size,
+    // float rotation, CColor color) {
+    // RenderObject renderObject = new OutlinedRenderObject(x, y, size.x, size.y,
+    // rotation, color);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectOutlinedCentered(Vec pos, float width, float
+    // height, float rotation, CColor color) {
+    // RenderObject renderObject = new OutlinedRenderObject(pos.x, pos.y, width,
+    // height, rotation, color);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectOutlinedCentered(float x, float y, float
+    // width, float height, float rotation,
+    // CColor color) {
+    // RenderObject renderObject = new OutlinedRenderObject(x, y, width, height,
+    // rotation, color);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectCentered(Vec pos, Vec size, float rotation) {
+    // RenderObject renderObject = new FilledRenderObject(pos.x, pos.y, size.x,
+    // size.y, rotation, CColor.WHITE);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectCentered(float x, float y, Vec size, float
+    // rotation) {
+    // RenderObject renderObject = new FilledRenderObject(x, y, size.x, size.y,
+    // rotation, CColor.WHITE);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectCentered(Vec pos, float width, float height,
+    // float rotation) {
+    // RenderObject renderObject = new FilledRenderObject(pos.x, pos.y, width,
+    // height, rotation, CColor.WHITE);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectCentered(float x, float y, float width, float
+    // height, float rotation) {
+    // RenderObject renderObject = new FilledRenderObject(x, y, width, height,
+    // rotation, CColor.WHITE);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectOutlinedCentered(Vec pos, Vec size, float
+    // rotation) {
+    // RenderObject renderObject = new OutlinedRenderObject(pos.x, pos.y, size.x,
+    // size.y, rotation, CColor.WHITE);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectOutlinedCentered(float x, float y, Vec size,
+    // float rotation) {
+    // RenderObject renderObject = new OutlinedRenderObject(x, y, size.x, size.y,
+    // rotation, CColor.WHITE);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectOutlinedCentered(Vec pos, float width, float
+    // height, float rotation) {
+    // RenderObject renderObject = new OutlinedRenderObject(pos.x, pos.y, width,
+    // height, rotation, CColor.WHITE);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectOutlinedCentered(float x, float y, float
+    // width, float height, float rotation) {
+    // RenderObject renderObject = new OutlinedRenderObject(x, y, width, height,
+    // rotation, CColor.WHITE);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectCentered(Vec pos, Vec size, CColor color) {
+    // RenderObject renderObject = new FilledRenderObject(pos.x, pos.y, size.x,
+    // size.y, 0, color);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectCentered(float x, float y, Vec size, CColor
+    // color) {
+    // RenderObject renderObject = new FilledRenderObject(x, y, size.x, size.y, 0,
+    // color);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectCentered(Vec pos, float width, float height,
+    // CColor color) {
+    // RenderObject renderObject = new FilledRenderObject(pos.x, pos.y, width,
+    // height, 0, color);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectCentered(float x, float y, float width, float
+    // height, CColor color) {
+    // RenderObject renderObject = new FilledRenderObject(x, y, width, height, 0,
+    // color);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectOutlinedCentered(Vec pos, Vec size, CColor
+    // color) {
+    // RenderObject renderObject = new OutlinedRenderObject(pos.x, pos.y, size.x,
+    // size.y, 0, color);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectOutlinedCentered(float x, float y, Vec size,
+    // CColor color) {
+    // RenderObject renderObject = new OutlinedRenderObject(x, y, size.x, size.y, 0,
+    // color);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectOutlinedCentered(Vec pos, float width, float
+    // height, CColor color) {
+    // RenderObject renderObject = new OutlinedRenderObject(pos.x, pos.y, width,
+    // height, 0, color);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject rectOutlinedCentered(float x, float y, float
+    // width, float height, CColor color) {
+    // RenderObject renderObject = new OutlinedRenderObject(x, y, width, height, 0,
+    // color);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject polygonCentered(Vec pos, float len, float
+    // rotation, CColor color, int amountOfSides) {
+    // len /= 2;
+    // RenderObject renderObject = new PolygonRenderObject(pos.x, pos.y, len,
+    // rotation, color, amountOfSides);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject polygonCentered(float x, float y, float len, float
+    // rotation, CColor color,
+    // int amountOfSides) {
+    // len /= 2;
+    // RenderObject renderObject = new PolygonRenderObject(x, y, len, rotation,
+    // color, amountOfSides);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject polygonOutlinedCentered(Vec pos, float len, float
+    // rotation, CColor color,
+    // int amountOfSides) {
+    // len /= 2;
+    // RenderObject renderObject = new OutlinedPolygonRenderObject(pos.x, pos.y,
+    // len, rotation, color, amountOfSides);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject polygonOutlinedCentered(float x, float y, float
+    // len, float rotation, CColor color,
+    // int amountOfSides) {
+    // len /= 2;
+    // RenderObject renderObject = new OutlinedPolygonRenderObject(x, y, len,
+    // rotation, color, amountOfSides);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject polygonCentered(Vec pos, float len, float
+    // rotation, int amountOfSides) {
+    // len /= 2;
+    // RenderObject renderObject = new PolygonRenderObject(pos.x, pos.y, len,
+    // rotation, CColor.WHITE,
+    // amountOfSides);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject polygonCentered(float x, float y, float len, float
+    // rotation, int amountOfSides) {
+    // len /= 2;
+    // RenderObject renderObject = new PolygonRenderObject(x, y, len, rotation,
+    // CColor.WHITE, amountOfSides);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject polygonOutlinedCentered(Vec pos, float len, float
+    // rotation, int amountOfSides) {
+    // len /= 2;
+    // RenderObject renderObject = new OutlinedPolygonRenderObject(pos.x, pos.y,
+    // len, rotation, CColor.WHITE,
+    // amountOfSides);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject polygonOutlinedCentered(float x, float y, float
+    // len, float rotation, int amountOfSides) {
+    // len /= 2;
+    // RenderObject renderObject = new OutlinedPolygonRenderObject(x, y, len,
+    // rotation, CColor.WHITE, amountOfSides);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject polygonCentered(Vec pos, float len, CColor color,
+    // int amountOfSides) {
+    // len /= 2;
+    // RenderObject renderObject = new PolygonRenderObject(pos.x, pos.y, len, 0,
+    // color, amountOfSides);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject polygonCentered(float x, float y, float len,
+    // CColor color, int amountOfSides) {
+    // len /= 2;
+    // RenderObject renderObject = new PolygonRenderObject(x, y, len, 0, color,
+    // amountOfSides);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject polygonOutlinedCentered(float x, float y, float
+    // len, CColor color, int amountOfSides) {
+    // len /= 2;
+    // RenderObject renderObject = new OutlinedPolygonRenderObject(x, y, len, 0,
+    // color, amountOfSides);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // public static RenderObject polygonOutlinedCentered(Vec pos, float len, CColor
+    // color, int amountOfSides) {
+    // len /= 2;
+    // RenderObject renderObject = new OutlinedPolygonRenderObject(pos.x, pos.y,
+    // len, 0, color, amountOfSides);
+    // Renderer.add(renderObject);
+    // return renderObject;
+    // }
+
+    // rect
+
+    public static void rect(float x, float y, float width, float height, float rotation, boolean filled,
+            float lineWidth,
             CColor color) {
-        sideLength /= 2;
         start();
         if (color != null)
             color(color);
         else
             color(CColor.WHITE);
-        begin(filled ? GL11.GL_TRIANGLE_FAN : GL11.GL_LINE_LOOP);
+        if (!filled) {
+            lineWidth(lineWidth);
+        }
+
+        Vec[] vertices = new Vec[] {
+                new Vec(x - width / 2, y - height / 2),
+                new Vec(x + width / 2, y - height / 2),
+                new Vec(x + width / 2, y + height / 2),
+                new Vec(x - width / 2, y + height / 2)
+        };
+
+        begin(filled ? GL_QUADS : GL_LINE_LOOP);
         {
-            for (float i = 0; i <= amountOfSides; i++) {
-                float angle = i * CMath.TAU / amountOfSides;
-                vertex(x + (sideLength * (float) Math.cos(angle)) + sideLength,
-                        y + (sideLength * (float) Math.sin(angle)) + sideLength);
+            for (Vec v : vertices) {
+                if (rotation != 0) {
+                    CMath.rotate(v, new Vec(x, y), rotation);
+                }
+                vertex(v.x, v.y);
             }
         }
         end();
         stop();
     }
 
-    // public static void polygon(Vec location, float sideLength, int amountOfSides,
-    // boolean filled, CColor color) {
-    // polygon(location.x, location.y, sideLength, amountOfSides, filled, color);
-    // }
-
-    // public static void polygon(float x, float y, float sideLength, int
-    // amountOfSides, boolean filled) {
-    // polygon(x, y, sideLength, amountOfSides, filled, null);
-    // }
-
-    // public static void polygon(Vec location, float sideLength, int amountOfSides,
-    // boolean filled) {
-    // polygon(location, sideLength, amountOfSides, filled, null);
-    // }
-
-    // public static void polygon(float x, float y, float sideLength, int
-    // amountOfSides, CColor color) {
-    // polygon(x, y, sideLength, amountOfSides, true, color);
-    // }
-
-    // public static void polygon(Vec location, float sideLength, int amountOfSides,
-    // CColor color) {
-    // polygon(location, sideLength, amountOfSides, true, color);
-    // }
-
-    // public static void polygon(float x, float y, float sideLength, int
-    // amountOfSides) {
-    // polygon(x, y, sideLength, amountOfSides, true, null);
-    // }
-
-    // public static void polygon(Vec location, float sideLength, int amountOfSides)
-    // {
-    // polygon(location, sideLength, amountOfSides, true, null);
-    // }
-
-    // public static void polygonCentered(float x, float y, float sideLength, int
-    // amountOfSides, boolean filled,
-    // CColor color) {
-    // x -= sideLength / 2;
-    // y -= sideLength / 2;
-    // polygon(x, y, sideLength, amountOfSides, filled, color);
-    // }
-
-    // public static void polygonCentered(Vec location, float sideLength, int
-    // amountOfSides, boolean filled,
-    // CColor color) {
-    // polygon(location.x - sideLength / 2, location.y - sideLength / 2, sideLength,
-    // amountOfSides, filled, color);
-    // }
-
-    // public static void polygonCentered(float x, float y, float sideLength, int
-    // amountOfSides, boolean filled) {
-    // x -= sideLength / 2;
-    // y -= sideLength / 2;
-    // polygon(x, y, sideLength, amountOfSides, filled, null);
-    // }
-
-    // public static void polygonCentered(Vec location, float sideLength, int
-    // amountOfSides, boolean filled) {
-    // polygon((location.x - sideLength / 2), (location.y - sideLength / 2),
-    // sideLength, amountOfSides, filled, null);
-    // }
-
-    // public static void polygonCentered(float x, float y, float sideLength, int
-    // amountOfSides, CColor color) {
-    // x -= sideLength / 2;
-    // y -= sideLength / 2;
-    // polygon(x, y, sideLength, amountOfSides, true, color);
-    // }
-
-    // public static void polygonCentered(Vec location, float sideLength, int
-    // amountOfSides, CColor color) {
-    // polygon((location.x - sideLength / 2), (location.y - sideLength / 2),
-    // sideLength, amountOfSides, true, color);
-    // }
-
-    // public static void polygonCentered(float x, float y, float sideLength, int
-    // amountOfSides) {
-    // x -= sideLength / 2;
-    // y -= sideLength / 2;
-    // polygon(x, y, sideLength, amountOfSides, true, null);
-    // }
-
-    // public static void polygonCentered(Vec location, float sideLength, int
-    // amountOfSides) {
-    // polygon((location.x - sideLength / 2), (location.y - sideLength / 2),
-    // sideLength, amountOfSides, true, null);
-    // }
-
-    // public static void circle(float x, float y, float radius, boolean filled,
-    // CColor color) {
-    // polygon(x, y, radius, 360, filled, color);
-    // }
-
-    // public static void circle(Vec location, float radius, boolean filled, CColor
-    // color) {
-    // polygon(location, radius, 360, filled, color);
-    // }
-
-    // public static void circle(float x, float y, float radius, boolean filled) {
-    // polygon(x, y, radius, 360, filled);
-    // }
-
-    // public static void circle(Vec location, float radius, boolean filled) {
-    // polygon(location, radius, 360, filled);
-    // }
-
-    // public static void circle(float x, float y, float radius, CColor color) {
-    // polygon(x, y, radius, 360, color);
-    // }
-
-    // public static void circle(Vec location, float radius, CColor color) {
-    // polygon(location, radius, 360, color);
-    // }
-
-    // public static void circle(float x, float y, float radius) {
-    // polygon(x, y, radius, 360);
-    // }
-
-    // public static void circle(Vec location, float radius) {
-    // polygon(location, radius, 360);
-    // }
-
-    public static void circleCentered(float x, float y, float radius, boolean filled, CColor color) {
-        x -= radius / 2;
-        y -= radius / 2;
-        polygonOld(x, y, radius, 360, filled, color);
+    public static void rect(float x, float y, float width, float height, float rotation, CColor color) {
+        rect(x, y, width, height, rotation, true, 0, color);
     }
 
-    // public static void circleCentered(Vec location, float radius, boolean filled,
-    // CColor color) {
-    // polygon((location.x - radius / 2), (location.y - radius / 2), radius, 360,
-    // filled, color);
-    // }
+    public static void rectOutlined(float x, float y, float width, float height, float rotation, float lineWidth,
+            CColor color) {
+        rect(x, y, width, height, rotation, false, lineWidth, color);
+    }
 
-    // public static void circleCentered(float x, float y, float radius, boolean
-    // filled) {
-    // x -= radius / 2;
-    // y -= radius / 2;
-    // polygon(x, y, radius, 360, filled);
-    // }
+    public static void rect(float x, float y, float width, float height, CColor color) {
+        rect(x, y, width, height, 0, true, 0, color);
+    }
 
-    // public static void circleCentered(Vec location, float radius, boolean filled)
-    // {
-    // polygon((location.x - radius / 2), (location.y - radius / 2), radius, 360,
-    // filled);
-    // }
+    public static void rectOutlined(float x, float y, float width, float height, float lineWidth,
+            CColor color) {
+        rect(x, y, width, height, 0, false, lineWidth, color);
+    }
 
-    // public static void circleCentered(float x, float y, float radius, CColor
-    // color) {
-    // x -= radius / 2;
-    // y -= radius / 2;
-    // polygon(x, y, radius, 360, color);
-    // }
+    public static void rect(Vec pos, float width, float height, float rotation, CColor color) {
+        rect(pos.x, pos.y, width, height, rotation, color);
+    }
 
-    // public static void circleCentered(Vec location, float radius, CColor color) {
-    // polygon((location.x - radius / 2), (location.y - radius / 2), radius, 360,
-    // color);
-    // }
+    public static void rectOutlined(Vec pos, float width, float height, float rotation, float lineWidth, CColor color) {
+        rectOutlined(pos.x, pos.y, width, height, rotation, lineWidth, color);
+    }
 
-    // public static void circleCentered(float x, float y, float radius) {
-    // x -= radius / 2;
-    // y -= radius / 2;
-    // polygon(x, y, radius, 360);
-    // }
+    public static void rect(float x, float y, Vec size, float rotation, CColor color) {
+        rect(x, y, size.x, size.y, rotation, color);
+    }
 
-    // public static void circleCentered(Vec location, float radius) {
-    // polygon((location.x - radius / 2), (location.y - radius / 2), radius, 360);
-    // }
+    public static void rectOutlined(float x, float y, Vec size, float rotation, float lineWidth, CColor color) {
+        rectOutlined(x, y, size.x, size.y, rotation, lineWidth, color);
+    }
 
-    // public static void triangle(float x, float y, float sideLength, boolean
-    // filled, CColor color) {
-    // polygon(x, y, sideLength, 3, filled, color);
-    // }
+    public static void rect(Vec pos, Vec size, float rotation, CColor color) {
+        rect(pos.x, pos.y, size.x, size.y, rotation, color);
+    }
 
-    // public static void triangle(Vec location, float sideLength, boolean filled,
-    // CColor color) {
-    // polygon(location, sideLength, 3, filled, color);
-    // }
+    public static void rectOutlined(Vec pos, Vec size, float lineWidth, float rotation, CColor color) {
+        rectOutlined(pos.x, pos.y, size.x, size.y, rotation, lineWidth, color);
+    }
 
-    // public static void triangle(float x, float y, float sideLength, boolean
-    // filled) {
-    // polygon(x, y, sideLength, 3, filled);
-    // }
+    public static void rect(Vec pos, float width, float height, float rotation) {
+        rect(pos.x, pos.y, width, height, rotation, CColor.WHITE);
+    }
 
-    // public static void triangle(Vec location, float sideLength, boolean filled) {
-    // polygon(location, sideLength, 3, filled);
-    // }
+    public static void rectOutlined(Vec pos, float width, float height, float rotation, float lineWidth) {
+        rectOutlined(pos.x, pos.y, width, height, rotation, lineWidth, CColor.WHITE);
+    }
 
-    // public static void triangle(float x, float y, float sideLength, CColor color)
-    // {
-    // polygon(x, y, sideLength, 3, color);
-    // }
+    public static void rect(float x, float y, Vec size, float rotation) {
+        rect(x, y, size.x, size.y, rotation, CColor.WHITE);
+    }
 
-    // public static void triangle(Vec location, float sideLength, CColor color) {
-    // polygon(location, sideLength, 3, color);
-    // }
+    public static void rectOutlined(float x, float y, Vec size, float rotation, float lineWidth) {
+        rectOutlined(x, y, size.x, size.y, rotation, lineWidth, CColor.WHITE);
+    }
 
-    // public static void triangle(float x, float y, float sideLength) {
-    // polygon(x, y, sideLength, 3);
-    // }
+    public static void rect(Vec pos, Vec size, float rotation) {
+        rect(pos.x, pos.y, size.x, size.y, rotation, CColor.WHITE);
+    }
 
-    // public static void triangle(Vec location, float sideLength) {
-    // polygon(location, sideLength, 3);
-    // }
+    public static void rectOutlined(Vec pos, Vec size, float rotation, float lineWidth) {
+        rectOutlined(pos.x, pos.y, size.x, size.y, rotation, lineWidth, CColor.WHITE);
+    }
 
-    // public static void triangleCentered(float x, float y, float sideLength,
-    // boolean filled, CColor color) {
-    // x -= sideLength / 2;
-    // y -= sideLength / 2;
-    // polygon(x, y, sideLength, 3, filled, color);
-    // }
+    public static void rect(Vec pos, float width, float height, CColor color) {
+        rect(pos.x, pos.y, width, height, color);
+    }
 
-    // public static void triangleCentered(Vec location, float sideLength, boolean
-    // filled, CColor color) {
-    // polygon((location.x - sideLength / 2), (location.y - sideLength / 2),
-    // sideLength, 3, filled, color);
-    // }
+    public static void rectOutlined(Vec pos, float width, float height, float lineWidth, CColor color) {
+        rectOutlined(pos.x, pos.y, width, height, lineWidth, color);
+    }
 
-    // public static void triangleCentered(float x, float y, float sideLength,
-    // boolean filled) {
-    // x -= sideLength / 2;
-    // y -= sideLength / 2;
-    // polygon(x, y, sideLength, 3, filled);
-    // }
+    public static void rect(float x, float y, Vec size, CColor color) {
+        rect(x, y, size.x, size.y, color);
+    }
 
-    // public static void triangleCentered(Vec location, float sideLength, boolean
-    // filled) {
-    // polygon((location.x - sideLength / 2), (location.y - sideLength / 2),
-    // sideLength, 3, filled);
-    // }
+    public static void rectOutlined(float x, float y, Vec size, float lineWidth, CColor color) {
+        rectOutlined(x, y, size.x, size.y, lineWidth, color);
+    }
 
-    // public static void triangleCentered(float x, float y, float sideLength,
-    // CColor color) {
-    // x -= sideLength / 2;
-    // y -= sideLength / 2;
-    // polygon(x, y, sideLength, 3, color);
-    // }
+    public static void rect(Vec pos, Vec size, CColor color) {
+        rect(pos.x, pos.y, size.x, size.y, color);
+    }
 
-    // public static void triangleCentered(Vec location, float sideLength, CColor
-    // color) {
-    // polygon((location.x - sideLength / 2), (location.y - sideLength / 2),
-    // sideLength, 3, color);
-    // }
+    public static void rectOutlined(Vec pos, Vec size, float lineWidth, CColor color) {
+        rectOutlined(pos.x, pos.y, size.x, size.y, lineWidth, color);
+    }
 
-    // public static void triangleCentered(float x, float y, float sideLength) {
-    // x -= sideLength / 2;
-    // y -= sideLength / 2;
-    // polygon(x, y, sideLength, 3);
-    // }
+    public static void rect(Vec pos, float width, float height) {
+        rect(pos.x, pos.y, width, height, CColor.WHITE);
+    }
 
-    // public static void triangleCentered(Vec location, float sideLength) {
-    // polygon((location.x - sideLength / 2), (location.y - sideLength / 2),
-    // sideLength, 3);
-    // }
+    public static void rectOutlined(Vec pos, float width, float height, float lineWidth) {
+        rectOutlined(pos.x, pos.y, width, height, lineWidth, CColor.WHITE);
+    }
 
-    // public static void line(float firstX, float firstY, float secondX, float
-    // secondY, int lineWidth, CColor color) {
-    // start();
-    // if (color != null)
-    // color(color);
-    // else
-    // color(CColor.WHITE);
-    // lineWidth(lineWidth <= 0 ? 1 : lineWidth);
-    // begin(GL_LINES);
-    // {
-    // vertex(firstX, firstY);
-    // vertex(secondX, secondY);
-    // }
-    // end();
-    // stop();
-    // }
+    public static void rect(float x, float y, Vec size) {
+        rect(x, y, size.x, size.y, CColor.WHITE);
+    }
 
-    // public static void line(Vec firstLocation, Vec secondLocation, int lineWidth,
-    // CColor color) {
-    // line(firstLocation.x, firstLocation.y, secondLocation.x, secondLocation.y,
-    // lineWidth, color);
-    // }
+    public static void rectOutlined(float x, float y, Vec size, float lineWidth) {
+        rectOutlined(x, y, size.x, size.y, lineWidth, CColor.WHITE);
+    }
 
-    // public static void line(float firstX, float firstY, float secondX, float
-    // secondY, int lineWidth) {
-    // line(firstX, firstY, secondX, secondY, lineWidth, null);
-    // }
+    public static void rect(Vec pos, Vec size) {
+        rect(pos.x, pos.y, size.x, size.y, CColor.WHITE);
+    }
 
-    // public static void line(Vec firstLocation, Vec secondLocation, int lineWidth)
-    // {
-    // line(firstLocation.x, firstLocation.y, secondLocation.x, secondLocation.y,
-    // lineWidth, null);
-    // }
+    public static void rectOutlined(Vec pos, Vec size, float lineWidth) {
+        rectOutlined(pos.x, pos.y, size.x, size.y, lineWidth, CColor.WHITE);
+    }
 
-    // public static void line(float firstX, float firstY, float secondX, float
-    // secondY, CColor color) {
-    // line(firstX, firstY, secondX, secondY, 0, color);
-    // }
+    // polygon
 
-    // public static void line(Vec firstLocation, Vec secondLocation, CColor color)
-    // {
-    // line(firstLocation.x, firstLocation.y, secondLocation.x, secondLocation.y, 0,
-    // color);
-    // }
+    public static void polygon(float x, float y, float sideLength, int amountOfSides, boolean filled, float lineWidth,
+            CColor color) {
+        sideLength /= 2;
+        int increment = 360 / amountOfSides;
+        int currentAngle = 0;
 
-    // public static void line(float firstX, float firstY, float secondX, float
-    // secondY) {
-    // line(firstX, firstY, secondX, secondY, 0, null);
-    // }
+        start();
+        if (!filled) {
+            lineWidth(lineWidth);
+        }
+        Render.color(color);
+        begin(filled ? GL_TRIANGLE_FAN : GL_LINE_LOOP);
+        for (int i = 0; i < amountOfSides; i++) {
+            Vec tmp = new Vec(0, sideLength);
+            CMath.rotate(tmp, new Vec(), currentAngle);
 
-    // public static void line(Vec firstLocation, Vec secondLocation) {
-    // line(firstLocation.x, firstLocation.y, secondLocation.x, secondLocation.y, 0,
-    // null);
-    // }
+            vertex(new Vec(tmp.clone()).add(x, y));
+            currentAngle += increment;
+        }
+        end();
+        Render.color(CColor.WHITE);
+        stop();
+    }
+
+    public static void polygon(float x, float y, float sideLength, int amountOfSides, CColor color) {
+        polygon(x, y, sideLength, amountOfSides, true, 0, color);
+    }
+
+    public static void polygonOutlined(float x, float y, float sideLength, int amountOfSides, float lineWidth,
+            CColor color) {
+        polygon(x, y, sideLength, amountOfSides, false, lineWidth, color);
+    }
+
+    public static void polygon(Vec pos, float sideLength, int amountOfSides, CColor color) {
+        polygon(pos.x, pos.y, sideLength, amountOfSides, color);
+    }
+
+    public static void polygonOutlined(Vec pos, float sideLength, int amountOfSides, float lineWidth,
+            CColor color) {
+        polygonOutlined(pos.x, pos.y, sideLength, amountOfSides, lineWidth, color);
+    }
+
+    // circle
+
+    public static void circle(float x, float y, float radius, CColor color) {
+        polygon(x, y, radius, 180, true, 0, color);
+    }
+
+    public static void circleOutlined(float x, float y, float radius, float lineWidth, CColor color) {
+        polygon(x, y, radius, 180, false, lineWidth, color);
+    }
+
+    public static void circle(Vec pos, float radius, CColor color) {
+        circle(pos.x, pos.y, radius, color);
+    }
+
+    public static void circleOutlined(Vec pos, float radius, float lineWidth, CColor color) {
+        circleOutlined(pos.x, pos.y, radius, lineWidth, color);
+    }
+
+    public static void line(float firstX, float firstY, float secondX, float secondY, int lineWidth, CColor color) {
+        start();
+        if (color != null)
+            color(color);
+        else
+            color(CColor.WHITE);
+        lineWidth(lineWidth <= 0 ? 1 : lineWidth);
+        begin(GL_LINES);
+        {
+            vertex(firstX, firstY);
+            vertex(secondX, secondY);
+        }
+        end();
+        stop();
+    }
 
 }

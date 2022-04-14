@@ -4,10 +4,13 @@ import org.jbox2d.dynamics.BodyType;
 
 import de.kostari.cloud.core.scene.Scene;
 import de.kostari.cloud.core.window.Window;
+import de.kostari.cloud.utilities.color.CColor;
 import de.kostari.cloud.utilities.input.Input;
 import de.kostari.cloud.utilities.input.Keys;
 import de.kostari.cloud.utilities.math.Randoms;
-import de.kostari.cloud.utilities.render.Text;
+import de.kostari.cloud.utilities.render.Image;
+import de.kostari.cloud.utilities.render.Render;
+import de.kostari.cloud.utilities.render.text.Fonts;
 import de.kostari.demo.objects.Box;
 import de.kostari.demo.objects.Circle;
 
@@ -16,11 +19,13 @@ public class MainScene extends Scene {
     private Box ground;
     private Box box, box2;
 
+    private Image logo;
+
     public MainScene(Window window) {
         super(window);
 
         // Ground
-        this.ground = new Box(window, window.getWidth() / 2, 64, BodyType.STATIC, false, false);
+        this.ground = new Box(window, window.getWidth() * .75F, 32, BodyType.STATIC, false, false);
         ground.transform.position.set(window.getWidth() / 2, window.getHeight() - 32);
 
         // Spinning box
@@ -34,7 +39,7 @@ public class MainScene extends Scene {
         box2.transform.rotation = 5;
 
         // Spawn objects
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 10; i++) {
             spawnObject(Randoms.randomInteger(0, (int) window.getWidth()),
                     Randoms.randomInteger(0, 100));
         }
@@ -44,17 +49,25 @@ public class MainScene extends Scene {
 
         // Adjust the updates of the physics engine
         // higher physics updates = faster physics
-        getPhysicsEngine().setPhysicsUpdates(6);
-    }
+        // getPhysicsEngine().setPhysicsUpdates(1);
+        getPhysicsEngine().setPhysicsTimeStep(0.02F);
+        getPhysicsEngine().setPhysicsUpdates(4);
 
-    int count;
+        this.logo = new Image("logo.png");
+    }
 
     @Override
     public void draw(float delta) {
         // Draw info to the scene
-        Text.drawText("FPS: " + window.getFPS(), 5, 5, 32);
-        Text.drawText("Entities: " + getObjects().size(), 5, 40, 32);
-        Text.drawText("Count: " + count, 5, 80, 32);
+        Fonts.sans32.drawText("FPS: " + window.getFPS(), 6, 0);
+        Fonts.sans32.drawText("Entities: " + getObjects().size(), 6, 32);
+
+        // Render.startSmooth();
+        logo.drawImage(window.getWidth() - 100, -5, 100, 100);
+        // Render.stopSmooth();
+
+        Render.circleOutlined(Input.getMousePosition(), 100, 2, CColor.RED);
+        Render.circleOutlined(window.getHalfSize(), 100, 2, CColor.BLUE);
 
         super.draw(delta);
     }
@@ -63,7 +76,7 @@ public class MainScene extends Scene {
     public void update(float delta) {
         // Spawn objects when space is pressed
         if (Input.getKeyDown(Keys.KEY_SPACE)) {
-            for (int i = 0; i < 20; i++) {
+            for (int i = 0; i < 10; i++) {
                 spawnObject(Randoms.randomInteger(0, (int) window.getWidth()),
                         Randoms.randomInteger(0, 100));
             }
@@ -77,12 +90,12 @@ public class MainScene extends Scene {
 
         // Randomize the type of object
         if (Randoms.randomInteger(0, 10) == 5) {
-            Circle circle = new Circle(window, Randoms.randomInteger(16, 64),
+            Circle circle = new Circle(window, Randoms.randomInteger(16, 80),
                     BodyType.DYNAMIC);
             circle.transform.position.set(x, y);
             addObject(circle);
         } else {
-            Box box = new Box(window, Randoms.randomInteger(16, 64), Randoms.randomInteger(16, 64), BodyType.DYNAMIC,
+            Box box = new Box(window, Randoms.randomInteger(16, 80), Randoms.randomInteger(16, 80), BodyType.DYNAMIC,
                     false, false);
             box.transform.position.set(x, y);
             addObject(box);

@@ -30,11 +30,11 @@ public class BoxCollider extends Collider {
     }
 
     public Vec getLocalMin() {
-        return new Vec(getRigidbody().gameObject.transform.position).sub(this.halfSize);
+        return new Vec(gameObject.transform.position).sub(this.halfSize);
     }
 
     public Vec getLocalMax() {
-        return new Vec(getRigidbody().gameObject.transform.position).add(this.halfSize);
+        return new Vec(gameObject.transform.position).add(this.halfSize);
     }
 
     public Vec getSize() {
@@ -54,11 +54,11 @@ public class BoxCollider extends Collider {
                 new Vec(max.x, min.y), new Vec(max.x, max.y)
         };
 
-        if (getRigidbody().gameObject.transform.rotation != 0.0f) {
+        if (gameObject.transform.rotation != 0.0f) {
             for (Vec vert : vertices) {
                 // Rotates point(Vec) about center(Vec) by rotation(float in degrees)
-                CMath.rotate(vert, getRigidbody().gameObject.transform.position,
-                        getRigidbody().gameObject.transform.rotation);
+                CMath.rotate(vert, gameObject.transform.position,
+                        gameObject.transform.rotation);
             }
         }
 
@@ -77,7 +77,7 @@ public class BoxCollider extends Collider {
             return;
 
         Render.lineWidth(2);
-        Render.rectOutlined(gameObject.transform.position, getSize(), CColor.GREEN);
+        Render.rectOutlined(gameObject.transform.position, getSize(), 3, CColor.GREEN);
         super.draw(delta);
     }
 

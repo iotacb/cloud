@@ -98,8 +98,13 @@ public class Rigidbody extends Component {
         return continuousCollision;
     }
 
-    public boolean allowSleeping() {
+    public boolean isSleepingAllowed() {
         return allowSleeping;
+    }
+
+    public Rigidbody allowSleeping() {
+        setAllowSleeping(true);
+        return this;
     }
 
     public Rigidbody setAllowSleeping(boolean allowSleeping) {

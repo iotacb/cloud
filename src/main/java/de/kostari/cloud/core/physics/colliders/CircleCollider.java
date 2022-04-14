@@ -36,7 +36,7 @@ public class CircleCollider extends Collider {
     }
 
     public Vec getCenter() {
-        return getRigidbody().gameObject.transform.position;
+        return gameObject.transform.position;
     }
 
     @Override
@@ -46,8 +46,7 @@ public class CircleCollider extends Collider {
 
         super.draw(delta);
 
-        Render.lineWidth(2);
-        Render.polygonOutlined(gameObject.transform.position, getSize(), CColor.GREEN, 180);
+        Render.circleOutlined(gameObject.transform.position, getSize(), 3, CColor.GREEN);
     }
 
 }
