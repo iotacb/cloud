@@ -141,7 +141,7 @@ public class PhysicsEngine {
             return;
 
         CircleShape shape = new CircleShape();
-        shape.setRadius(circleCollider.getSize());
+        shape.setRadius(circleCollider.getSize() / 2);
         shape.m_p.set(circleCollider.getOffset().x, circleCollider.getOffset().y);
 
         FixtureDef fixtureDef = new FixtureDef();

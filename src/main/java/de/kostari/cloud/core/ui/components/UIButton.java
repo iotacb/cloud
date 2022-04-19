@@ -7,7 +7,6 @@ import de.kostari.cloud.core.window.Window;
 import de.kostari.cloud.utilities.color.CColor;
 import de.kostari.cloud.utilities.input.Input;
 import de.kostari.cloud.utilities.render.Render;
-import de.kostari.cloud.utilities.render.text.Fonts;
 
 public class UIButton extends UIComponent {
 
@@ -38,7 +37,8 @@ public class UIButton extends UIComponent {
     public void draw(float delta) {
         super.draw(delta);
         Render.rect(transform.position, bounds.getSize(), isHovered() ? HOVER_COLOR : NORMAL_COLOR);
-        Fonts.sans32.drawCenteredText(title, transform.position.x, transform.position.y);
+        // Fonts.sans32.drawCenteredText(title, transform.position.x,
+        // transform.position.y);
     }
 
     @Override
@@ -49,6 +49,9 @@ public class UIButton extends UIComponent {
                     clickListener.clicked(0, Input.getMouseX(), Input.getMouseY());
                 }
             }
+            // window.setCursor(GLFW.GLFW_HAND_CURSOR);
+        } else {
+            // window.setCursor(GLFW.GLFW_ARROW_CURSOR);
         }
         super.update(delta);
     }

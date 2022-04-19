@@ -33,6 +33,14 @@ public class CMath {
 		return (value > max ? max : value < min ? min : value);
 	}
 
+	public static float clamp01(float value) {
+		return clamp(value, 0, 1);
+	}
+
+	public static int clamp01(int value) {
+		return clamp(value, 0, 1);
+	}
+
 	public static float direction(float firstX, float firstY, float secondX, float secondY) {
 		float angle = (float) Math.toDegrees(Math.atan2(secondY - firstY, secondX - firstX)) + 90;
 		if (angle < 0) {
@@ -159,6 +167,10 @@ public class CMath {
 		return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
 	}
 
+	public static float map(float value, float min, float max) {
+		return map(value, 0, value, min, max);
+	}
+
 	public static float lerp(float current, float target, float time) {
 		return (1 - time) * current + time * target;
 	}
@@ -214,6 +226,11 @@ public class CMath {
 
 	public static boolean compare(Vec vec1, Vec vec2) {
 		return compare(vec1, vec2, Float.MIN_VALUE);
+	}
+
+	public static float smoothMin(float a, float b, float smoothing) {
+		float h = clamp01((b - a + smoothing) / (2 * smoothing));
+		return a * h + b * (1 - h) - smoothing * h * (1 - h);
 	}
 
 }

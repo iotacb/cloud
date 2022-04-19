@@ -251,18 +251,6 @@ public class Vec {
         return distance(vec.x, vec.y);
     }
 
-    public boolean equal(float val) {
-        return this.x == x && this.y == y;
-    }
-
-    public boolean equal(float x, float y) {
-        return this.x == x && this.y == y;
-    }
-
-    public boolean equal(Vec vec) {
-        return equal(vec.x, vec.y);
-    }
-
     public float getX() {
         return this.x;
     }
@@ -304,6 +292,15 @@ public class Vec {
     @Override
     public String toString() {
         return String.format("{%s, %s}", x, y);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Vec) {
+            Vec v = (Vec) obj;
+            return v.x == this.x && v.y == this.y;
+        }
+        return false;
     }
 
 }

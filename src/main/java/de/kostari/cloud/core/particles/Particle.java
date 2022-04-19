@@ -1,188 +1,289 @@
 package de.kostari.cloud.core.particles;
 
+import java.util.Random;
+
 import de.kostari.cloud.core.components.Transform;
 import de.kostari.cloud.utilities.color.CColor;
+import de.kostari.cloud.utilities.math.CMath;
 import de.kostari.cloud.utilities.math.Randoms;
+import de.kostari.cloud.utilities.math.Vec;
 import de.kostari.cloud.utilities.render.Render;
 
-public abstract class Particle {
+public class Particle {
 
-    public Transform transform;
+    private Transform startTransform = new Transform();
+    private Transform transform = new Transform();
 
-    private float lifeTime;
-    private float lifeTimeCounter;
+    private Vec startSpeed = new Vec();
+    private Vec endSpeed = new Vec();
+    private Vec minSpeed = new Vec();
+    private Vec maxSpeed = new Vec();
+    private Vec speed = new Vec();
 
-    private float spawnSize;
+    private float startSize;
     private float endSize;
+    private float minSize;
+    private float maxSize;
     private float size;
 
-    private float spawnSpeed;
-    private float endSpeed;
-    private float speed;
+    private float minLifetime;
+    private float maxLifetime;
+    private float lifetime;
+    private float lifetimeCounter;
+    private float liftimePercentage;
 
-    private float spawnRotation;
-    private float endRotation;
-    private float rotation;
-    private boolean randomDirection;
+    private CColor startColor = CColor.WHITE;
+    private CColor endColor = CColor.WHITE;
+    private CColor color = CColor.WHITE;
 
-    private float lifePercentage;
+    private Vec gravity = new Vec();
+
+    private boolean canDie = false;
+
+    private int renderIndex = 0;
 
     public Particle() {
-        this.lifeTime = 1;
-        this.lifeTimeCounter = 0;
+        init(new Transform(), new Vec());
+    }
 
-        this.spawnSize = 20;
-        this.endSize = 0;
-        this.size = spawnSize;
-
-        this.spawnSpeed = 100;
-        this.endSpeed = 0;
-        this.speed = 100;
-
-        this.spawnRotation = 0;
-        this.endRotation = 0;
-        this.rotation = spawnRotation;
-        this.randomDirection = true;
-
-        this.transform = new Transform();
+    private void init(Transform startTransform, Vec moveSpeed) {
+        this.startTransform = startTransform;
+        this.transform = this.startTransform;
+        this.speed = moveSpeed;
     }
 
     public void update(float delta) {
-        lifeTimeCounter += delta;
-        lifePercentage = 1 - (lifeTimeCounter / lifeTime);
+        updateVariables();
 
-        updateSize(delta);
-        updateSpeed(delta);
-        updateRotation(delta);
+        // increase the lifetime
+        this.lifetimeCounter += delta;
+        // the passed lifetime in percentage
+        this.liftimePercentage = this.lifetimeCounter / this.lifetime;
+
+        if (lifetimeCounter > lifetime) {
+            canDie = true;
+        }
+
+        speed.add(gravity);
+        transform.position.add(speed.clone().mul(delta));
     }
 
     public void draw(float delta) {
-        Render.circle(transform.position, size, CColor.WHITE);
+        Render.circle(transform.position, size, color);
     }
 
-    private void updateSize(float delta) {
-        if (getSpawnSize() != getEndSize()) {
-            size = (getSpawnSize() - getEndSize()) * lifePercentage;
+    public void create() {
+        // lifetime
+        if (minLifetime != -1 && maxLifetime != -1) {
+            lifetime = 2;
         } else {
-            size = getEndSize();
+            lifetime = Randoms.randomFloat(minSize, maxSize);
         }
-    }
 
-    private void updateSpeed(float delta) {
-        if (getSpawnSpeed() != getEndSpeed()) {
-            speed = (getSpawnSpeed() - getEndSpeed()) * lifePercentage;
+        // speed
+        if (!minSpeed.equals(endSpeed)) {
+            startSpeed.set(Vec.fromAngle(new Random().nextInt() * 360));
         } else {
-            speed = getEndSpeed();
+            float x = Randoms.randomFloat(minSpeed.x, maxSpeed.x);
+            float y = Randoms.randomFloat(minSpeed.y, maxSpeed.y);
+            startSpeed.set(x, y);
         }
-    }
+        speed.set(startSpeed);
+        endSpeed.set(startSpeed);
 
-    private void updateRotation(float delta) {
-        if (getSpawnRotation() != getEndRotation()) {
-            rotation = (getSpawnRotation() - getEndRotation()) * lifePercentage;
+        // size
+        if (minSize != -1 && maxSize != -1) {
+            startSize = 20;
         } else {
-            rotation = getEndRotation();
+            startSize = Randoms.randomFloat(minSize, maxSize);
         }
+        size = startSize;
+        endSize = startSize;
+
+        // color
+        startColor = CColor.BLUE;
+        endColor = CColor.RED;
+        color = startColor;
     }
 
-    public boolean isDead() {
-        return lifeTimeCounter >= lifeTime;
+    private void updateVariables() {
+        updateColor();
+        updateSize();
+        updateSpeed();
     }
 
-    public void setLifeTime(float lifeTime) {
-        this.lifeTime = lifeTime;
+    private void updateColor() {
+        if (startColor.equals(endColor))
+            return;
+        color = startColor.transition(endColor, getLiftimePercentage());
     }
 
-    public void setSpeed(float speed) {
-        this.speed = speed;
+    private void updateSize() {
+        if (startSize == endSize)
+            return;
+
+        size = CMath.lerp(startSize, endSize, getLiftimePercentage());
     }
 
-    public void setSpawnSize(float spawnSize) {
-        this.spawnSize = spawnSize;
+    private void updateSpeed() {
+        if (startSpeed.equals(endSpeed))
+            return;
+
+        float lerpedX = CMath.lerp(startSpeed.x, endSpeed.x, getLiftimePercentage());
+        float lerpedY = CMath.lerp(startSpeed.y, endSpeed.y, getLiftimePercentage());
+        speed.set(lerpedX, lerpedY);
     }
 
-    public void setEndSize(float endSize) {
-        this.endSize = endSize;
+    public Transform getTransform() {
+        return transform;
     }
 
-    public void setEndRotation(float endRotation, boolean randomDirection) {
-        this.endRotation = randomDirection ? Randoms.randomBoolean() ? -endRotation : endRotation : endRotation;
-        this.randomDirection = randomDirection;
+    public Transform getStartTransform() {
+        return startTransform;
     }
 
-    public void setEndSpeed(float endSpeed) {
-        this.endSpeed = endSpeed;
-    }
-
-    public void setSpawnRotation(float spawnRotation) {
-        this.spawnRotation = spawnRotation;
-    }
-
-    public void setSpawnSpeed(float spawnSpeed) {
-        this.spawnSpeed = spawnSpeed;
-    }
-
-    public void setRotation(float rotation) {
-        this.rotation = rotation;
-    }
-
-    public void setSize(float size) {
-        this.size = size;
-    }
-
-    public void setRandomDirection(boolean randomDirection) {
-        this.randomDirection = randomDirection;
+    public float getStartSize() {
+        return startSize;
     }
 
     public float getEndSize() {
         return endSize;
     }
 
-    public float getEndSpeed() {
-        return endSpeed;
+    public float getMinSize() {
+        return minSize;
     }
 
-    public float getLifePercentage() {
-        return lifePercentage;
-    }
-
-    public float getLifeTime() {
-        return lifeTime;
-    }
-
-    public float getLifeTimeCounter() {
-        return lifeTimeCounter;
+    public float getMaxSize() {
+        return maxSize;
     }
 
     public float getSize() {
         return size;
     }
 
-    public float getSpawnSize() {
-        return spawnSize;
-    }
-
-    public float getSpawnSpeed() {
-        return spawnSpeed;
-    }
-
-    public float getSpeed() {
+    public Vec getSpeed() {
         return speed;
     }
 
-    public float getEndRotation() {
-        return endRotation;
+    public Vec getGravity() {
+        return gravity;
     }
 
-    public float getRotation() {
-        return rotation;
+    public Vec getMinSpeed() {
+        return minSpeed;
     }
 
-    public boolean isRandomRotateDirection() {
-        return randomDirection;
+    public Vec getMaxSpeed() {
+        return maxSpeed;
     }
 
-    public float getSpawnRotation() {
-        return spawnRotation;
+    public Vec getStartSpeed() {
+        return startSpeed;
+    }
+
+    public Vec getEndSpeed() {
+        return endSpeed;
+    }
+
+    public CColor getStartColor() {
+        return startColor;
+    }
+
+    public CColor getEndColor() {
+        return endColor;
+    }
+
+    public CColor getColor() {
+        return color;
+    }
+
+    public float getLifetime() {
+        return lifetime;
+    }
+
+    public float getLifetimeCounter() {
+        return lifetimeCounter;
+    }
+
+    public float getMinLifetime() {
+        return minLifetime;
+    }
+
+    public float getMaxLifetime() {
+        return maxLifetime;
+    }
+
+    public float getLiftimePercentage() {
+        return liftimePercentage;
+    }
+
+    public int getRenderIndex() {
+        return renderIndex;
+    }
+
+    public boolean canDie() {
+        return canDie;
+    }
+
+    public void setRenderIndex(int renderIndex) {
+        this.renderIndex = renderIndex;
+    }
+
+    public void setStartSize(float startSize) {
+        this.startSize = startSize;
+    }
+
+    public void setEndSize(float endSize) {
+        this.endSize = endSize;
+    }
+
+    public void setMinSize(float minSize) {
+        this.minSize = minSize;
+    }
+
+    public void setMaxSize(float maxSize) {
+        this.maxSize = maxSize;
+    }
+
+    public void setSize(float size) {
+        this.size = size;
+    }
+
+    public void setSpeed(Vec speed) {
+        this.speed = speed;
+    }
+
+    public void setGravity(Vec gravity) {
+        this.gravity = gravity;
+    }
+
+    public void setMinSpeed(Vec minSpeed) {
+        this.minSpeed.set(minSpeed);
+    }
+
+    public void setMaxSpeed(Vec maxSpeed) {
+        this.maxSpeed.set(maxSpeed);
+    }
+
+    public void setStartSpeed(Vec startSpeed) {
+        this.startSpeed.set(startSpeed);
+    }
+
+    public void setEndSpeed(Vec endSpeed) {
+        this.endSpeed.set(endSpeed);
+    }
+
+    public void setStartColor(CColor startColor) {
+        this.startColor = startColor;
+    }
+
+    public void setEndColor(CColor endColor) {
+        this.endColor = endColor;
+    }
+
+    public void setColor(CColor color) {
+        this.color = color;
     }
 
 }

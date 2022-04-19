@@ -37,6 +37,7 @@ public class UIContainer extends UIComponent {
         if (isDisabled())
             return;
         if (getChildren().size() > 0) {
+            System.out.println(layout);
             layout.alignChildren(getChildren());
         }
         super.update(delta);

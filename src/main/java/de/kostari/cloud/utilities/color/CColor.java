@@ -66,6 +66,11 @@ public class CColor {
         this.alpha = CMath.clamp(alpha, 0, 255);
     }
 
+    public CColor setAlpha(int alpha) {
+        this.alpha = alpha;
+        return this;
+    }
+
     public static CColor hexToRgb(int hex) {
         int r = (hex & 0xFF0000) >> 16;
         int g = (hex & 0xFF00) >> 8;
@@ -117,7 +122,25 @@ public class CColor {
 
     private float transitionProgress;
 
-    public CColor transition(CColor color, boolean doTransition, float delta) {
+    public CColor transition(CColor color, boolean forward, float time, float delta) {
+        if (forward) {
+            if (transitionProgress < time) {
+                transitionProgress += delta;
+            } else {
+                transitionProgress = time;
+            }
+        } else {
+            if (transitionProgress > 0) {
+                transitionProgress -= delta;
+            } else {
+                transitionProgress = 0;
+            }
+        }
+
+        return color.transition(this, time == 0 ? forward ? 1 : 0 : (transitionProgress / time));
+    }
+
+    public CColor transition(CColor color, float progress) {
         int r = getRed();
         int g = getGreen();
         int b = getBlue();
@@ -128,77 +151,25 @@ public class CColor {
         int b2 = color.getBlue();
         int a2 = color.getAlpha();
 
-        float time = 1;
-
-        if (doTransition) {
-            if (transitionProgress < time) {
-                transitionProgress += delta;
-            } else {
-                transitionProgress = time;
-            }
-
-            if (r > r2) {
-                redTransition = r - CMath.quad(transitionProgress, r2, r, time);
-            } else {
-                redTransition = CMath.quad(transitionProgress, r, r2, time);
-            }
-
-            if (g > g2) {
-                greenTransition = g - CMath.quad(transitionProgress, g2, g, time);
-            } else {
-                greenTransition = CMath.quad(transitionProgress, g, g2, time);
-            }
-
-            if (b > b2) {
-                blueTransition = b - CMath.quad(transitionProgress, b2, b, time);
-            } else {
-                blueTransition = CMath.quad(transitionProgress, b, b2, time);
-            }
-
-            if (a > a2) {
-                alphaTransition = a - CMath.quad(transitionProgress, a2, a, time);
-            } else {
-                alphaTransition = CMath.quad(transitionProgress, a, a2, time);
-            }
-        } else {
-            if (transitionProgress > 0) {
-                transitionProgress -= delta;
-            } else {
-                transitionProgress = 0;
-            }
-
-            if (r2 < r) {
-                redTransition = CMath.quad(1 - transitionProgress, r2, r, time);
-            } else {
-                redTransition = r2 - CMath.quad(1 - transitionProgress, r, r2, time);
-            }
-
-            if (g2 < g) {
-                greenTransition = CMath.quad(1 - transitionProgress, g2, g, time);
-            } else {
-                greenTransition = g2 - CMath.quad(1 - transitionProgress, g, g2, time);
-            }
-
-            if (b2 < b) {
-                blueTransition = CMath.quad(1 - transitionProgress, b2, b, time);
-            } else {
-                blueTransition = b2 - CMath.quad(1 - transitionProgress, b, b2, time);
-            }
-
-            if (a2 < a) {
-                alphaTransition = CMath.quad(1 - transitionProgress, a2, a, time);
-            } else {
-                alphaTransition = a2 - CMath.quad(1 - transitionProgress, a, a2, time);
-            }
-
-        }
-
+        redTransition = CMath.lerp(r, r2, progress);
+        greenTransition = CMath.lerp(g, g2, progress);
+        blueTransition = CMath.lerp(b, b2, progress);
+        alphaTransition = CMath.lerp(a, a2, progress);
         return new CColor(redTransition, greenTransition, blueTransition, alphaTransition);
     }
 
     @Override
     public String toString() {
         return String.format("{r: %s, g: %s, b: %s, a: %s}", r, g, b, alpha);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof CColor) {
+            CColor color = (CColor) obj;
+            return color.r == r && color.g == g && color.b == b && color.alpha == alpha;
+        }
+        return false;
     }
 
 }
