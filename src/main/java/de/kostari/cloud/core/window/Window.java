@@ -4,7 +4,9 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
+import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
+import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
@@ -18,6 +20,9 @@ import org.lwjgl.openal.ALC11;
 import org.lwjgl.openal.ALCCapabilities;
 import org.lwjgl.openal.ALCapabilities;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.stb.STBImage;
+import org.lwjgl.system.MemoryStack;
+import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.system.Platform;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
@@ -29,6 +34,8 @@ import de.kostari.cloud.core.observers.events.Event;
 import de.kostari.cloud.core.observers.events.EventType;
 import de.kostari.cloud.core.scene.Scene;
 import de.kostari.cloud.core.window.icon.ImageParser;
+import de.kostari.cloud.utilities.color.CColor;
+import de.kostari.cloud.utilities.files.asset.AssetManager;
 import de.kostari.cloud.utilities.input.Input;
 import de.kostari.cloud.utilities.math.Vec;
 import de.kostari.cloud.utilities.render.Render;
@@ -70,6 +77,10 @@ public class Window implements Observer {
 
 	private FrameTimer timer;
 
+	private AssetManager assetManager;
+
+	private CColor clearColor;
+
 	public Window(int width, int height, String title) {
 		createWindow(width, height, title, false, false);
 	}
@@ -88,6 +99,8 @@ public class Window implements Observer {
 		this.sampling = 4;
 		this.size = new Vec(width, height);
 
+		this.clearColor = CColor.BLACK;
+
 		this.scene = new Scene(this) {
 			@Override
 			public void draw(float delta) {
@@ -99,6 +112,8 @@ public class Window implements Observer {
 				super.update(delta);
 			}
 		};
+
+		this.assetManager = new AssetManager();
 
 		try {
 			initialize();
@@ -138,11 +153,10 @@ public class Window implements Observer {
 		glLoadIdentity();
 		glViewport(0, 0, width, height);
 		glOrtho(0, width, height, 0, -1, 1);
-		glClearColor(0, 0, 0, 0);
-		glClear(GL_COLOR_BUFFER_BIT);
 
 		deltaTime = timer.getDelta();
 		if (deltaTime >= 0) {
+			Render.rect(getHalfSize(), getSize(), clearColor);
 			scene.draw(deltaTime);
 		}
 		glfwSwapBuffers(windowId);
@@ -169,6 +183,14 @@ public class Window implements Observer {
 
 		glfwSetWindowPos(windowId, (int) (videoMode.width() - width) / 2,
 				(int) (videoMode.height() - height) / 2);
+
+		try (MemoryStack frame = MemoryStack.stackPush()) {
+			IntBuffer framebufferSize = frame.mallocInt(2);
+			nglfwGetFramebufferSize(windowId, MemoryUtil.memAddress(framebufferSize),
+					MemoryUtil.memAddress(framebufferSize) + 4);
+			width = framebufferSize.get(0);
+			height = framebufferSize.get(1);
+		}
 
 		setCallbacks();
 	}
@@ -240,8 +262,6 @@ public class Window implements Observer {
 		DoubleBuffer bufferX = BufferUtils.createDoubleBuffer(1);
 		DoubleBuffer bufferY = BufferUtils.createDoubleBuffer(1);
 		glfwGetCursorPos(windowId, bufferX, bufferY);
-		// lastMousePosition.set(mousePosition);
-		// mousePosition.set((float) bufferX.get(), (float) bufferY.get());
 		Input.setLastMousePosition(Input.getMouseX(), Input.getMouseY());
 		Input.setMousePosition((float) bufferX.get(), (float) bufferY.get());
 	}
@@ -293,7 +313,15 @@ public class Window implements Observer {
 		ImageParser parsedImage = ImageParser.loadImage(path);
 		image.set(parsedImage.width, parsedImage.height, parsedImage.image);
 		imageBuffer.put(0, image);
-		glfwSetWindowIcon(windowId, imageBuffer);
+
+		if (Platform.get() == Platform.MACOSX) {
+			// The windowson mac don't have a window icon
+			// the only icon that can be shown is in the doc
+
+			// TODO: find a way to add a icon without using javas awt
+		} else {
+			glfwSetWindowIcon(windowId, imageBuffer);
+		}
 	}
 
 	/**
@@ -346,6 +374,47 @@ public class Window implements Observer {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Set the cursor using the system standard cursors
+	 */
+	public void setCursor(int cursor) {
+		long createdCursor = glfwCreateStandardCursor(cursor);
+		glfwSetCursor(windowId, createdCursor);
+	}
+
+	/**
+	 * Set the cursor using a custom cursor
+	 */
+	public void setCursor(long cursor) {
+		glfwSetCursor(windowId, cursor);
+	}
+
+	/**
+	 * Create a custom cursor with an image file
+	 * 
+	 * @param path    the path to the image file
+	 * @param offsetX the x position of the hotspot
+	 * @param offsetY the y position of the hotspot
+	 * @return the created cursor
+	 */
+	public long createCursor(String path, int xOffset, int yOffset) {
+		ByteBuffer pixels;
+		GLFWImage image = GLFWImage.create();
+		try (MemoryStack stack = MemoryStack.stackPush()) {
+			IntBuffer w = stack.mallocInt(1);
+			IntBuffer h = stack.mallocInt(1);
+			IntBuffer comp = stack.mallocInt(1);
+
+			pixels = STBImage.stbi_load(path, w, h, comp, 4);
+			image.set(w.get(0), h.get(0), pixels);
+			pixels.clear();
+			long cursor = glfwCreateCursor(image, xOffset, yOffset);
+			image.clear();
+			return cursor;
+		}
+
 	}
 
 	/**
@@ -427,6 +496,14 @@ public class Window implements Observer {
 
 	public boolean isResizable() {
 		return isResizable;
+	}
+
+	public AssetManager getAssetManager() {
+		return assetManager;
+	}
+
+	public void setClearColor(CColor clearColor) {
+		this.clearColor = clearColor;
 	}
 
 }

@@ -71,6 +71,10 @@ public class PositionedLayout extends UILayout {
                     child.transform.position.x = latestX + offsetX;
                     child.transform.position.y = getParent().transform.position.y + childBounds.getHalfHeight();
                     latestX += childBounds.getWidth() + getGap();
+
+                    if (i == 0) {
+                        latestX += childBounds.getHalfWidth();
+                    }
                 }
                 break;
             case VERTICAL:
@@ -145,6 +149,10 @@ public class PositionedLayout extends UILayout {
                     child.transform.position.x = latestX + offsetX;
                     child.transform.position.y = getParent().transform.position.y + childBounds.getHalfHeight();
                     latestX += childBounds.getWidth() + getGap();
+
+                    if (i == 0) {
+                        latestX += childBounds.getHalfWidth();
+                    }
                 }
                 break;
             case VERTICAL:
@@ -183,6 +191,10 @@ public class PositionedLayout extends UILayout {
                     child.transform.position.x = latestX + offsetX;
                     child.transform.position.y = getParent().transform.position.y + parentBounds.getHalfHeight();
                     latestX += childBounds.getWidth() + getGap();
+
+                    if (i == 0) {
+                        latestX += childBounds.getHalfWidth();
+                    }
                 }
                 break;
             case VERTICAL:
@@ -222,6 +234,10 @@ public class PositionedLayout extends UILayout {
                     child.transform.position.x = latestX + offsetX;
                     child.transform.position.y = getParent().transform.position.y + parentBounds.getHalfHeight();
                     latestX += childBounds.getWidth() + getGap();
+
+                    if (i == 0) {
+                        latestX += childBounds.getHalfWidth();
+                    }
                 }
                 break;
             case VERTICAL:
@@ -261,6 +277,10 @@ public class PositionedLayout extends UILayout {
                     child.transform.position.x = latestX + offsetX;
                     child.transform.position.y = getParent().transform.position.y + parentBounds.getHalfHeight();
                     latestX += childBounds.getWidth() + getGap();
+
+                    if (i == 0) {
+                        latestX += childBounds.getHalfWidth();
+                    }
                 }
                 break;
             case VERTICAL:
@@ -301,6 +321,10 @@ public class PositionedLayout extends UILayout {
                     child.transform.position.y = getParent().transform.position.y + parentBounds.getHeight()
                             - childBounds.getHalfHeight();
                     latestX += childBounds.getWidth() + getGap();
+
+                    if (i == 0) {
+                        latestX += childBounds.getHalfWidth();
+                    }
                 }
                 break;
             case VERTICAL:
@@ -341,6 +365,10 @@ public class PositionedLayout extends UILayout {
                     child.transform.position.y = getParent().transform.position.y + parentBounds.getHeight()
                             - childBounds.getHalfHeight();
                     latestX += childBounds.getWidth() + getGap();
+
+                    if (i == 0) {
+                        latestX += childBounds.getHalfWidth();
+                    }
                 }
                 break;
             case VERTICAL:
@@ -381,6 +409,10 @@ public class PositionedLayout extends UILayout {
                     child.transform.position.y = getParent().transform.position.y + parentBounds.getHeight()
                             - childBounds.getHalfHeight();
                     latestX += childBounds.getWidth() + getGap();
+
+                    if (i == 0) {
+                        latestX += childBounds.getHalfWidth();
+                    }
                 }
                 break;
             case VERTICAL:

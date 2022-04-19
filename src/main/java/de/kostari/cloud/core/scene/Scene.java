@@ -12,7 +12,6 @@ import de.kostari.cloud.core.physics.Rigidbody;
 import de.kostari.cloud.core.ui.UIComponent;
 import de.kostari.cloud.core.window.Window;
 import de.kostari.cloud.utilities.math.Vec;
-import de.kostari.cloud.utilities.render.tmp.Renderer;
 
 public abstract class Scene {
 

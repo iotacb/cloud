@@ -1,7 +1,6 @@
 package de.kostari.cloud.utilities.render.tmp;
 
 import de.kostari.cloud.utilities.color.CColor;
-import de.kostari.cloud.utilities.math.CMath;
 import de.kostari.cloud.utilities.math.Vec;
 import de.kostari.cloud.utilities.render.tmp.renderobjects.OutlinedRenderObject;
 

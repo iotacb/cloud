@@ -4,8 +4,6 @@ import de.kostari.cloud.utilities.color.CColor;
 import de.kostari.cloud.utilities.math.Vec;
 import de.kostari.cloud.utilities.render.Render;
 import de.kostari.cloud.utilities.render.Texture;
-import de.kostari.cloud.utilities.render.tmp.Renderer;
-import de.kostari.cloud.utilities.render.tmp.renderobjects.UVRenderObject;
 
 import java.awt.Font;
 import java.awt.FontMetrics;

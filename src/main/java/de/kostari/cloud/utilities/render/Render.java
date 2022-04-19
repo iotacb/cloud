@@ -748,7 +748,6 @@ public class Render {
     public static void rect(float x, float y, float width, float height, float rotation, boolean filled,
             float lineWidth,
             CColor color) {
-        start();
         if (color != null)
             color(color);
         else
@@ -764,6 +763,7 @@ public class Render {
                 new Vec(x - width / 2, y + height / 2)
         };
 
+        start();
         begin(filled ? GL_QUADS : GL_LINE_LOOP);
         {
             for (Vec v : vertices) {
@@ -938,11 +938,11 @@ public class Render {
     // circle
 
     public static void circle(float x, float y, float radius, CColor color) {
-        polygon(x, y, radius, 180, true, 0, color);
+        polygon(x, y, radius, 20, true, 0, color);
     }
 
     public static void circleOutlined(float x, float y, float radius, float lineWidth, CColor color) {
-        polygon(x, y, radius, 180, false, lineWidth, color);
+        polygon(x, y, radius, 20, false, lineWidth, color);
     }
 
     public static void circle(Vec pos, float radius, CColor color) {
@@ -954,12 +954,12 @@ public class Render {
     }
 
     public static void line(float firstX, float firstY, float secondX, float secondY, int lineWidth, CColor color) {
-        start();
         if (color != null)
             color(color);
         else
             color(CColor.WHITE);
         lineWidth(lineWidth <= 0 ? 1 : lineWidth);
+        start();
         begin(GL_LINES);
         {
             vertex(firstX, firstY);
