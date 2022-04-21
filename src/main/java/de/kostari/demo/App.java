@@ -12,11 +12,7 @@ public class App {
         // Enable vsync
         window.useVsync(true);
         window.setScene(MainScene.class);
-
-        window.setClearColor(CColor.BLACK.setAlpha(40));
-
-        long c = window.createCursor("cursor.png", 14, 4);
-        window.setCursor(c);
+        window.setClearColor(CColor.GRAY);
 
         // Show the window
         try {

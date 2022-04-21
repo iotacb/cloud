@@ -2,8 +2,12 @@ package de.kostari.cloud.utilities.render;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL30;
+
 import de.kostari.cloud.core.window.Window;
 import de.kostari.cloud.utilities.color.CColor;
+import de.kostari.cloud.utilities.files.asset.assets.Image;
 import de.kostari.cloud.utilities.math.CMath;
 import de.kostari.cloud.utilities.math.Vec;
 
@@ -774,6 +778,7 @@ public class Render {
             }
         }
         end();
+        color(CColor.WHITE);
         stop();
     }
 
@@ -966,7 +971,111 @@ public class Render {
             vertex(secondX, secondY);
         }
         end();
+        color(CColor.WHITE);
         stop();
+    }
+
+    public static void image(Image image, float x, float y, float width, float height) {
+        if (!image.isFinishedLoading())
+            return;
+
+        x -= width / 2;
+        y -= height / 2;
+
+        color(CColor.WHITE);
+        enable(GL_TEXTURE_2D);
+        enable(GL_BLEND);
+        disable(GL_LIGHTING);
+        glBindTexture(GL_TEXTURE_2D, image.getImageId());
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, (int) image.getWidth(), (int) image.getHeight(), 0, GL_RGBA,
+                GL_UNSIGNED_BYTE,
+                image.getPixelBuffer());
+
+        begin(GL_QUADS);
+        {
+            glTexCoord2d(0, 0);
+            vertex(x, y);
+            glTexCoord2d(0, 1);
+            vertex(x, y + height);
+            glTexCoord2d(1, 1);
+            vertex(x + width, y + height);
+            glTexCoord2d(1, 0);
+            vertex(x + width, y);
+        }
+        end();
+
+        GL30.glGenerateMipmap(image.getImageId());
+
+        enable(GL_LIGHTING);
+        disable(GL_BLEND);
+        disable(GL_TEXTURE_2D);
+    }
+
+    public static void imageRegion(Image image, float x, float y, float width, float height, float offsetX,
+            float offsetY) {
+        if (!image.isFinishedLoading())
+            return;
+
+        x -= width / 2;
+        y -= height / 2;
+
+        color(CColor.WHITE);
+        enable(GL_TEXTURE_2D);
+        enable(GL_BLEND);
+        disable(GL_LIGHTING);
+        glBindTexture(GL_TEXTURE_2D, image.getImageId());
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, (int) image.getWidth(), (int) image.getHeight(), 0, GL_RGBA,
+                GL_UNSIGNED_BYTE,
+                image.getPixelBuffer());
+
+        begin(GL_QUADS);
+        {
+            glTexCoord2d(0, 0);
+            vertex(x + offsetX, y);
+            glTexCoord2d(0, 1);
+            vertex(x + offsetX, y + height);
+            glTexCoord2d(1, 1);
+            vertex(x + offsetX + width, y + height);
+            glTexCoord2d(1, 0);
+            vertex(x + offsetX + width, y);
+        }
+        end();
+
+        GL30.glGenerateMipmap(image.getImageId());
+
+        enable(GL_LIGHTING);
+        disable(GL_BLEND);
+        disable(GL_TEXTURE_2D);
+    }
+
+    public static void image(Image image, float x, float y) {
+        image(image, x, y, image.getWidth(), image.getHeight());
+    }
+
+    public static void image(Image image, Vec pos) {
+        image(image, pos.x, pos.y, image.getWidth(), image.getHeight());
+    }
+
+    public static void image(Image image, float x, float y, Vec size) {
+        image(image, x, y, size.x, size.y);
+    }
+
+    public static void image(Image image, Vec pos, Vec size) {
+        image(image, pos.x, pos.y, size.x, size.y);
+    }
+
+    public static void image(Image image, Vec pos, float width, float height) {
+        image(image, pos.x, pos.y, width, height);
     }
 
 }

@@ -67,8 +67,7 @@ public class CColor {
     }
 
     public CColor setAlpha(int alpha) {
-        this.alpha = alpha;
-        return this;
+        return new CColor(r, g, b, alpha);
     }
 
     public static CColor hexToRgb(int hex) {

@@ -69,6 +69,8 @@ public class Audio {
         AL10.alSourcef(sourceId, AL10.AL_GAIN, 0.3f);
 
         LibCStdlib.free(rawAudioBuffer);
+
+        System.out.println("Loaded file");
     }
 
     public void delete() {

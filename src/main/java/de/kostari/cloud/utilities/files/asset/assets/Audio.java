@@ -10,8 +10,8 @@ import org.lwjgl.system.libc.LibCStdlib;
 
 public class Audio extends Asset {
 
-    public Audio(String path, String name, boolean loop) {
-        super(path, name);
+    public Audio(String path, boolean loop) {
+        super(path);
         MemoryStack.stackPush();
         IntBuffer channelsBuffer = MemoryStack.stackMallocInt(1);
         MemoryStack.stackPush();

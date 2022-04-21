@@ -35,7 +35,6 @@ import de.kostari.cloud.core.observers.events.EventType;
 import de.kostari.cloud.core.scene.Scene;
 import de.kostari.cloud.core.window.icon.ImageParser;
 import de.kostari.cloud.utilities.color.CColor;
-import de.kostari.cloud.utilities.files.asset.AssetManager;
 import de.kostari.cloud.utilities.input.Input;
 import de.kostari.cloud.utilities.math.Vec;
 import de.kostari.cloud.utilities.render.Render;
@@ -77,8 +76,6 @@ public class Window implements Observer {
 
 	private FrameTimer timer;
 
-	private AssetManager assetManager;
-
 	private CColor clearColor;
 
 	public Window(int width, int height, String title) {
@@ -112,8 +109,6 @@ public class Window implements Observer {
 				super.update(delta);
 			}
 		};
-
-		this.assetManager = new AssetManager();
 
 		try {
 			initialize();
@@ -408,6 +403,8 @@ public class Window implements Observer {
 			IntBuffer comp = stack.mallocInt(1);
 
 			pixels = STBImage.stbi_load(path, w, h, comp, 4);
+			if (pixels == null)
+				return glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
 			image.set(w.get(0), h.get(0), pixels);
 			pixels.clear();
 			long cursor = glfwCreateCursor(image, xOffset, yOffset);
@@ -496,10 +493,6 @@ public class Window implements Observer {
 
 	public boolean isResizable() {
 		return isResizable;
-	}
-
-	public AssetManager getAssetManager() {
-		return assetManager;
 	}
 
 	public void setClearColor(CColor clearColor) {
