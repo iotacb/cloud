@@ -23,6 +23,9 @@ import static java.awt.Font.*;
 
 public class CFont {
 
+    private Font font;
+    private boolean antiAliasing = true;
+
     private Map<Character, CGlyph> glyphs;
 
     private Texture texture;
@@ -32,11 +35,15 @@ public class CFont {
     public CFont() {
         this.glyphs = new HashMap<>();
         this.texture = createFontTexture(new Font(MONOSPACED, BOLD, 16), true);
+        this.font = new Font(MONOSPACED, BOLD, 16);
+        this.antiAliasing = true;
     }
 
     public CFont(Font font, boolean antiAliasing) {
         this.glyphs = new HashMap<>();
         this.texture = createFontTexture(font, antiAliasing);
+        this.font = font;
+        this.antiAliasing = antiAliasing;
     }
 
     private Texture createFontTexture(Font font, boolean antiAlias) {
@@ -200,6 +207,10 @@ public class CFont {
         return height;
     }
 
+    public int getHeight() {
+        return fontHeight;
+    }
+
     /**
      * Draw text at the specified position and color.
      *
@@ -236,34 +247,66 @@ public class CFont {
         }
     }
 
-    public void drawText(String text, float x, float y) {
-        drawText(text, x, y, CColor.WHITE);
-    }
-
-    public void drawCenteredText(String text, float x, float y, CColor c) {
-        float width = getWidth(text) / 2;
-        float height = getHeight(text) / 2;
-        drawText(text, x - width, y - height, c);
-    }
-
-    public void drawCenteredText(String text, float x, float y) {
-        drawCenteredText(text, x, y, CColor.WHITE);
+    public void drawTextShadow(String text, float x, float y, CColor c) {
+        drawText(text, x + 2, y + 2, CColor.BLACK);
+        drawText(text, x, y, c);
     }
 
     public void drawText(String text, Vec pos, CColor c) {
         drawText(text, pos.x, pos.y, c);
     }
 
+    public void drawTextShadow(String text, Vec pos, CColor c) {
+        drawTextShadow(text, pos.x, pos.y, c);
+    }
+
+    public void drawText(String text, float x, float y) {
+        drawText(text, x, y, CColor.WHITE);
+    }
+
+    public void drawTextShadow(String text, float x, float y) {
+        drawTextShadow(text, x, y, CColor.WHITE);
+    }
+
+    public void drawText(String text, Vec pos) {
+        drawText(text, pos.x, pos.y, CColor.WHITE);
+    }
+
+    public void drawTextShadow(String text, Vec pos) {
+        drawTextShadow(text, pos.x, pos.y, CColor.WHITE);
+    }
+
+    public void drawCenteredText(String text, float x, float y, CColor c) {
+        drawText(text, x - getWidth(text) / 2, y - getHeight(text) / 2, c);
+    }
+
+    public void drawCenteredTextShadow(String text, float x, float y, CColor c) {
+        drawCenteredText(text, x + 2, y + 2, CColor.BLACK);
+        drawCenteredText(text, x, y, c);
+    }
+
     public void drawCenteredText(String text, Vec pos, CColor c) {
         drawCenteredText(text, pos.x, pos.y, c);
     }
 
-    public void drawText(String text, Vec pos) {
-        drawText(text, pos.x, pos.y);
+    public void drawCenteredTextShadow(String text, Vec pos, CColor c) {
+        drawCenteredTextShadow(text, pos.x, pos.y, c);
+    }
+
+    public void drawCenteredText(String text, float x, float y) {
+        drawCenteredText(text, x, y, CColor.WHITE);
+    }
+
+    public void drawCenteredTextShadow(String text, float x, float y) {
+        drawCenteredTextShadow(text, x, y, CColor.WHITE);
     }
 
     public void drawCenteredText(String text, Vec pos) {
-        drawCenteredText(text, pos.x, pos.y);
+        drawCenteredText(text, pos.x, pos.y, CColor.WHITE);
+    }
+
+    public void drawCenteredTextShadow(String text, Vec pos) {
+        drawCenteredTextShadow(text, pos.x, pos.y, CColor.WHITE);
     }
 
     private void drawTextureRegion(Texture texture, float x, float y, float regX, float regY, float regWidth,
@@ -300,6 +343,14 @@ public class CFont {
     private void vertexUV(float x, float y, float u, float v) {
         GL11.glTexCoord2f(u, v);
         Render.vertex(x, y);
+    }
+
+    public Font getFont() {
+        return font;
+    }
+
+    public boolean isAntiAliasing() {
+        return antiAliasing;
     }
 
 }

@@ -975,14 +975,18 @@ public class Render {
         stop();
     }
 
-    public static void image(Image image, float x, float y, float width, float height) {
+    public static void image(Image image, float x, float y, float width, float height, CColor color) {
         if (!image.isFinishedLoading())
             return;
 
         x -= width / 2;
         y -= height / 2;
 
-        color(CColor.WHITE);
+        if (color == null) {
+            color(CColor.WHITE);
+        } else {
+            color(color);
+        }
         enable(GL_TEXTURE_2D);
         enable(GL_BLEND);
         disable(GL_LIGHTING);
@@ -1017,14 +1021,18 @@ public class Render {
     }
 
     public static void imageRegion(Image image, float x, float y, float width, float height, float offsetX,
-            float offsetY) {
+            float offsetY, CColor color) {
         if (!image.isFinishedLoading())
             return;
 
         x -= width / 2;
         y -= height / 2;
 
-        color(CColor.WHITE);
+        if (color == null) {
+            color(CColor.WHITE);
+        } else {
+            color(color);
+        }
         enable(GL_TEXTURE_2D);
         enable(GL_BLEND);
         disable(GL_LIGHTING);
@@ -1059,23 +1067,43 @@ public class Render {
     }
 
     public static void image(Image image, float x, float y) {
-        image(image, x, y, image.getWidth(), image.getHeight());
+        image(image, x, y, image.getWidth(), image.getHeight(), null);
     }
 
     public static void image(Image image, Vec pos) {
-        image(image, pos.x, pos.y, image.getWidth(), image.getHeight());
+        image(image, pos.x, pos.y, image.getWidth(), image.getHeight(), null);
     }
 
     public static void image(Image image, float x, float y, Vec size) {
-        image(image, x, y, size.x, size.y);
+        image(image, x, y, size.x, size.y, null);
     }
 
     public static void image(Image image, Vec pos, Vec size) {
-        image(image, pos.x, pos.y, size.x, size.y);
+        image(image, pos.x, pos.y, size.x, size.y, null);
     }
 
     public static void image(Image image, Vec pos, float width, float height) {
-        image(image, pos.x, pos.y, width, height);
+        image(image, pos.x, pos.y, width, height, null);
+    }
+
+    public static void image(Image image, float x, float y, CColor color) {
+        image(image, x, y, image.getWidth(), image.getHeight(), color);
+    }
+
+    public static void image(Image image, Vec pos, CColor color) {
+        image(image, pos.x, pos.y, image.getWidth(), image.getHeight(), color);
+    }
+
+    public static void image(Image image, float x, float y, Vec size, CColor color) {
+        image(image, x, y, size.x, size.y, color);
+    }
+
+    public static void image(Image image, Vec pos, Vec size, CColor color) {
+        image(image, pos.x, pos.y, size.x, size.y, color);
+    }
+
+    public static void image(Image image, Vec pos, float width, float height, CColor color) {
+        image(image, pos.x, pos.y, width, height, color);
     }
 
 }

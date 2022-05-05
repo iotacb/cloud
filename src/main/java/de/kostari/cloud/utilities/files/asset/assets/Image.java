@@ -7,6 +7,8 @@ import org.lwjgl.stb.STBImage;
 import static org.lwjgl.stb.STBImageResize.*;
 import org.lwjgl.system.MemoryStack;
 
+import de.kostari.cloud.utilities.files.asset.Asset;
+
 public class Image extends Asset {
 
     private float width;

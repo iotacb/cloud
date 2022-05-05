@@ -40,6 +40,10 @@ public class UIComponent {
         init(window, new Transform(), null);
     }
 
+    public UIComponent() {
+        init(null, new Transform(), null);
+    }
+
     private void init(Window window, Transform transform, UIComponent parent) {
         this.window = window;
         this.transform = transform;

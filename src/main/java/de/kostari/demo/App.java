@@ -11,8 +11,9 @@ public class App {
 
         // Enable vsync
         window.useVsync(true);
-        window.setScene(MainScene.class);
-        window.setClearColor(CColor.GRAY);
+        // window.setScene(TilemapScene.class);
+        window.setScene(ParticleScene.class);
+        window.setClearColor(CColor.BLACK.setAlpha(20));
 
         // Show the window
         try {

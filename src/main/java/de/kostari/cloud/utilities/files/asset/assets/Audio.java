@@ -8,6 +8,8 @@ import org.lwjgl.stb.STBVorbis;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.libc.LibCStdlib;
 
+import de.kostari.cloud.utilities.files.asset.Asset;
+
 public class Audio extends Asset {
 
     public Audio(String path, boolean loop) {

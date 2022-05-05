@@ -121,6 +121,14 @@ public class CColor {
 
     private float transitionProgress;
 
+    public static CColor transition(CColor start, CColor end, boolean forward, float time, float delta) {
+        return start.transition(end, forward, time, delta);
+    }
+
+    public static CColor transition(CColor start, CColor end, float progress) {
+        return start.transition(end, progress);
+    }
+
     public CColor transition(CColor color, boolean forward, float time, float delta) {
         if (forward) {
             if (transitionProgress < time) {

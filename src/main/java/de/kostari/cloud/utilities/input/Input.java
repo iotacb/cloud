@@ -108,7 +108,13 @@ public class Input {
         return a;
     }
 
-    public static boolean getButton(int buttonCode) {
+    /**
+     * Returns true when the button is being pressed.
+     * 
+     * @param buttonCode
+     * @return
+     */
+    public static boolean buttonState(int buttonCode) {
         if (!hasGamepad)
             return false;
         boolean r = false;
@@ -134,28 +140,63 @@ public class Input {
         return r;
     }
 
-    public static boolean getButtonDown(int buttonCode) {
+    /**
+     * Returns true when the button has been pressed.
+     * 
+     * @param buttonCode
+     * @return
+     */
+    public static boolean buttonPressed(int buttonCode) {
         if (!hasGamepad)
             return false;
 
-        boolean isDown = (getButton(buttonCode) && !buttons[buttonCode]);
+        boolean isDown = (buttonState(buttonCode) && !buttons[buttonCode]);
         return isDown;
     }
 
-    public static boolean getButtonUp(int buttonCode) {
+    /**
+     * Returns true when the button has been released.
+     * 
+     * @param buttonCode
+     * @return
+     */
+    public static boolean buttonRelease(int buttonCode) {
         if (!hasGamepad)
             return false;
 
-        boolean isUp = (getButton(buttonCode) && buttons[buttonCode]);
+        boolean isUp = (buttonState(buttonCode) && buttons[buttonCode]);
         return isUp;
     }
 
-    public static boolean getKey(int keyCode) {
+    /**
+     * Returns 0 or 1 depending on the button state.
+     * for example when the 'a'/'x' button is pressed the value will be 1.
+     * 
+     * @param buttonCode
+     * @return
+     */
+    public static int buttonStrength(int buttonCode) {
+        return buttonState(buttonCode) ? 1 : 0;
+    }
+
+    /**
+     * Returns true when the key is being pressed.
+     * 
+     * @param keyCode
+     * @return
+     */
+    public static boolean keyState(int keyCode) {
         return glfwGetKey(windowId, keyCode) == 1;
     }
 
-    public static boolean getKeyDown(int keyCode) {
-        boolean isDown = (getKey(keyCode) && !keys[keyCode]);
+    /**
+     * Returns true when the key has been pressed.
+     * 
+     * @param keyCode
+     * @return
+     */
+    public static boolean keyPressed(int keyCode) {
+        boolean isDown = (keyState(keyCode) && !keys[keyCode]);
         if (hasGamepad) {
             if (isDown) {
                 usingInput = InputTypes.KEYBOARD;
@@ -164,14 +205,31 @@ public class Input {
         return isDown;
     }
 
-    public static boolean getKeyUp(int keyCode) {
-        boolean isUp = (!getKey(keyCode) && keys[keyCode]);
+    /**
+     * Returns true when the key has been released.
+     * 
+     * @param keyCode
+     * @return
+     */
+    public static boolean keyRelease(int keyCode) {
+        boolean isUp = (!keyState(keyCode) && keys[keyCode]);
         if (hasGamepad) {
             if (isUp) {
                 usingInput = InputTypes.KEYBOARD;
             }
         }
         return isUp;
+    }
+
+    /**
+     * Returns 0 or 1 depending on the key state.
+     * for example when the 'a' key is pressed the value will be 1.
+     * 
+     * @param keyCode
+     * @return
+     */
+    public static int keyStrength(int keyCode) {
+        return keyState(keyCode) ? 1 : 0;
     }
 
     public static boolean isLeftTriggerPressed() {
@@ -184,12 +242,24 @@ public class Input {
         return isPressed;
     }
 
-    public static boolean getMouseButton(int mouseButton) {
+    /**
+     * Returns true when the mouse button is beeing pressed.
+     * 
+     * @param mouseButton
+     * @return
+     */
+    public static boolean mouseButtonState(int mouseButton) {
         return glfwGetMouseButton(windowId, mouseButton) == 1;
     }
 
-    public static boolean getMouseButtonDown(int mouseButton) {
-        boolean isDown = (getMouseButton(mouseButton) && !mouseButtons[mouseButton]);
+    /**
+     * Returns true when the mouse button has been pressed.
+     * 
+     * @param mouseButton
+     * @return
+     */
+    public static boolean mouseButtonPressed(int mouseButton) {
+        boolean isDown = (mouseButtonState(mouseButton) && !mouseButtons[mouseButton]);
         if (hasGamepad) {
             if (isDown) {
                 usingInput = InputTypes.KEYBOARD;
@@ -198,14 +268,31 @@ public class Input {
         return isDown;
     }
 
-    public static boolean getMouseButtonUp(int mouseButton) {
-        boolean isUp = (!getMouseButton(mouseButton) && mouseButtons[mouseButton]);
+    /**
+     * Returns true when the mouse button has been released.
+     * 
+     * @param mouseButton
+     * @return
+     */
+    public static boolean mouseButtonReleased(int mouseButton) {
+        boolean isUp = (!mouseButtonState(mouseButton) && mouseButtons[mouseButton]);
         if (hasGamepad) {
             if (isUp) {
                 usingInput = InputTypes.KEYBOARD;
             }
         }
         return isUp;
+    }
+
+    /**
+     * Returns 0 or 1 depending on the mouse button state.
+     * for example when the left mouse button is pressed the value will be 1.
+     * 
+     * @param mouseButton
+     * @return
+     */
+    public static int mouseButtonStrength(int mouseButton) {
+        return mouseButtonState(mouseButton) ? 1 : 0;
     }
 
     public static boolean isRightTriggerPressed() {
@@ -233,6 +320,10 @@ public class Input {
         return r;
     }
 
+    public static boolean isMouseMoving() {
+        return !mousePosition.equals(lastMousePosition);
+    }
+
     public static boolean noKeyPressed() {
         boolean r = true;
         for (int i = 32; i < GLFW_KEY_LAST; i++) {
@@ -247,17 +338,17 @@ public class Input {
         List<String> inputs = new ArrayList<>();
 
         for (int i = 0; i < GLFW_KEY_LAST; i++) {
-            if (getKey(i)) {
+            if (keyState(i)) {
                 inputs.add("KEY: " + i);
             }
         }
         for (int i = 0; i < GLFW_MOUSE_BUTTON_LAST; i++) {
-            if (getMouseButton(i)) {
+            if (mouseButtonState(i)) {
                 inputs.add("MOUSE: " + i);
             }
         }
         for (int i = 0; i < GLFW_GAMEPAD_BUTTON_LAST; i++) {
-            if (getButton(i)) {
+            if (buttonState(i)) {
                 inputs.add("GAMEPAD: " + i);
             }
         }
@@ -272,14 +363,14 @@ public class Input {
             usingInput = InputTypes.KEYBOARD;
         }
         for (int i = 32; i < GLFW_KEY_LAST; i++) {
-            keys[i] = getKey(i);
+            keys[i] = keyState(i);
             if (keys[i]) {
                 lastKey = i;
                 usingInput = InputTypes.KEYBOARD;
             }
         }
         for (int i = 0; i < GLFW_MOUSE_BUTTON_LAST; i++) {
-            mouseButtons[i] = getMouseButton(i);
+            mouseButtons[i] = mouseButtonState(i);
         }
 
         if (hasGamepad) {
@@ -290,7 +381,7 @@ public class Input {
                 }
             }
             for (int i = 0; i < GLFW_GAMEPAD_BUTTON_LAST; i++) {
-                buttons[i] = getButton(i);
+                buttons[i] = buttonState(i);
                 if (buttons[i]) {
                     usingInput = InputTypes.GAMEPAD;
                 }

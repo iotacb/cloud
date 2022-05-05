@@ -44,7 +44,7 @@ public class UIButton extends UIComponent {
     @Override
     public void update(float delta) {
         if (isHovered()) {
-            if (Input.getMouseButtonDown(0)) {
+            if (Input.mouseButtonPressed(0)) {
                 if (clickListener != null) {
                     clickListener.clicked(0, Input.getMouseX(), Input.getMouseY());
                 }

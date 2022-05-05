@@ -57,22 +57,6 @@ public class TileManager {
             Render.image(tile, tile.transform.position);
         }
 
-        int posX = Input.getMouseX();
-        int posY = Input.getMouseY();
-        for (int y = 0; y < tileStepY; y++) {
-            for (int x = 0; x < tileStepX; x++) {
-                if (posX > x * tileWidth && posX < (x + 1) * tileWidth && posY > y * tileHeight
-                        && posY < (y + 1) * tileHeight) {
-                    if (tiles.size() > 0) {
-                        posX = (int) (x * tileWidth);
-                        posY = (int) (y * tileHeight);
-                        Render.rect(posX + tileWidth / 2, posY + tileHeight / 2, tileWidth,
-                                tileHeight, CColor.WHITE.setAlpha(100));
-                    }
-                }
-            }
-        }
-
         if (!gridEnabled)
             return;
 
@@ -90,13 +74,33 @@ public class TileManager {
     }
 
     public void update(float delta) {
-        if (Input.getKeyDown(Keys.KEY_F7)) {
+        if (Input.keyPressed(Keys.KEY_F7)) {
             showGrid = !showGrid;
         }
     }
 
     public void enableGrid() {
         this.gridEnabled = true;
+    }
+
+    public float getTileWidth() {
+        return tileWidth;
+    }
+
+    public float getTileHeight() {
+        return tileHeight;
+    }
+
+    public float getTileStepX() {
+        return tileStepX;
+    }
+
+    public float getTileStepY() {
+        return tileStepY;
+    }
+
+    public List<Tile> getTiles() {
+        return tiles;
     }
 
 }

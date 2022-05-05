@@ -98,18 +98,6 @@ public class Window implements Observer {
 
 		this.clearColor = CColor.BLACK;
 
-		this.scene = new Scene(this) {
-			@Override
-			public void draw(float delta) {
-				super.draw(delta);
-			}
-
-			@Override
-			public void update(float delta) {
-				super.update(delta);
-			}
-		};
-
 		try {
 			initialize();
 		} catch (Exception e) {
@@ -270,6 +258,9 @@ public class Window implements Observer {
 	}
 
 	public void show() throws Exception {
+		if (scene == null) {
+			throw new Exception("No Scene is set. Use setScene() to set a Scene.");
+		}
 		while (!glfwWindowShouldClose(windowId)) {
 			Sync.sync(fpsCap);
 			updateScreen();

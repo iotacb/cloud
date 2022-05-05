@@ -1,4 +1,4 @@
-package de.kostari.cloud.utilities.files.asset.assets;
+package de.kostari.cloud.utilities.files.asset;
 
 public class Asset {
 

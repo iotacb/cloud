@@ -12,8 +12,8 @@ public class Vec {
     public Vec() {
     }
 
-    public Vec(float x) {
-        init(x, 0);
+    public Vec(float val) {
+        init(val, val);
     }
 
     public Vec(float x, float y) {
@@ -148,6 +148,24 @@ public class Vec {
         angle = (float) Math.toRadians(angle);
         float x = (float) Math.cos(angle);
         float y = (float) Math.sin(angle);
+        return new Vec(x, y);
+    }
+
+    public static Vec fromRange(float min, float max) {
+        float x = (float) Math.random() * (max - min) + min;
+        float y = (float) Math.random() * (max - min) + min;
+        return new Vec(x, y);
+    }
+
+    public static Vec fromRange(float minX, float maxX, float minY, float maxY) {
+        float x = (float) Math.random() * (maxX - minX) + minX;
+        float y = (float) Math.random() * (maxY - minY) + minY;
+        return new Vec(x, y);
+    }
+
+    public static Vec fromRange(Vec min, Vec max) {
+        float x = (float) Math.random() * (max.x - min.x) + min.x;
+        float y = (float) Math.random() * (max.y - min.y) + min.y;
         return new Vec(x, y);
     }
 
@@ -287,6 +305,12 @@ public class Vec {
     public Vec rotate(Vec origin, float angleDeg) {
         CMath.rotate(this, origin, angleDeg);
         return this;
+    }
+
+    public static Vec fromPolar(float radius, float angle) {
+        float x = radius * (float) Math.cos(angle);
+        float y = radius * (float) Math.sin(angle);
+        return new Vec(x, y);
     }
 
     @Override

@@ -233,4 +233,12 @@ public class CMath {
 		return a * h + b * (1 - h) - smoothing * h * (1 - h);
 	}
 
+	public static float fromRange(float min, float max) {
+		return random() * (max - min) + min;
+	}
+
+	public static float random() {
+		return (float) Math.random();
+	}
+
 }

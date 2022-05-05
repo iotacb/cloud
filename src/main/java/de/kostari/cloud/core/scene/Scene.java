@@ -98,7 +98,6 @@ public abstract class Scene {
 			} else {
 				Transform oldTransform = new Transform(object.transform.position);
 				oldTransform.rotation = object.transform.rotation;
-				oldTransform.scale = new Vec(object.transform.scale);
 				object.transform.position = new Vec(object.transform.position.x -
 						camera.transform.position.x,
 						object.transform.position.y - camera.transform.position.y);

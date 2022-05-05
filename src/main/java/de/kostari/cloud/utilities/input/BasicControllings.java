@@ -7,14 +7,14 @@ import de.kostari.cloud.utilities.math.Vec;
 public class BasicControllings {
 
     public static void moveTo(GameObject gameObject, float direction, float speed, int key) {
-        if (Input.getKey(key) || key == -1) {
+        if (Input.keyState(key) || key == -1) {
             gameObject.transform.position.x += CMath.lengthDirX(speed, direction);
             gameObject.transform.position.y += CMath.lengthDirY(speed, direction);
         }
     }
 
     public static void moveAway(GameObject gameObject, float direction, float speed, int key) {
-        if (Input.getKey(key) || key == -1) {
+        if (Input.keyState(key) || key == -1) {
             gameObject.transform.position.x -= CMath.lengthDirX(speed, direction);
             gameObject.transform.position.y -= CMath.lengthDirY(speed, direction);
         }
@@ -50,14 +50,12 @@ public class BasicControllings {
 
     public static void moveWithKeys(GameObject gameObject, int keyLeft, int keyRight, int keyUp, int keyDown,
             float speed) {
-        int moveX = Input.getKey(keyLeft) ? -1
-                : Input.getKey(keyRight) ? 1 : 0;
-        int moveY = Input.getKey(keyUp) ? -1
-                : Input.getKey(keyDown) ? 1 : 0;
 
-        Vec input = new Vec(moveX, moveY);
-        Vec direction = input.normalize();
-        Vec velocity = direction.mul(speed);
+        Vec input = new Vec();
+
+        input.x = Input.keyStrength(keyRight) - Input.keyStrength(keyLeft);
+        input.y = Input.keyStrength(keyDown) - Input.keyStrength(keyUp);
+        Vec velocity = input.normalize().mul(speed);
 
         gameObject.transform.position.add(velocity);
     }

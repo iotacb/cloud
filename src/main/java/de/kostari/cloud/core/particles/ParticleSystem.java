@@ -1,202 +1,340 @@
 package de.kostari.cloud.core.particles;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.kostari.cloud.core.particles.emitter.BoxEmitter;
-import de.kostari.cloud.core.particles.emitter.CircleEmitter;
-import de.kostari.cloud.core.particles.emitter.ParticleEmitter;
-import de.kostari.cloud.utilities.math.Randoms;
+import de.kostari.cloud.core.objects.GameObject;
+import de.kostari.cloud.core.particles.emitters.BoxEmitter;
+import de.kostari.cloud.core.particles.emitters.CircleEmitter;
+import de.kostari.cloud.core.particles.emitters.Emitter;
+import de.kostari.cloud.core.particles.emitters.PointEmitter;
+import de.kostari.cloud.core.window.Window;
+import de.kostari.cloud.utilities.color.CColor;
+import de.kostari.cloud.utilities.math.CMath;
 import de.kostari.cloud.utilities.math.Vec;
+import de.kostari.cloud.utilities.time.Timer;
 
-public class ParticleSystem {
+public class ParticleSystem extends GameObject {
 
-    private Particle particle;
-    private ParticleEmitter emitter;
+    private Vec particleStartDirection = new Vec();
+
+    /**
+     * Defines the speed of each particle
+     */
+    private Vec minParticleSpeed = new Vec(50, 50);
+    private Vec maxParticleSpeed = new Vec(200, 200);
+
+    /**
+     * Defines the gravity of the particle system.
+     */
+    private Vec gravity = new Vec(0, 2);
+
+    /**
+     * Defines the color of each particle
+     */
+    private CColor startParticleColor = CColor.WHITE;
+    private CColor endParticleColor = CColor.WHITE;
+
+    /**
+     * Defines the life time of each particle
+     */
+    private float minParticleLifeTime = 0;
+    private float maxParticleLifeTime = 2;
+
+    /**
+     * Defines the size of each particle
+     */
+    private float minParticleSize = 5;
+    private float maxParticleSize = 40;
+    private float endParticleSize = 0;
+
+    // Defines the start direction that each particle is moving
+    private float spread = 360;
+
+    /**
+     * When shot is set to true, there will be only one emission cycle.
+     * The particle system also has to be played manually.
+     */
+    private boolean shot = false;
+
+    /**
+     * Wherever the particles are emitted
+     */
+    private boolean emitting = true;
+
+    /**
+     * The amount of particles that will be emitted in one cycle
+     * The cycle is defined by the max particle life time
+     * Therefore one cycle is the max time that the particles will be alive
+     */
+    private int amount = 300;
+
+    /**
+     * Keeps track of the current emission cycle
+     */
+    private int currentCycle;
 
     private List<Particle> particles;
-    private List<Particle> particlesToRemove;
 
-    private int maxParticles;
+    private Particle particleToInstantiate;
 
-    private boolean loopSystem;
-    private boolean active;
+    private Timer cycleTime = new Timer();
 
-    private boolean drawDebug;
+    private Emitter emitter = new PointEmitter();
 
-    public ParticleSystem() {
-        init(new Particle(), new CircleEmitter(100), 200);
+    public ParticleSystem(Window window) {
+        super(window);
+        this.particles = new ArrayList<>();
+        this.particleToInstantiate = new Particle(window) {
+        };
     }
 
-    public ParticleSystem(Particle particle) {
-        init(particle, new CircleEmitter(100), 200);
-    }
-
-    public ParticleSystem(Particle particle, int maxParticles) {
-        init(particle, new CircleEmitter(100), maxParticles);
-    }
-
-    public ParticleSystem(int maxParticles) {
-        init(new Particle(), new CircleEmitter(100), maxParticles);
-    }
-
-    public ParticleSystem(Particle particle, ParticleEmitter emitter) {
-        init(particle, emitter, 200);
-    }
-
-    public ParticleSystem(ParticleEmitter emitter, int maxParticles) {
-        init(new Particle(), emitter, maxParticles);
-    }
-
-    public ParticleSystem(Particle particle, ParticleEmitter emitter, int maxParticles) {
-        init(particle, emitter, maxParticles);
-    }
-
-    private void init(Particle particle, ParticleEmitter emitter, int maxParticles) {
-        this.particle = particle;
-        this.emitter = emitter;
-        this.maxParticles = maxParticles;
-
-        this.loopSystem = true;
-        this.active = true;
-
-        this.particles = new ArrayList<Particle>();
-        this.particlesToRemove = new ArrayList<Particle>();
-    }
-
-    public void updateParticles(float delta) {
-
-        // update all particles
+    @Override
+    public void update(float delta) {
         for (int i = 0; i < particles.size(); i++) {
             Particle particle = particles.get(i);
             particle.update(delta);
-
-            if (particle.canDie()) {
-                particlesToRemove.add(particle);
+            if (particle.isDead()) {
+                particles.remove(i);
             }
         }
 
-        // add particles to the system if the system is active and looping
-        if (particles.size() < maxParticles && loopSystem && active) {
-            // add particles with the emission factor (1 particle per frame * emission
-            // factor)
-            for (int i = 0; i < getEmitter().getEmissionFactor(); i++) {
-                addParticle();
+        if (!emitting)
+            return;
+
+        if (!shot) {
+            // Amount of particles multiplied by current frame time
+            if (getCurrentAmountOfParticles() < amount) {
+                int particlesPerFrame = (int) Math.ceil(amount * delta);
+                for (int i = 0; i < particlesPerFrame; i++) {
+                    emitParticle();
+                }
+            }
+
+        } else {
+            if (currentCycle == 0) {
+                emitCycle();
             }
         }
 
-        for (int i = 0; i < particlesToRemove.size(); i++) {
-            Particle particle = particlesToRemove.get(i);
-            particles.remove(particle);
-            particlesToRemove.remove(particle);
-        }
+        super.update(delta);
     }
 
-    public void drawParticles(float delta) {
-        // draw all particles
+    @Override
+    public void draw(float delta) {
         for (int i = 0; i < particles.size(); i++) {
             Particle particle = particles.get(i);
             particle.draw(delta);
         }
-
-        if (!drawDebug)
-            return;
-        getEmitter().draw(delta);
-    }
-
-    public void addParticles(int amount) {
-        for (int i = 0; i < amount; i++) {
-            addParticle();
+        if (getEmitter().drawDebug) {
+            getEmitter().pos = transform.position;
+            getEmitter().draw(delta);
         }
-    }
-
-    private void addParticle() {
-        if (particle == null)
-            return;
-
-        Particle newParticle = null;
-        try {
-            // create a new instance of the given particle class
-            newParticle = getParticle().getClass().getDeclaredConstructor().newInstance();
-            newParticle.getStartTransform().position = getSpawnPosition();
-            newParticle.setRenderIndex(particles.size());
-            newParticle.create();
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-                | NoSuchMethodException | SecurityException e) {
-            e.printStackTrace();
-        }
-
-        if (newParticle == null)
-            return;
-
-        // add the particle instance to the particle system
-        particles.add(newParticle);
-
-        // sort the particles by their render index
-        particles.sort((p1, p2) -> {
-            return p1.getRenderIndex() - p2.getRenderIndex();
-        });
+        super.draw(delta);
     }
 
     /**
-     * Get a position to spawn the particle at, based on the emitter
-     * 
-     * @return
+     * Emit a particle cycle
      */
-    private Vec getSpawnPosition() {
-        if (getEmitter() instanceof BoxEmitter) {
-            BoxEmitter e = (BoxEmitter) getEmitter();
-            float randX = Randoms.randomFloat(e.getX(), e.getX() + e.getWidth());
-            float randY = Randoms.randomFloat(e.getY(), e.getY() + e.getHeight());
-            return new Vec(randX, randY);
+    public void emitCycle() {
+        currentCycle++;
+        for (int i = 0; i < amount; i++) {
+            emitParticle();
         }
-        return getEmitter().transform.position.clone();
     }
 
-    public void setEmitter(ParticleEmitter emitter) {
-        this.emitter = emitter;
+    /**
+     * Emit a new particle at the particle systems positon
+     */
+    public void emitParticle() {
+        Particle particle = particleToInstantiate.clone();
+        particle.transform.position.set(getEmitPosition());
+        particle.setDirection(Vec.fromAngle(CMath.fromRange(0, spread)));
+        particle.setSpeed(Vec.fromRange(minParticleSpeed, maxParticleSpeed));
+        particle.setLifeTime(CMath.fromRange(minParticleLifeTime, maxParticleLifeTime));
+        particle.setStartSize(CMath.fromRange(minParticleSize, maxParticleSize));
+        particle.setStartColor(CColor.RED);
+        particle.setEndColor(CColor.BLUE);
+        particle.setEndSize(endParticleSize);
+        particle.setGravity(gravity);
+        particle.start();
+        particles.add(particle);
     }
 
-    public ParticleEmitter getEmitter() {
-        return emitter;
+    /**
+     * Will play the particle system.
+     * The emission cycle will be reset.
+     * 
+     * @param killOld Will kill all particles that are still alive
+     */
+    public void play(boolean killOld) {
+        if (killOld) {
+            particles.clear();
+        }
+        currentCycle = 0;
+        cycleTime.reset();
+    }
+
+    public void clear() {
+        currentCycle = 0;
+        cycleTime.reset();
+        particles.clear();
+    }
+
+    private Vec getEmitPosition() {
+        if (emitter instanceof PointEmitter) {
+            return transform.position;
+        } else if (emitter instanceof CircleEmitter) {
+            CircleEmitter e = (CircleEmitter) emitter;
+            float r = (float) ((e.getSize() / 2) * Math.sqrt(CMath.random()));
+            float theta = CMath.random() * CMath.TAU;
+            return transform.position.clone().add(Vec.fromPolar(r, theta));
+        } else if (emitter instanceof BoxEmitter) {
+            BoxEmitter e = (BoxEmitter) emitter;
+            Vec pos = Vec.fromRange(new Vec(), e.getSize()).sub(e.getSize().clone().mul(0.5F));
+            return transform.position.clone().add(pos);
+        } else {
+            return transform.position;
+        }
+    }
+
+    public float getMaxParticleLifeTime() {
+        return maxParticleLifeTime;
+    }
+
+    public Vec getMaxParticleSpeed() {
+        return maxParticleSpeed;
+    }
+
+    public float getMinParticleLifeTime() {
+        return minParticleLifeTime;
+    }
+
+    public Vec getMinParticleSpeed() {
+        return minParticleSpeed;
+    }
+
+    public Vec getParticleStartDirection() {
+        return particleStartDirection;
+    }
+
+    public float getMaxParticleSize() {
+        return maxParticleSize;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public int getCurrentCycle() {
+        return currentCycle;
+    }
+
+    public CColor getEndParticleColor() {
+        return endParticleColor;
+    }
+
+    public float getEndParticleSize() {
+        return endParticleSize;
+    }
+
+    public Vec getGravity() {
+        return gravity;
+    }
+
+    public float getMinParticleSize() {
+        return minParticleSize;
+    }
+
+    public CColor getStartParticleColor() {
+        return startParticleColor;
     }
 
     public List<Particle> getParticles() {
         return particles;
     }
 
-    public void setLoopSystem(boolean loopSystem) {
-        this.loopSystem = loopSystem;
+    public float getSpread() {
+        return spread;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 
-    public void pause() {
-        setActive(false);
+    public void setEndParticleColor(CColor endParticleColor) {
+        this.endParticleColor = endParticleColor;
     }
 
-    public void play() {
-        setActive(true);
+    public void setEndParticleSize(float endParticleSize) {
+        this.endParticleSize = endParticleSize;
     }
 
-    public Particle getParticle() {
-        return particle;
+    public void setGravity(Vec gravity) {
+        this.gravity = gravity;
     }
 
-    public void drawDebug() {
-        drawDebug = true;
-        getEmitter().drawDebug();
+    public void setMaxParticleLifeTime(float maxParticleLifeTime) {
+        this.maxParticleLifeTime = maxParticleLifeTime;
     }
 
-    public void setPosition(float x, float y) {
-        getEmitter().transform.position.set(x, y);
+    public void setMaxParticleSize(float maxParticleSize) {
+        this.maxParticleSize = maxParticleSize;
     }
 
-    public void setPosition(Vec pos) {
-        getEmitter().transform.position.set(pos);
+    public void setMaxParticleSpeed(Vec maxParticleSpeed) {
+        this.maxParticleSpeed = maxParticleSpeed;
     }
 
+    public void setMinParticleLifeTime(float minParticleLifeTime) {
+        this.minParticleLifeTime = minParticleLifeTime;
+    }
+
+    public void setMinParticleSize(float minParticleSize) {
+        this.minParticleSize = minParticleSize;
+    }
+
+    public void setMinParticleSpeed(Vec minParticleSpeed) {
+        this.minParticleSpeed = minParticleSpeed;
+    }
+
+    public void setParticleStartDirection(Vec particleStartDirection) {
+        this.particleStartDirection = particleStartDirection;
+    }
+
+    public void setShot(boolean shot) {
+        this.shot = shot;
+    }
+
+    public void setSpread(float spread) {
+        this.spread = spread;
+    }
+
+    public void setStartParticleColor(CColor startParticleColor) {
+        this.startParticleColor = startParticleColor;
+    }
+
+    public int getCurrentAmountOfParticles() {
+        return particles.size();
+    }
+
+    public void setParticle(Particle particle) {
+        this.particleToInstantiate = particle;
+    }
+
+    public void setEmitting(boolean emitting) {
+        this.emitting = emitting;
+    }
+
+    public boolean isEmitting() {
+        return emitting;
+    }
+
+    public Emitter getEmitter() {
+        return emitter;
+    }
+
+    public void setEmitter(Emitter emitter) {
+        this.emitter = emitter;
+    }
 }

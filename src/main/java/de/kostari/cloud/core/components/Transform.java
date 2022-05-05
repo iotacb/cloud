@@ -5,42 +5,35 @@ import de.kostari.cloud.utilities.math.Vec;
 public class Transform extends Component {
 
     public Vec position;
-    public Vec scale;
     public float rotation;
 
     public Transform() {
-        init(new Vec(), new Vec(), 0);
+        init(new Vec(), 0);
     }
 
     public Transform(Transform transform) {
-        init(new Vec(transform.position), new Vec(transform.scale), transform.rotation);
+        init(new Vec(transform.position), transform.rotation);
     }
 
     public Transform(Vec position) {
-        init(position, new Vec(), 0);
+        init(position, 0);
     }
 
-    public Transform(Vec position, Vec scale) {
-        init(position, scale, 0);
+    public Transform(Vec position, float rotation) {
+        init(position, rotation);
     }
 
-    public Transform(Vec position, Vec scale, float rotation) {
-        init(position, scale, rotation);
-    }
-
-    public void init(Vec position, Vec scale, float rotation) {
+    public void init(Vec position, float rotation) {
         this.position = position;
-        this.scale = scale;
         this.rotation = rotation;
     }
 
     public Transform copy() {
-        return new Transform(new Vec(this.position), new Vec(this.scale), this.rotation);
+        return new Transform(new Vec(this.position), this.rotation);
     }
 
     public void copy(Transform to) {
         to.position.set(this.position);
-        to.scale.set(this.scale);
     }
 
     @Override
@@ -51,7 +44,7 @@ public class Transform extends Component {
             return false;
 
         Transform t = (Transform) o;
-        return t.position.equals(this.position) && t.scale.equals(this.scale);
+        return t.position.equals(this.position) && t.rotation == this.rotation;
     }
 
     @Override
