@@ -1,13 +1,7 @@
-package de.kostari.demo;
-
 import de.kostari.cloud.core.particles.ParticleSystem;
 import de.kostari.cloud.core.particles.emitters.BoxEmitter;
 import de.kostari.cloud.core.scene.Scene;
 import de.kostari.cloud.core.window.Window;
-import de.kostari.cloud.utilities.color.CColor;
-import de.kostari.cloud.utilities.input.Input;
-import de.kostari.cloud.utilities.input.Keys;
-import de.kostari.cloud.utilities.math.CMath;
 import de.kostari.cloud.utilities.math.Vec;
 import de.kostari.cloud.utilities.render.text.Fonts;
 
@@ -27,16 +21,13 @@ public class ParticleScene extends Scene {
         particleSystem.setMaxParticleLifeTime(3);
 
         // Set the gravity of the particle system
-        particleSystem.setGravity(new Vec(2, 5));
+        particleSystem.setGravity(new Vec(2, 2));
 
         // Set the amount of particles per cycle
-        particleSystem.setAmount(4000);
+        particleSystem.setAmount(600);
 
         // Set the min particle speed
         particleSystem.setMaxParticleSpeed(new Vec(200, 0));
-
-        particleSystem.setStartParticleColor(CColor.GREEN);
-        particleSystem.setEndParticleColor(CColor.MAGENTA);
 
         // Update the particle systems position
         particleSystem.transform.position.set(0, -20);
@@ -44,8 +35,11 @@ public class ParticleScene extends Scene {
 
     @Override
     public void draw(float delta) {
+        // Draw the particles
         particleSystem.draw(delta);
-        Fonts.sans32.drawTextShadow("FPS: " + getWindow().getFPS(), 12, 12);
+
+        // Draw information
+        Fonts.sans32.drawTextShadow("FPS: " + window.getFPS(), 12, 12);
         Fonts.sans32.drawTextShadow("Particles: " +
                 particleSystem.getCurrentAmountOfParticles(), 12, 44);
         super.draw(delta);
@@ -53,11 +47,8 @@ public class ParticleScene extends Scene {
 
     @Override
     public void update(float delta) {
+        // Update the particles
         particleSystem.update(delta);
-
-        if (Input.keyPressed(Keys.KEY_ESCAPE)) {
-            System.exit(0);
-        }
         super.update(delta);
     }
 

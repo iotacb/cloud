@@ -4,11 +4,14 @@ import org.lwjgl.glfw.GLFW;
 
 public class FrameTimer {
 
-    double lastLoopTime;
+    private double lastLoopTime;
 
-    float timeCount;
+    private float timeCount;
 
-    int fps, fpsCount, ups, upsCount;
+    private int fps;
+    private int fpsCount;
+    private int ups;
+    private int upsCount;
 
     public FrameTimer() {
         lastLoopTime = getTime();

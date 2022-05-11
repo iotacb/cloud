@@ -10,7 +10,8 @@ import de.kostari.cloud.core.components.Transform;
 import de.kostari.cloud.core.window.Window;
 
 public class GameObject {
-    public Window window;
+
+    private Window window;
 
     public String tag;
     public Transform transform;
@@ -207,5 +208,9 @@ public class GameObject {
 
         GameObject gameObject = (GameObject) o;
         return gameObject.id == this.id;
+    }
+
+    public Window getWindow() {
+        return window;
     }
 }

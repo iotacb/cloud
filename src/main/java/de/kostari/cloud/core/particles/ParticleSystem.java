@@ -153,8 +153,8 @@ public class ParticleSystem extends GameObject {
         particle.setSpeed(Vec.fromRange(minParticleSpeed, maxParticleSpeed));
         particle.setLifeTime(CMath.fromRange(minParticleLifeTime, maxParticleLifeTime));
         particle.setStartSize(CMath.fromRange(minParticleSize, maxParticleSize));
-        particle.setStartColor(CColor.RED);
-        particle.setEndColor(CColor.BLUE);
+        particle.setStartColor(startParticleColor);
+        particle.setEndColor(endParticleColor);
         particle.setEndSize(endParticleSize);
         particle.setGravity(gravity);
         particle.start();

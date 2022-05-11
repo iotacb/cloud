@@ -24,8 +24,8 @@ public class Camera extends GameObject {
      * @param damping the damping of the camera movement
      */
     public void followObject(GameObject object, float damping) {
-        float xOffset = window.getWidth() / 2;
-        float yOffset = window.getHeight() / 2;
+        float xOffset = getWindow().getWidth() / 2;
+        float yOffset = getWindow().getHeight() / 2;
 
         float objCenterWidth = object.getComponent(Bounds.class).getWidth() / 2;
         float objCenterHeight = object.getComponent(Bounds.class).getHeight() / 2;
@@ -59,8 +59,8 @@ public class Camera extends GameObject {
     public void draw(float delta) {
         if (!doDrawDebug())
             return;
-        Render.rect(window.getWidth() / 2, window.getHeight() / 2, posXDiff, 2, CColor.GREEN);
-        Render.rect(window.getWidth() / 2, window.getHeight() / 2, 2, posYDiff, CColor.RED);
+        Render.rect(getWindow().getWidth() / 2, getWindow().getHeight() / 2, posXDiff, 2, CColor.GREEN);
+        Render.rect(getWindow().getWidth() / 2, getWindow().getHeight() / 2, 2, posYDiff, CColor.RED);
         super.draw(delta);
     }
 

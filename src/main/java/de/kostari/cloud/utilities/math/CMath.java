@@ -241,4 +241,28 @@ public class CMath {
 		return (float) Math.random();
 	}
 
+	public static float magnitude(float x, float y) {
+		return (float) Math.sqrt(x * x + y * y);
+	}
+
+	public static float magnitudeSq(float x, float y) {
+		return x * x + y * y;
+	}
+
+	public static float magnitude(float x) {
+		return (float) Math.sqrt(x * x);
+	}
+
+	public static float magnitudeSq(float x) {
+		return x * x;
+	}
+
+	public static float normalize(float x) {
+		float magnitude = magnitude(x);
+		if (magnitude != 0 && magnitude != 1) {
+			x /= magnitude;
+		}
+		return x;
+	}
+
 }

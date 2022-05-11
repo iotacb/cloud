@@ -153,7 +153,7 @@ public class Particle extends GameObject {
     }
 
     public Particle clone() {
-        return new Particle(window) {
+        return new Particle(getWindow()) {
         };
     }
 

@@ -11,10 +11,14 @@ public class CGradient {
         colors.put(position, color);
     }
 
-    public CColor getColorByPosition(float position) {
-        for (Map.Entry<Float, CColor> entry : colors.entrySet()) {
-            if (entry.getKey() > position) {
-                return entry.getValue();
+    public CColor getColor(float position) {
+        return colors.get(position);
+    }
+
+    private CColor getColorByPosition(float position) {
+        for (float f : colors.keySet()) {
+            if (f > position) {
+                return colors.get(f);
             }
         }
         return null;

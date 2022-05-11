@@ -15,7 +15,7 @@ import de.kostari.cloud.utilities.math.Vec;
 
 public abstract class Scene {
 
-	public Window window;
+	private Window window;
 
 	private int idCounter;
 
@@ -253,6 +253,10 @@ public abstract class Scene {
 
 	public boolean isPlaying() {
 		return isPlaying;
+	}
+
+	public Window getWindow() {
+		return window;
 	}
 
 }
