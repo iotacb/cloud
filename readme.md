@@ -109,4 +109,4 @@ public void draw(float delta) {
 If everything worked and you did everything correctly
 you should see a white rectangle in the center of your window.
 
-If you want to learn more go head to the wiki [here]().
+If you want to learn more go head to the documentation [here](https://iotacb.github.io/docs.cloud/).
