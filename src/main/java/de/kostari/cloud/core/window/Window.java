@@ -27,6 +27,7 @@ import org.lwjgl.system.Platform;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 
+import de.kostari.cloud.core.exceptions.SceneException;
 import de.kostari.cloud.core.objects.GameObject;
 import de.kostari.cloud.core.observers.EventSystem;
 import de.kostari.cloud.core.observers.Observer;
@@ -259,7 +260,7 @@ public class Window implements Observer {
 
 	public void show() throws Exception {
 		if (scene == null) {
-			throw new Exception("No Scene is set. Use setScene() to set a Scene.");
+			throw new SceneException("No Scene set!");
 		}
 		while (!glfwWindowShouldClose(windowId)) {
 			Sync.sync(fpsCap);

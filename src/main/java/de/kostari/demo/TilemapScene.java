@@ -5,17 +5,16 @@ import org.lwjgl.stb.STBImageResize;
 import de.kostari.cloud.core.scene.Scene;
 import de.kostari.cloud.core.window.Window;
 import de.kostari.cloud.utilities.color.CColor;
-import de.kostari.cloud.utilities.files.asset.assets.Image;
 import de.kostari.cloud.utilities.input.Input;
 import de.kostari.cloud.utilities.input.Keys;
 import de.kostari.cloud.utilities.render.Render;
+import de.kostari.cloud.utilities.tileset.Tile;
 import de.kostari.cloud.utilities.tileset.TileManager;
 import de.kostari.cloud.utilities.tileset.Tileset;
 
 public class TilemapScene extends Scene {
 
     private Tileset tileset = new Tileset("tileset.png", 16, 16);
-    private Image image = new Image("tt.png");
 
     private TileManager tileManager;
 
@@ -25,7 +24,6 @@ public class TilemapScene extends Scene {
         super(window);
 
         tileset.resizeTiles(64, 64, STBImageResize.STBIR_FILTER_BOX);
-        image.resize(128, 128);
 
         this.tileManager = new TileManager(window, 64, 64);
         tileManager.enableGrid();
@@ -33,27 +31,40 @@ public class TilemapScene extends Scene {
 
     @Override
     public void draw(float delta) {
-        tileManager.draw(delta);
+        // tileManager.draw(delta);
 
-        int posX = Input.getMouseX();
-        int posY = Input.getMouseY();
-        for (int y = 0; y < tileManager.getTileStepY(); y++) {
-            for (int x = 0; x < tileManager.getTileStepX(); x++) {
-                if (posX > x * tileManager.getTileWidth() && posX < (x + 1) * tileManager.getTileWidth()
-                        && posY > y * tileManager.getTileHeight()
-                        && posY < (y + 1) * tileManager.getTileHeight()) {
-                    posX = (int) (x * tileManager.getTileWidth());
-                    posY = (int) (y * tileManager.getTileHeight());
-                    // Render.rect(posX + tileManager.getTileWidth() / 2, posY +
-                    // tileManager.getTileHeight() / 2,
-                    // tileManager.getTileWidth(),
-                    // tileManager.getTileHeight(), CColor.WHITE.setAlpha(100));
-                    Render.image(tileset.getTiles()[currentTile], posX + tileManager.getTileWidth() / 2,
-                            posY + tileManager.getTileHeight() / 2, CColor.WHITE.setAlpha(100));
+        // int posX = Input.getMouseX();
+        // int posY = Input.getMouseY();
+        // for (int y = 0; y < tileManager.getTileStepY(); y++) {
+        // for (int x = 0; x < tileManager.getTileStepX(); x++) {
+        // if (posX > x * tileManager.getTileWidth() && posX < (x + 1) *
+        // tileManager.getTileWidth()
+        // && posY > y * tileManager.getTileHeight()
+        // && posY < (y + 1) * tileManager.getTileHeight()) {
+        // posX = (int) (x * tileManager.getTileWidth());
+        // posY = (int) (y * tileManager.getTileHeight());
+        // // Render.rect(posX + tileManager.getTileWidth() / 2, posY +
+        // // tileManager.getTileHeight() / 2,
+        // // tileManager.getTileWidth(),
+        // // tileManager.getTileHeight(), CColor.WHITE.setAlpha(100));
+        // Render.image(tileset.getTiles()[currentTile], posX +
+        // tileManager.getTileWidth() / 2,
+        // posY + tileManager.getTileHeight() / 2, CColor.WHITE.setAlpha(100));
 
-                }
+        // }
+        // }
+        // }
+
+        for (int i = 0; i < tileset.getTiles().length; i++) {
+            Tile tile = tileset.getTiles()[i];
+            if (tile != null) {
+                // Render.image(tile, getWindow().getWidth() / 2 - (tile.getWidth() * i),
+                // getWindow().getHeight() / 2);
             }
         }
+
+        Render.rect(getWindow().getHalfSize(), 200, 200);
+
         super.draw(delta);
     }
 
@@ -62,6 +73,10 @@ public class TilemapScene extends Scene {
         tileManager.update(delta);
         if (Input.mouseButtonPressed(0)) {
             tileManager.addTile(tileset.getTiles()[currentTile], Input.getMouseX(), Input.getMouseY());
+        }
+
+        if (Input.keyPressed(Keys.KEY_SPACE)) {
+            System.out.println("We just pressed the spacebar!");
         }
 
         if (Input.keyPressed(Keys.KEY_1)) {

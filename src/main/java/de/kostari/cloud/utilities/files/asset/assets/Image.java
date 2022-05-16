@@ -113,6 +113,9 @@ public class Image extends Asset {
                 STBIR_EDGE_CLAMP,
                 filter,
                 STBIR_COLORSPACE_SRGB);
+
+        System.out.println(buffer);
+
         pixelBuffer = buffer.duplicate();
         this.width = width;
         this.height = height;

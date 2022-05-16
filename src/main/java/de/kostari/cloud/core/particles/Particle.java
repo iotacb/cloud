@@ -3,6 +3,7 @@ package de.kostari.cloud.core.particles;
 import de.kostari.cloud.core.objects.GameObject;
 import de.kostari.cloud.core.window.Window;
 import de.kostari.cloud.utilities.color.CColor;
+import de.kostari.cloud.utilities.files.asset.assets.Image;
 import de.kostari.cloud.utilities.math.CMath;
 import de.kostari.cloud.utilities.math.Vec;
 import de.kostari.cloud.utilities.render.Render;
@@ -18,12 +19,18 @@ public class Particle extends GameObject {
     private CColor endColor = CColor.WHITE;
     private CColor currentColor = startColor;
 
+    private Image texture;
+
     private float maxLifeTime;
     private float currentLifeTime;
 
     private float startSize;
     private float endSize;
     private float size;
+
+    private float startRotation;
+    private float endRotation;
+    private float rotation;
 
     public Particle(Window window) {
         super(window);
@@ -35,7 +42,16 @@ public class Particle extends GameObject {
 
     @Override
     public void draw(float delta) {
-        Render.circle(transform.position, size, currentColor);
+        Render.push();
+        Render.translate(transform.position);
+        Render.rotate(rotation);
+        if (texture == null) {
+            Render.circle(0, 0, size, currentColor);
+        } else {
+            Render.image(texture, new Vec(), size, size);
+        }
+        Render.translate(transform.position.clone().mirror());
+        Render.pop();
         super.draw(delta);
     }
 
@@ -47,6 +63,7 @@ public class Particle extends GameObject {
 
         // Update the particle size of the life time
         size = (startSize - endSize) * (1.0F - getLifeTimePercentage());
+        rotation = (startRotation - endRotation) * (1.0F - getLifeTimePercentage());
         currentColor = CColor.transition(startColor, endColor, getLifeTimePercentage());
 
         moveParticle(delta);
@@ -95,6 +112,15 @@ public class Particle extends GameObject {
         this.endSize = size;
     }
 
+    public void setStartRotation(float rotation) {
+        this.startRotation = rotation;
+        this.rotation = rotation;
+    }
+
+    public void setEndRotation(float endRotation) {
+        this.endRotation = endRotation;
+    }
+
     public void setStartColor(CColor startColor) {
         this.startColor = startColor;
         this.currentColor = startColor;
@@ -110,6 +136,14 @@ public class Particle extends GameObject {
 
     public void setMaxLifeTime(float maxLifeTime) {
         this.maxLifeTime = maxLifeTime;
+    }
+
+    public void setTexture(Image texture) {
+        this.texture = texture;
+    }
+
+    public Image getTexture() {
+        return texture;
     }
 
     public CColor getStartColor() {

@@ -10,6 +10,7 @@ import de.kostari.cloud.core.particles.emitters.Emitter;
 import de.kostari.cloud.core.particles.emitters.PointEmitter;
 import de.kostari.cloud.core.window.Window;
 import de.kostari.cloud.utilities.color.CColor;
+import de.kostari.cloud.utilities.files.asset.assets.Image;
 import de.kostari.cloud.utilities.math.CMath;
 import de.kostari.cloud.utilities.math.Vec;
 import de.kostari.cloud.utilities.time.Timer;
@@ -48,6 +49,10 @@ public class ParticleSystem extends GameObject {
     private float maxParticleSize = 40;
     private float endParticleSize = 0;
 
+    private float minParticleRotation = -360;
+    private float maxParticleRotation = 360;
+    private float endParticleRotation = 0;
+
     // Defines the start direction that each particle is moving
     private float spread = 360;
 
@@ -81,6 +86,8 @@ public class ParticleSystem extends GameObject {
     private Timer cycleTime = new Timer();
 
     private Emitter emitter = new PointEmitter();
+
+    private List<Image> particleTextures = new ArrayList<>();
 
     public ParticleSystem(Window window) {
         super(window);
@@ -153,10 +160,15 @@ public class ParticleSystem extends GameObject {
         particle.setSpeed(Vec.fromRange(minParticleSpeed, maxParticleSpeed));
         particle.setLifeTime(CMath.fromRange(minParticleLifeTime, maxParticleLifeTime));
         particle.setStartSize(CMath.fromRange(minParticleSize, maxParticleSize));
+        particle.setStartRotation(CMath.fromRange(minParticleRotation, maxParticleRotation));
         particle.setStartColor(startParticleColor);
         particle.setEndColor(endParticleColor);
         particle.setEndSize(endParticleSize);
         particle.setGravity(gravity);
+        Image texture = getRandomTexture();
+        if (texture != null) {
+            particle.setTexture(texture);
+        }
         particle.start();
         particles.add(particle);
     }
@@ -185,17 +197,28 @@ public class ParticleSystem extends GameObject {
         if (emitter instanceof PointEmitter) {
             return transform.position;
         } else if (emitter instanceof CircleEmitter) {
+
+            // Get a random position inside of the circle emitter
             CircleEmitter e = (CircleEmitter) emitter;
             float r = (float) ((e.getSize() / 2) * Math.sqrt(CMath.random()));
             float theta = CMath.random() * CMath.TAU;
             return transform.position.clone().add(Vec.fromPolar(r, theta));
         } else if (emitter instanceof BoxEmitter) {
+
+            // Get a random position inside of the box emitter
             BoxEmitter e = (BoxEmitter) emitter;
             Vec pos = Vec.fromRange(new Vec(), e.getSize()).sub(e.getSize().clone().mul(0.5F));
             return transform.position.clone().add(pos);
         } else {
             return transform.position;
         }
+    }
+
+    private Image getRandomTexture() {
+        if (particleTextures.isEmpty()) {
+            return null;
+        }
+        return particleTextures.get((int) (CMath.random() * particleTextures.size()));
     }
 
     public float getMaxParticleLifeTime() {
@@ -336,5 +359,19 @@ public class ParticleSystem extends GameObject {
 
     public void setEmitter(Emitter emitter) {
         this.emitter = emitter;
+    }
+
+    public List<Image> getParticleTextures() {
+        return particleTextures;
+    }
+
+    public void addParticleTexure(Image particleTexture) {
+        particleTextures.add(particleTexture);
+    }
+
+    public void addParticleTexures(Image... particleTextures) {
+        for (int i = 0; i < particleTextures.length; i++) {
+            this.particleTextures.add(particleTextures[i]);
+        }
     }
 }

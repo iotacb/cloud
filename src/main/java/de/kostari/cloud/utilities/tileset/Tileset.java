@@ -1,5 +1,6 @@
 package de.kostari.cloud.utilities.tileset;
 
+import java.io.FileNotFoundException;
 import java.nio.ByteBuffer;
 
 import de.kostari.cloud.utilities.files.asset.assets.Image;
@@ -13,16 +14,25 @@ public class Tileset {
     public Tileset(String path, float tileWidth, float tileHeight) {
         this.tilesetImage = new Image(path);
 
-        float tilesetWidth = tilesetImage.getWidth();
-        // float tilesetHeight = tilesetImage.getHeight();
+        if (tilesetImage.getPixelBuffer() == null) {
+            try {
+                throw new FileNotFoundException("specified image file not found");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        } else {
+            float tilesetWidth = tilesetImage.getWidth();
+            float tilesetHeight = tilesetImage.getHeight();
 
-        // Calculate the amount of tiles
-        int tilesX = (int) (tilesetWidth / tileWidth);
-        // int tilesY = (int) (tilesetHeight / tileHeight);
+            // Calculate the amount of tiles
+            int tilesX = (int) (tilesetWidth / tileWidth);
+            int tilesY = (int) (tilesetHeight > tileHeight ? (tilesetHeight / tileHeight) : 0);
 
-        // Allocate an array with the amount of tiles
-        this.tiles = new Tile[tilesX];
-        sliceTileset(tiles, tileWidth, tileHeight);
+            // Allocate an array with the amount of tiles
+            this.tiles = new Tile[tilesX + tilesY];
+            sliceTileset(tiles, tileWidth, tileHeight);
+        }
+
     }
 
     public Image getTilesetImage() {
@@ -71,6 +81,9 @@ public class Tileset {
     }
 
     public Tile[] getTiles() {
+        if (tiles == null) {
+            throw new NullPointerException("tileset is null");
+        }
         return tiles;
     }
 
