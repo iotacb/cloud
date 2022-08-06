@@ -6,7 +6,7 @@
 
 ## What is Cloud?
 
-Cloud is a 2D game engine for Java. It's using [LWJGL]() under to hood. Currently it's still in an early phase and should only be used for small projects.
+Cloud is a 2D game engine for Java. It's using [LWJGL]() under the hood. Currently it's still in an early phase and should only be used for small projects.
 
 ## What's possible?
 
@@ -15,7 +15,7 @@ Cloud is a 2D game engine for Java. It's using [LWJGL]() under to hood. Currentl
 The main focus of Cloud is to make it easier to work with LWJGL.
 
 It's mainly a wrapper for the basic functionality of LWJGL.
-Which means, if a feature is missing you can easily add it to the engine either by forking the repository or directly in your project.
+Which means, if a feature is missing you can easily add it to the engine by either forking the repository and change the engine code or add a feature directly in your project.
 
 ## What's included
 
@@ -35,16 +35,15 @@ Gizmos
 ## Current issues
 
 Cloud currenlty uses AWT classes. This causes the engine to not work
-properly on Mac OS devices. This will be fixed one all AWT classes will
-be replaced with the STB alternative.
+properly on Mac OS devices. This will be fixed when all AWT classes are replaced with the STB alternative.
 
 Rendering is currently not optimized, because batch rendering is currently not supported. This will also be fixed in a later release.
 
-If you have an issue not listed here,please create an inssue on the repository issues page [here]().
+If you have an issue not listed here, please create an issue on the repository issues page [here]().
 
 ## How can I get started?
 
-First you have to download the compiled jar file, or clone the repository.
+Download the compiled jar file [here](), or clone the repository.
 
 Then add the jar file to your projects class path, or import the cloned repository.
 
@@ -109,4 +108,4 @@ public void draw(float delta) {
 If everything worked and you did everything correctly
 you should see a white rectangle in the center of your window.
 
-If you want to learn more go head to the wiki [here]().
+If you want to learn more go head to the documentation [here](https://iotacb.github.io/docs.cloud/).
