@@ -34,9 +34,6 @@ public class Particle extends GameObject {
 
     public Particle(Window window) {
         super(window);
-    }
-
-    public void start() {
         velocity = direction.clone().mul(speed);
     }
 

@@ -1,19 +1,19 @@
 package de.kostari.demo;
 
 import de.kostari.cloud.core.window.Window;
-// import de.kostari.cloud.utilities.color.CColor;
+import de.kostari.cloud.utilities.render.RenderType;
 
 public class App {
 
     public static void main(String[] args) {
         // Create a new window
-        Window window = new Window(1280, 720, "Demo", false, false);
+        Window window = new Window(1280, 720, "Sand", true, false);
 
         // Enable vsync
-        window.useVsync(true);
-        window.setScene(TilemapScene.class);
-        // window.setScene(ParticleScene.class);
-        // window.setClearColor(CColor.BLACK.setAlpha(30));
+        // window.setFPSCap(60);
+        window.setScene(SandScene.class);
+
+        window.setRenderType(RenderType.BATCHED);
 
         // Show the window
         try {

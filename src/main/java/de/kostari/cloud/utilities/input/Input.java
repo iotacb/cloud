@@ -324,6 +324,16 @@ public class Input {
         return !mousePosition.equals(lastMousePosition);
     }
 
+    public static boolean isMousePressed() {
+        boolean pressed = false;
+        for (int i = 0; i < GLFW_MOUSE_BUTTON_LAST; i++) {
+            if (mouseButtons[i]) {
+                pressed = true;
+            }
+        }
+        return pressed;
+    }
+
     public static boolean noKeyPressed() {
         boolean r = true;
         for (int i = 32; i < GLFW_KEY_LAST; i++) {

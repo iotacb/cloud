@@ -58,6 +58,9 @@ public class UIComponent {
         components.forEach(component -> {
             component.update(delta);
         });
+        children.forEach(children -> {
+            children.update(delta);
+        });
     }
 
     public void draw(float delta) {
@@ -65,6 +68,9 @@ public class UIComponent {
             return;
         components.forEach(component -> {
             component.draw(delta);
+        });
+        children.forEach(children -> {
+            children.draw(delta);
         });
     }
 

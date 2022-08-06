@@ -161,6 +161,7 @@ public class ParticleSystem extends GameObject {
         particle.setLifeTime(CMath.fromRange(minParticleLifeTime, maxParticleLifeTime));
         particle.setStartSize(CMath.fromRange(minParticleSize, maxParticleSize));
         particle.setStartRotation(CMath.fromRange(minParticleRotation, maxParticleRotation));
+        particle.setEndRotation(endParticleRotation);
         particle.setStartColor(startParticleColor);
         particle.setEndColor(endParticleColor);
         particle.setEndSize(endParticleSize);

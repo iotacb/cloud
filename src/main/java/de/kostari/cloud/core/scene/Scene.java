@@ -12,6 +12,9 @@ import de.kostari.cloud.core.physics.Rigidbody;
 import de.kostari.cloud.core.ui.UIComponent;
 import de.kostari.cloud.core.window.Window;
 import de.kostari.cloud.utilities.math.Vec;
+import de.kostari.cloud.utilities.render.Render;
+import de.kostari.cloud.utilities.render.RenderType;
+import de.kostari.cloud.utilities.render.batched.Renderer;
 
 public abstract class Scene {
 
@@ -105,6 +108,10 @@ public abstract class Scene {
 				object.draw(delta);
 				object.transform = oldTransform;
 			}
+		}
+		if (window.getRenderType() == RenderType.BATCHED) {
+			Renderer.render();
+			Renderer.clearBatches();
 		}
 	}
 

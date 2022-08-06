@@ -39,6 +39,7 @@ import de.kostari.cloud.utilities.color.CColor;
 import de.kostari.cloud.utilities.input.Input;
 import de.kostari.cloud.utilities.math.Vec;
 import de.kostari.cloud.utilities.render.Render;
+import de.kostari.cloud.utilities.render.RenderType;
 
 /**
  * @author Kostari
@@ -79,6 +80,8 @@ public class Window implements Observer {
 
 	private CColor clearColor;
 
+	private RenderType renderType;
+
 	public Window(int width, int height, String title) {
 		createWindow(width, height, title, false, false);
 	}
@@ -98,6 +101,7 @@ public class Window implements Observer {
 		this.size = new Vec(width, height);
 
 		this.clearColor = CColor.BLACK;
+		this.renderType = RenderType.SIMPLE;
 
 		try {
 			initialize();
@@ -489,6 +493,14 @@ public class Window implements Observer {
 
 	public void setClearColor(CColor clearColor) {
 		this.clearColor = clearColor;
+	}
+
+	public RenderType getRenderType() {
+		return renderType;
+	}
+
+	public void setRenderType(RenderType renderType) {
+		this.renderType = renderType;
 	}
 
 }

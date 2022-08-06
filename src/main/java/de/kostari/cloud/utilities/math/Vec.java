@@ -4,6 +4,13 @@ public class Vec {
 
     public float x, y;
 
+    public static Vec zero = new Vec(0, 0);
+    public static Vec one = new Vec(1, 1);
+    public static Vec up = new Vec(0, -1);
+    public static Vec down = new Vec(0, 1);
+    public static Vec left = new Vec(-1, 0);
+    public static Vec right = new Vec(1, 0);
+
     void init(float x, float y) {
         this.x = x;
         this.y = y;
@@ -311,6 +318,14 @@ public class Vec {
         float x = radius * (float) Math.cos(angle);
         float y = radius * (float) Math.sin(angle);
         return new Vec(x, y);
+    }
+
+    public static Vec lerp(Vec a, Vec b, float t) {
+        return new Vec(CMath.lerp(a.x, b.x, t), CMath.lerp(a.y, b.y, t));
+    }
+
+    public Vec lerp(Vec b, float t) {
+        return new Vec(CMath.lerp(x, b.x, t), CMath.lerp(y, b.y, t));
     }
 
     @Override

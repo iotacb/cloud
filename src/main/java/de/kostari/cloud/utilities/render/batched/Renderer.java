@@ -1,4 +1,4 @@
-package de.kostari.cloud.utilities.render.tmp;
+package de.kostari.cloud.utilities.render.batched;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ public class Renderer {
     public static void add(RenderObject object) {
         boolean added = false;
         for (RenderBatch batch : batches) {
-            if (batch.hasRoom() && batch.getRenderIndex() == object.getRenderIndex()) {
+            if (batch.hasRoom()) {
                 batch.add(object);
                 added = true;
                 break;
@@ -19,7 +19,7 @@ public class Renderer {
         }
 
         if (!added) {
-            RenderBatch batch = new RenderBatch(MAX_BATCH_SIZE, object.getRenderIndex());
+            RenderBatch batch = new RenderBatch(MAX_BATCH_SIZE);
             batch.add(object);
             batches.add(batch);
         }
@@ -35,6 +35,7 @@ public class Renderer {
         for (RenderBatch batch : batches) {
             batch.clearBatch();
         }
+        batches.clear();
     }
 
 }

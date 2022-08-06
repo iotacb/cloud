@@ -55,6 +55,7 @@ public class GameObject {
         this.tag = tag;
         this.transform = transform;
         this.components = new ArrayList<>();
+        start();
     }
 
     public void update(float delta) {

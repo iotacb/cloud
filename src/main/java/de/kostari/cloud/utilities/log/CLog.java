@@ -1,6 +1,6 @@
 package de.kostari.cloud.utilities.log;
 
-public class CLogger {
+public class CLog {
 
     public static void logError(String message, String errorType) {
         System.err.println(String.format("{Cloud: %s} %s", errorType, message));
@@ -15,7 +15,7 @@ public class CLogger {
     }
 
     public static void log(String message) {
-        System.out.println(String.format("{Cloud} %s", message));
+        log(message, "Info");
     }
 
 }

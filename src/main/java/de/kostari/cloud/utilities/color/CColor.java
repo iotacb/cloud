@@ -36,6 +36,7 @@ public class CColor {
     public static CColor SLATE_GRAY = new CColor(112, 128, 144);
     public static CColor SKY_BLUE = new CColor(135, 206, 235);
     public static CColor LIGHT_BLUE = new CColor(173, 216, 230);
+    public static CColor BROWN = new CColor(165, 42, 42);
     public static CColor TRANSPARENT = new CColor(0, 0, 0, 0);
 
     public CColor(int r, int g, int b, int alpha) {
@@ -165,6 +166,22 @@ public class CColor {
         return new CColor(redTransition, greenTransition, blueTransition, alphaTransition);
     }
 
+    public CColor shade(float percent) {
+        int r = (int) (getRed() * (100f + percent) / 100f);
+        int g = (int) (getGreen() * (100f + percent) / 100f);
+        int b = (int) (getBlue() * (100f + percent) / 100f);
+
+        r = r < 255 ? r : 255;
+        g = g < 255 ? g : 255;
+        b = b < 255 ? b : 255;
+
+        this.r = r;
+        this.g = g;
+        this.b = b;
+
+        return this;
+    }
+
     @Override
     public String toString() {
         return String.format("{r: %s, g: %s, b: %s, a: %s}", r, g, b, alpha);
@@ -177,6 +194,11 @@ public class CColor {
             return color.r == r && color.g == g && color.b == b && color.alpha == alpha;
         }
         return false;
+    }
+
+    @Override
+    public CColor clone() {
+        return new CColor(getRed(), getGreen(), getBlue());
     }
 
 }
