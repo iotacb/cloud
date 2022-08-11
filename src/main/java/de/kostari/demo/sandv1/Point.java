@@ -1,12 +1,12 @@
-package de.kostari.demo;
+package de.kostari.demo.sandv1;
 
 import de.kostari.cloud.core.objects.GameObject;
 import de.kostari.cloud.core.window.Window;
 import de.kostari.cloud.utilities.color.CColor;
 import de.kostari.cloud.utilities.math.Vec;
 import de.kostari.cloud.utilities.render.Render;
-import de.kostari.cloud.utilities.render.RenderType;
-import de.kostari.cloud.utilities.render.batched.BatchRender;
+import lombok.Getter;
+import lombok.Setter;
 
 public class Point extends GameObject {
 
@@ -22,14 +22,17 @@ public class Point extends GameObject {
 
     private GameObject[][] grid;
 
+    @Getter
+    @Setter
+    private float resistance;
+
     private int gridX;
     private int gridY;
 
+    @Getter
     private int lifetime;
-    private final int BIRTH_TIME = 20;
 
     public boolean updatePoint = true;
-    public boolean canDie = false;
 
     public boolean canBeMoved = true;
 
@@ -44,18 +47,13 @@ public class Point extends GameObject {
         this.grid = grid;
         this.gridX = grid.length;
         this.gridY = grid[0].length;
-
-        this.lifetime = BIRTH_TIME;
     }
 
     @Override
     public void draw(float delta) {
-        if (getWindow().getRenderType() == RenderType.SIMPLE) {
-            Render.rect(new Vec(x * size + size / 2, y * size + size / 2), new Vec(size),
-                    color);
-        } else {
-            BatchRender.rect(new Vec(x * size + size / 2, y * size + size / 2), new Vec(size), color);
-        }
+        // Render.rect(new Vec(x * size + size / 2, y * size + size / 2), new Vec(size),
+        // color);
+        lifetime++;
         super.draw(delta);
     }
 
@@ -64,16 +62,6 @@ public class Point extends GameObject {
     }
 
     public void updateLastFrame(int x, int y) {
-        if (canDie) {
-            if (lastX == x && lastY == y) {
-                lifetime--;
-                if (lifetime <= 0) {
-                    updatePoint = false;
-                }
-            } else {
-                lifetime = BIRTH_TIME;
-            }
-        }
         this.lastX = x;
         this.lastY = y;
     }
@@ -134,6 +122,16 @@ public class Point extends GameObject {
         if (x < 0 || x >= gridX || y < 0 || y >= gridY)
             return null;
         return (Point) grid[x][y];
+    }
+
+    public float getCellResistance(int x, int y) {
+        if (x < 0 || x >= gridX || y < 0 || y >= gridY) {
+            return 1;
+        }
+        Point p = getCell(x, y);
+        if (p == null)
+            return 0;
+        return p.getResistance();
     }
 
     public PointType getTypeOfCell(int x, int y) {

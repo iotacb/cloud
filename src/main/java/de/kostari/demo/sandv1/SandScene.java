@@ -1,36 +1,38 @@
-package de.kostari.demo;
+package de.kostari.demo.sandv1;
 
+import java.nio.ByteBuffer;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
+
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
 
 import de.kostari.cloud.core.scene.Scene;
 import de.kostari.cloud.core.window.Window;
 import de.kostari.cloud.utilities.color.CColor;
+import de.kostari.cloud.utilities.files.asset.assets.Image;
 import de.kostari.cloud.utilities.input.Input;
 import de.kostari.cloud.utilities.input.Keys;
 import de.kostari.cloud.utilities.math.Vec;
 import de.kostari.cloud.utilities.render.Render;
 import de.kostari.cloud.utilities.render.text.Fonts;
-import de.kostari.demo.points.moveable.Oil;
-import de.kostari.demo.points.moveable.Sand;
-import de.kostari.demo.points.moveable.Water;
-import de.kostari.demo.points.solids.Wood;
+import de.kostari.demo.sandv1.points.moveable.Oil;
+import de.kostari.demo.sandv1.points.moveable.Sand;
+import de.kostari.demo.sandv1.points.moveable.Water;
+import de.kostari.demo.sandv1.points.solids.Wood;
 
 public class SandScene extends Scene {
 
-    private final int CELL_SIZE = 4;
-    private final int CHUNK_SIZE = 64;
+    private final int CELL_SIZE = 1;
     private final int SIMULATION_SPEED = 1;
 
     private int gridX;
     private int gridY;
 
     private Point[][] grid;
-
-    private int[][] chunks;
-
-    private boolean showGrid = false;
 
     private int brushSize = 1;
     private PointType brushType = PointType.SAND;
@@ -44,7 +46,6 @@ public class SandScene extends Scene {
         this.gridY = window.getHeight() / CELL_SIZE;
 
         this.grid = new Point[gridX][gridY];
-        this.chunks = new int[window.getWidth() / CHUNK_SIZE][window.getHeight() / CHUNK_SIZE];
     }
 
     @Override
@@ -56,36 +57,21 @@ public class SandScene extends Scene {
                 }
             }
         }
-        if (showGrid) {
-            // for (int x = 0; x < gridX; x++) {
-            // for (int y = 0; y < gridY; y++) {
-            // Render.line(0, y * CELL_SIZE, getWindow().getWidth(), y * CELL_SIZE, .5F,
-            // CColor.WHITE);
-            // }
-            // Render.line(x * CELL_SIZE, 0, x * CELL_SIZE, getWindow().getHeight(), .5F,
-            // CColor.WHITE);
-            // }
-            for (int x = 0; x < chunks.length; x++) {
-                for (int y = 0; y < chunks[0].length; y++) {
-                    Render.line(0, y * CHUNK_SIZE, getWindow().getWidth(), y * CHUNK_SIZE, .5F,
-                            CColor.GREEN);
-                }
-                Render.line(x * CHUNK_SIZE, 0, x * CHUNK_SIZE, getWindow().getHeight(), .5F,
-                        CColor.GREEN);
-            }
-        }
 
-        super.draw(delta);
         Render.rect(Input.getMousePosition(), new Vec(brushSize * CELL_SIZE),
                 CColor.WHITE.setAlpha(200));
-        Fonts.sans32.drawText("FPS: " + getWindow().getFPS(),
+        super.draw(delta);
+        Fonts.sans32.drawTextShadow("FPS: " + getWindow().getFPS(),
                 8, 2);
-        Fonts.sans32.drawText("Points: " + getPoints(),
+        Fonts.sans32.drawTextShadow("Points: " + getPoints(),
                 8, 30);
-        Fonts.sans32.drawText("Type: " + brushType.name(),
+        Fonts.sans32.drawTextShadow("Type: " + brushType.name(),
                 8, 60);
-        Fonts.sans32.drawText("Is Spout: " + isSpout,
+        Fonts.sans32.drawTextShadow("Is Spout: " + isSpout,
                 8, 90);
+        String isBatched = "Render type: " + getWindow().getRenderType().name();
+        Fonts.sans32.drawTextShadow(isBatched, getWindow().getWidth() - Fonts.sans32.getWidth(isBatched) - 8, 2);
+
     }
 
     @Override
@@ -110,16 +96,6 @@ public class SandScene extends Scene {
                     }
                 }
             }
-            // int[] pos = getPosInBrush();
-            // if (cellEmpty(pos[0], pos[1])) {
-            // if (!spawnWater) {
-            // addPoint(pos[0], pos[1], new Sand(getWindow(), CELL_SIZE, pos[0], pos[1],
-            // grid));
-            // } else {
-            // addPoint(pos[0], pos[1], new Water(getWindow(), CELL_SIZE, pos[0], pos[1],
-            // grid));
-            // }
-            // }
         }
 
         if (Input.mouseButtonStrength(1) == 1) {
@@ -148,25 +124,59 @@ public class SandScene extends Scene {
             isSpout = !isSpout;
         }
 
-        // if (Input.keyPressed(Keys.KEY_F1)) {
-        // showGrid = !showGrid;
-        // }
-
         if (Input.getScrollY() != 0) {
             brushSize += Input.getScrollY();
         }
 
         if (Input.keyPressed(Keys.KEY_R)) {
-            this.grid = new Point[gridX][gridY];
+            // this.grid = new Point[gridX][gridY];
+
+            // getWindow().setPixel(10, 10, CColor.random());
+
+            // ByteBuffer pixels = getWindow().loadPixels();
+
+            // int pX = 0;
+            // int pY = 0;
+
+            // int i = (int) (pX * getWindow().getWidth() * 4 + pX * 4);
+            // int r = pixels.get(i + 0) & 0xFF;
+            // int g = pixels.get(i + 1) & 0xFF;
+            // int b = pixels.get(i + 2) & 0xFF;
+            // int a = pixels.get(i + 3) & 0xFF;
+
+            // System.out.println(r + " " + g + " " + b + " " + a);
         }
 
         for (int i = 0; i < SIMULATION_SPEED; i++) {
             stepSand(delta);
         }
+
+        System.out.println(getPoints() + " " + getWindow().getFPS());
         super.update(delta);
     }
 
+    @Override
+    public void onFileDrop(String[] files) {
+        String file = files[0];
+        if (!(file.endsWith(".png") || file.endsWith(".jpg"))) {
+            return;
+        }
+
+        Image image = new Image(file);
+
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                PointType type = getNearestMatchingPoint(image.getPixelColor(x, y));
+                Point point = getPointByType(x, y, grid, type);
+                addPoint(x, y, point);
+            }
+        }
+
+        super.onFileDrop(files);
+    }
+
     private void stepSand(float delta) {
+        ByteBuffer pixels = getWindow().newPixels();
         for (int y = gridY - 1; y >= 0; y--) {
             List<Integer> shuffeledX = new ArrayList<>(gridX);
             for (int i = 0; i < gridX; i++) {
@@ -193,9 +203,11 @@ public class SandScene extends Scene {
                 }
 
                 int[] positions = point.fall(x, y, grid);
+                getWindow().changePixel(pixels, x, y, point.color);
                 movePoint(point, positions[0], positions[1]);
             }
         }
+        getWindow().updatePixels(pixels);
     }
 
     private void addPoint(int x, int y, Point point) {
@@ -272,6 +284,26 @@ public class SandScene extends Scene {
             default:
                 return new Sand(getWindow(), CELL_SIZE, x, y, grid);
         }
+    }
+
+    private PointType getNearestMatchingPoint(CColor color) {
+        float heighestMatch = 0;
+        PointType matchingType = PointType.EMPTY;
+        for (PointType type : PointType.values()) {
+            if (type == PointType.SPOUT) {
+                continue;
+            }
+
+            float r = color.getRed01() - type.getColor().getRed01();
+            float g = color.getGreen01() - type.getColor().getGreen01();
+            float b = color.getBlue01() - type.getColor().getBlue01();
+            float match = (float) Math.sqrt(r * r + g * g + b * b);
+            if (match > heighestMatch) {
+                heighestMatch = match;
+                matchingType = type;
+            }
+        }
+        return matchingType;
     }
 
 }

@@ -1,4 +1,4 @@
-package de.kostari.demo;
+package de.kostari.demo.sandv1;
 
 import de.kostari.cloud.core.window.Window;
 import de.kostari.cloud.utilities.render.RenderType;
@@ -7,13 +7,13 @@ public class App {
 
     public static void main(String[] args) {
         // Create a new window
-        Window window = new Window(1280, 720, "Sand", true, false);
+        Window window = new Window(800, 800, "Sand", false, false);
 
         // Enable vsync
-        // window.setFPSCap(60);
+        // window.setFpsCap(60);
         window.setScene(SandScene.class);
 
-        window.setRenderType(RenderType.BATCHED);
+        window.setRenderType(RenderType.PIXELS);
 
         // Show the window
         try {

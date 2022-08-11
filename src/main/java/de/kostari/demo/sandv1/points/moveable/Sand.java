@@ -1,9 +1,9 @@
-package de.kostari.demo.points.moveable;
+package de.kostari.demo.sandv1.points.moveable;
 
 import de.kostari.cloud.core.objects.GameObject;
 import de.kostari.cloud.core.window.Window;
-import de.kostari.demo.Point;
-import de.kostari.demo.PointType;
+import de.kostari.demo.sandv1.Point;
+import de.kostari.demo.sandv1.PointType;
 
 public class Sand extends Point {
 

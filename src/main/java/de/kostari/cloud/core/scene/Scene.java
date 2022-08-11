@@ -12,7 +12,6 @@ import de.kostari.cloud.core.physics.Rigidbody;
 import de.kostari.cloud.core.ui.UIComponent;
 import de.kostari.cloud.core.window.Window;
 import de.kostari.cloud.utilities.math.Vec;
-import de.kostari.cloud.utilities.render.Render;
 import de.kostari.cloud.utilities.render.RenderType;
 import de.kostari.cloud.utilities.render.batched.Renderer;
 
@@ -47,7 +46,7 @@ public abstract class Scene {
 		this.physicsEngine = new PhysicsEngine();
 
 		objects.sort((o1, o2) -> {
-			return o1.getzIndex() - o2.getzIndex();
+			return o1.getZIndex() - o2.getZIndex();
 		});
 
 		uiComponents.sort((o1, o2) -> {
@@ -96,7 +95,7 @@ public abstract class Scene {
 		for (int i = 0; i < objects.size(); i++) {
 			GameObject object = objects.get(i);
 
-			if (object.isIgnoringCameraMovement()) {
+			if (object.isIgnoreCameraMovement()) {
 				object.draw(delta);
 			} else {
 				Transform oldTransform = new Transform(object.transform.position);
@@ -122,6 +121,10 @@ public abstract class Scene {
 				continue;
 			ui.draw(delta);
 		}
+	}
+
+	public void onFileDrop(String[] files) {
+
 	}
 
 	public void pause() {
@@ -152,7 +155,7 @@ public abstract class Scene {
 		objects.add(object);
 		idCounter++;
 		objects.sort((o1, o2) -> {
-			return o1.getzIndex() - o2.getzIndex();
+			return o1.getZIndex() - o2.getZIndex();
 		});
 	}
 

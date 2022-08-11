@@ -7,6 +7,13 @@ import org.lwjgl.opengl.GL11;
 
 import de.kostari.cloud.utilities.color.CColor;
 import de.kostari.cloud.utilities.math.Vec;
+import de.kostari.cloud.utilities.render.Render;
+
+import static de.kostari.cloud.utilities.render.Render.start;
+import static de.kostari.cloud.utilities.render.Render.stop;
+import static de.kostari.cloud.utilities.render.Render.begin;
+import static de.kostari.cloud.utilities.render.Render.end;
+import static de.kostari.cloud.utilities.render.Render.color;
 
 public class RenderBatch {
 
@@ -28,49 +35,49 @@ public class RenderBatch {
     }
 
     public void render() {
-        BatchRender.start();
-        BatchRender.begin(GL11.GL_TRIANGLES);
+        start();
+        begin(GL11.GL_TRIANGLES);
         for (RenderObject renderObject : filledObjects) {
-            BatchRender.color(renderObject.color);
+            color(renderObject.color);
             for (Vec v : renderObject.getVertices()) {
                 GL11.glVertex2f(v.x, v.y);
             }
-            BatchRender.color(CColor.WHITE);
+            color(CColor.WHITE);
         }
 
-        BatchRender.end();
+        end();
 
-        BatchRender.begin(GL11.GL_TRIANGLE_FAN);
+        begin(GL11.GL_TRIANGLE_FAN);
         for (RenderObject renderObject : filledPolygonObjects) {
-            BatchRender.color(renderObject.color);
+            color(renderObject.color);
             for (Vec v : renderObject.getVertices()) {
                 GL11.glVertex2f(v.x, v.y);
             }
-            BatchRender.color(CColor.WHITE);
+            color(CColor.WHITE);
         }
-        BatchRender.end();
+        end();
 
-        BatchRender.begin(GL11.GL_LINES);
+        begin(GL11.GL_LINES);
         for (RenderObject renderObject : outlinedObjects) {
-            BatchRender.color(renderObject.color);
+            color(renderObject.color);
             for (Vec v : renderObject.getVertices()) {
                 GL11.glVertex2f(v.x, v.y);
             }
-            BatchRender.color(CColor.WHITE);
+            color(CColor.WHITE);
         }
-        BatchRender.end();
+        end();
 
-        BatchRender.begin(GL11.GL_LINE_LOOP);
+        Render.begin(GL11.GL_LINE_LOOP);
         for (RenderObject renderObject : outlinedPolygonObjects) {
-            BatchRender.color(renderObject.color);
+            color(renderObject.color);
             for (Vec v : renderObject.getVertices()) {
                 GL11.glVertex2f(v.x, v.y);
             }
-            BatchRender.color(CColor.WHITE);
+            color(CColor.WHITE);
         }
-        BatchRender.end();
+        end();
 
-        BatchRender.stop();
+        stop();
     }
 
     public void add(RenderObject renderObject) {

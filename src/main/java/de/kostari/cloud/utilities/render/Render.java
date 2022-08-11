@@ -10,20 +10,19 @@ import de.kostari.cloud.utilities.color.CColor;
 import de.kostari.cloud.utilities.files.asset.assets.Image;
 import de.kostari.cloud.utilities.math.CMath;
 import de.kostari.cloud.utilities.math.Vec;
+import de.kostari.cloud.utilities.render.batched.RenderObject;
+import de.kostari.cloud.utilities.render.batched.Renderer;
 
 public class Render {
 
     public static Window window;
 
-    private static void checkBeforeRender() {
-        if (window.getRenderType() != RenderType.SIMPLE) {
-            try {
-                throw new Exception("Wrong renderer is used! Change the renderer to 'Simple'!");
-            } catch (Exception e) {
-                System.out.println("Wrong renderer is used! Change the renderer to 'Simple'!");
-                System.exit(-1);
-            }
-        }
+    public static boolean isBatching() {
+        return window.getRenderType() == RenderType.BATCHED;
+    }
+
+    public static boolean isPixeling() {
+        return window.getRenderType() == RenderType.PIXELS;
     }
 
     public static void push() {
@@ -132,7 +131,13 @@ public class Render {
     public static void rect(float x, float y, float width, float height, float rotation, boolean filled,
             float lineWidth,
             CColor color) {
-        checkBeforeRender();
+
+        if (isBatching()) {
+            RenderObject renderObject = new RenderObject(x, y, width, height, rotation, color, false, 0);
+            Renderer.add(renderObject);
+            return;
+        }
+
         if (color != null)
             color(color);
         else
@@ -279,10 +284,18 @@ public class Render {
 
     // polygon
 
-    public static void polygon(float x, float y, float sideLength, int amountOfSides, boolean filled, float lineWidth,
+    public static void polygon(float x, float y, float sideLength, float rotation, int amountOfSides, boolean filled,
+            float lineWidth,
             CColor color) {
-        checkBeforeRender();
+
         sideLength /= 2;
+
+        if (isBatching()) {
+            RenderObject renderObject = new RenderObject(x, y, sideLength, 0, rotation, color, false, amountOfSides);
+            Renderer.add(renderObject);
+            return;
+        }
+
         int increment = 360 / amountOfSides;
         int currentAngle = 0;
 
@@ -304,32 +317,33 @@ public class Render {
         stop();
     }
 
-    public static void polygon(float x, float y, float sideLength, int amountOfSides, CColor color) {
-        polygon(x, y, sideLength, amountOfSides, true, 0, color);
+    public static void polygon(float x, float y, float sideLength, float rotation, int amountOfSides, CColor color) {
+        polygon(x, y, sideLength, rotation, amountOfSides, true, 0, color);
     }
 
-    public static void polygonOutlined(float x, float y, float sideLength, int amountOfSides, float lineWidth,
+    public static void polygonOutlined(float x, float y, float sideLength, float rotation, int amountOfSides,
+            float lineWidth,
             CColor color) {
-        polygon(x, y, sideLength, amountOfSides, false, lineWidth, color);
+        polygon(x, y, sideLength, rotation, amountOfSides, false, lineWidth, color);
     }
 
-    public static void polygon(Vec pos, float sideLength, int amountOfSides, CColor color) {
-        polygon(pos.x, pos.y, sideLength, amountOfSides, color);
+    public static void polygon(Vec pos, float sideLength, float rotation, int amountOfSides, CColor color) {
+        polygon(pos.x, pos.y, sideLength, rotation, amountOfSides, color);
     }
 
-    public static void polygonOutlined(Vec pos, float sideLength, int amountOfSides, float lineWidth,
+    public static void polygonOutlined(Vec pos, float sideLength, float rotation, int amountOfSides, float lineWidth,
             CColor color) {
-        polygonOutlined(pos.x, pos.y, sideLength, amountOfSides, lineWidth, color);
+        polygonOutlined(pos.x, pos.y, sideLength, rotation, amountOfSides, lineWidth, color);
     }
 
     // circle
 
     public static void circle(float x, float y, float radius, CColor color) {
-        polygon(x, y, radius, 20, true, 0, color);
+        polygon(x, y, radius, 0, 20, true, 0, color);
     }
 
     public static void circleOutlined(float x, float y, float radius, float lineWidth, CColor color) {
-        polygon(x, y, radius, 20, false, lineWidth, color);
+        polygon(x, y, radius, 0, 20, false, lineWidth, color);
     }
 
     public static void circle(Vec pos, float radius, CColor color) {
@@ -341,7 +355,6 @@ public class Render {
     }
 
     public static void line(float firstX, float firstY, float secondX, float secondY, float lineWidth, CColor color) {
-        checkBeforeRender();
         if (color != null)
             color(color);
         else
@@ -359,7 +372,6 @@ public class Render {
     }
 
     public static void image(Image image, float x, float y, float width, float height, CColor color) {
-        checkBeforeRender();
         if (!image.isFinishedLoading())
             return;
 
@@ -406,7 +418,6 @@ public class Render {
 
     public static void imageRegion(Image image, float x, float y, float width, float height, float offsetX,
             float offsetY, CColor color) {
-        checkBeforeRender();
         if (!image.isFinishedLoading())
             return;
 

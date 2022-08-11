@@ -10,6 +10,7 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWDropCallback;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -20,6 +21,7 @@ import org.lwjgl.openal.ALC11;
 import org.lwjgl.openal.ALCCapabilities;
 import org.lwjgl.openal.ALCapabilities;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
@@ -40,6 +42,8 @@ import de.kostari.cloud.utilities.input.Input;
 import de.kostari.cloud.utilities.math.Vec;
 import de.kostari.cloud.utilities.render.Render;
 import de.kostari.cloud.utilities.render.RenderType;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Kostari
@@ -49,38 +53,66 @@ import de.kostari.cloud.utilities.render.RenderType;
  */
 public class Window implements Observer {
 
+	@Getter
 	private String title;
 
+	@Getter
 	private Vec size;
+
+	@Getter
 	private int width;
+	@Getter
 	private int height;
 
+	@Getter
 	private float deltaTime;
 
+	@Getter
+	@Setter
 	private int fpsCap;
+
+	@Getter
 	private int framebufferWidth;
+	@Getter
 	private int framebufferHeight;
 	private int sampling;
 
+	@Getter
 	private long windowId;
 	private long mainMonitor;
 
 	private long audioContext;
 	private long audioDevice;
 
+	@Getter
+	@Setter
 	private boolean isResizable;
+	@Getter
+	@Setter
 	private boolean isFullscreen;
+	@Getter
+	@Setter
 	private boolean isFocused;
-	private boolean useVsync;
+	@Getter
+	private boolean isVsync;
 
+	@Getter
 	private Scene scene;
+	@Getter
 	private Scene prevScene;
+
+	@Getter
+	@Setter
+	private CColor clearColor;
+
+	@Getter
+	@Setter
+	private RenderType renderType;
 
 	private FrameTimer timer;
 
-	private CColor clearColor;
-
-	private RenderType renderType;
+	@Getter
+	private ByteBuffer pixels;
 
 	public Window(int width, int height, String title) {
 		createWindow(width, height, title, false, false);
@@ -97,7 +129,7 @@ public class Window implements Observer {
 		this.title = title;
 		this.isFullscreen = fullscreen;
 		this.isResizable = resizable;
-		this.sampling = 4;
+		this.sampling = 0;
 		this.size = new Vec(width, height);
 
 		this.clearColor = CColor.BLACK;
@@ -121,6 +153,7 @@ public class Window implements Observer {
 		makeWindow();
 		initGLFW();
 		timer = new FrameTimer();
+		pixels = BufferUtils.createByteBuffer(width * height * 4);
 		Input.initInput(this, Platform.get() == Platform.WINDOWS);
 		Render.window = this;
 		EventSystem.addObserver(this);
@@ -146,6 +179,11 @@ public class Window implements Observer {
 		if (deltaTime >= 0) {
 			Render.rect(getHalfSize(), getSize(), clearColor);
 			scene.draw(deltaTime);
+		}
+
+		if (getRenderType() == RenderType.PIXELS) {
+			GL11.glDrawPixels(width, height, GL11.GL_RGBA,
+					GL11.GL_UNSIGNED_BYTE, pixels);
 		}
 		glfwSwapBuffers(windowId);
 		timer.updateFPS();
@@ -202,11 +240,25 @@ public class Window implements Observer {
 		glfwSetScrollCallback(windowId, (id, scrollX, scrollY) -> {
 			Input.setMouseScroll((float) scrollX, (float) scrollY);
 		});
+
+		glfwSetDropCallback(windowId, (id, count, names) -> {
+			String[] files = new String[count];
+			for (int i = 0; i < count; i++) {
+				files[i] = GLFWDropCallback.getName(names, i);
+			}
+			onFileDrop(files);
+		});
+	}
+
+	private void onFileDrop(String[] files) {
+		if (scene == null)
+			return;
+		scene.onFileDrop(files);
 	}
 
 	private void initGLFW() {
 		glfwMakeContextCurrent(windowId);
-		glfwSwapInterval(useVsync ? 1 : 0);
+		glfwSwapInterval(isVsync ? 1 : 0);
 		glfwShowWindow(windowId);
 		initAudio();
 		GL.createCapabilities();
@@ -285,15 +337,6 @@ public class Window implements Observer {
 	}
 
 	/**
-	 * Set a maximum FPS cap.
-	 * 
-	 * @param fpsCap
-	 */
-	public void setFPSCap(int fpsCap) {
-		this.fpsCap = fpsCap;
-	}
-
-	/**
 	 * Add a icon to the window
 	 * 
 	 * @param path the path to the image file
@@ -308,8 +351,6 @@ public class Window implements Observer {
 		if (Platform.get() == Platform.MACOSX) {
 			// The windowson mac don't have a window icon
 			// the only icon that can be shown is in the doc
-
-			// TODO: find a way to add a icon without using javas awt
 		} else {
 			glfwSetWindowIcon(windowId, imageBuffer);
 		}
@@ -320,8 +361,36 @@ public class Window implements Observer {
 	 * 
 	 * @param sampling
 	 */
+	@Deprecated
 	public void setSampling(int sampling) {
 		this.sampling = sampling;
+	}
+
+	/**
+	 * Create a custom cursor with an image file
+	 * 
+	 * @param path    the path to the image file
+	 * @param offsetX the x position of the hotspot
+	 * @param offsetY the y position of the hotspot
+	 * @return the created cursor
+	 */
+	public long createCursor(String path, int xOffset, int yOffset) {
+		ByteBuffer pixels;
+		GLFWImage image = GLFWImage.create();
+		try (MemoryStack stack = MemoryStack.stackPush()) {
+			IntBuffer w = stack.mallocInt(1);
+			IntBuffer h = stack.mallocInt(1);
+			IntBuffer comp = stack.mallocInt(1);
+
+			pixels = STBImage.stbi_load(path, w, h, comp, 4);
+			if (pixels == null)
+				return glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
+			image.set(w.get(0), h.get(0), pixels);
+			pixels.clear();
+			long cursor = glfwCreateCursor(image, xOffset, yOffset);
+			image.clear();
+			return cursor;
+		}
 	}
 
 	/**
@@ -339,8 +408,8 @@ public class Window implements Observer {
 	 * 
 	 * @param vsync
 	 */
-	public void useVsync(boolean vsync) {
-		this.useVsync = vsync;
+	public void setVsync(boolean vsync) {
+		this.isVsync = vsync;
 		glfwSwapInterval(vsync ? 1 : 0);
 	}
 
@@ -350,6 +419,7 @@ public class Window implements Observer {
 	 * 
 	 * @param opacity
 	 */
+	@Deprecated
 	public void setWindowOpacity(float opacity) {
 		glfwSetWindowOpacity(windowId, opacity);
 	}
@@ -382,125 +452,68 @@ public class Window implements Observer {
 		glfwSetCursor(windowId, cursor);
 	}
 
-	/**
-	 * Create a custom cursor with an image file
-	 * 
-	 * @param path    the path to the image file
-	 * @param offsetX the x position of the hotspot
-	 * @param offsetY the y position of the hotspot
-	 * @return the created cursor
-	 */
-	public long createCursor(String path, int xOffset, int yOffset) {
-		ByteBuffer pixels;
-		GLFWImage image = GLFWImage.create();
-		try (MemoryStack stack = MemoryStack.stackPush()) {
-			IntBuffer w = stack.mallocInt(1);
-			IntBuffer h = stack.mallocInt(1);
-			IntBuffer comp = stack.mallocInt(1);
-
-			pixels = STBImage.stbi_load(path, w, h, comp, 4);
-			if (pixels == null)
-				return glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
-			image.set(w.get(0), h.get(0), pixels);
-			pixels.clear();
-			long cursor = glfwCreateCursor(image, xOffset, yOffset);
-			image.clear();
-			return cursor;
-		}
-
-	}
-
-	/**
-	 * Change the current displayed scene
-	 * 
-	 * @param scene the scene which should be displayed
-	 */
-	public void setScene(Scene scene) {
-		this.scene = scene;
-	}
-
-	public long getWindowId() {
-		return windowId;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public float getDeltaTime() {
-		return deltaTime;
-	}
-
 	public int getFPS() {
 		return timer.getFPS();
-	}
-
-	public int getFpsCap() {
-		return fpsCap;
-	}
-
-	public Vec getSize() {
-		return size;
 	}
 
 	public Vec getHalfSize() {
 		return size.clone().mul(0.5F);
 	}
 
-	public int getWidth() {
-		return width;
-	}
-
-	public int getHeight() {
-		return height;
-	}
-
-	public int getFramebufferWidth() {
-		return framebufferWidth;
-	}
-
-	public int getFramebufferHeight() {
-		return framebufferHeight;
-	}
-
-	public Scene getScene() {
-		return scene;
-	}
-
-	public Scene getPrevScene() {
-		return prevScene;
-	}
-
-	public boolean isUsingVsync() {
-		return useVsync;
-	}
-
 	public boolean isWindowClosing() {
 		return glfwWindowShouldClose(windowId);
 	}
 
-	public boolean isFocused() {
-		return isFocused;
+	/**
+	 * Returns the pixel buffer that is currently being drawn to the screen
+	 * 
+	 * @return
+	 */
+	public ByteBuffer loadPixels() {
+		GL11.glReadPixels(0, 0, getWidth(), getHeight(), GL11.GL_RGBA,
+				GL11.GL_UNSIGNED_BYTE,
+				pixels);
+		return pixels;
 	}
 
-	public boolean isFullscreen() {
-		return isFullscreen;
+	/**
+	 * Change a pixel in a pixel buffer to a certain color
+	 * 
+	 * @param pixels The pixel buffer where a pixels color should be changed
+	 * @param x      The x position of the pixel
+	 * @param y      The y position of the pixel
+	 * @param color  The color of the pixel
+	 * @return
+	 */
+	public ByteBuffer changePixel(ByteBuffer pixels, int x, int y, CColor color) {
+		y = (getHeight() - y) - 1;
+		int stride = (int) width * 4;
+		int i = y * stride + x * 4;
+
+		pixels.put(i + 0, (byte) Math.round((color.getRed() & 0xFF)));
+		pixels.put(i + 1, (byte) Math.round((color.getGreen() & 0xFF)));
+		pixels.put(i + 2, (byte) Math.round((color.getBlue() & 0xFF)));
+		return pixels;
 	}
 
-	public boolean isResizable() {
-		return isResizable;
+	/**
+	 * Update the pixels that are getting drawn to the screen
+	 * 
+	 * @param pixels
+	 */
+	public void updatePixels(ByteBuffer pixels) {
+		this.pixels = pixels;
 	}
 
-	public void setClearColor(CColor clearColor) {
-		this.clearColor = clearColor;
-	}
-
-	public RenderType getRenderType() {
-		return renderType;
-	}
-
-	public void setRenderType(RenderType renderType) {
-		this.renderType = renderType;
+	/**
+	 * Creates a clean pixel buffer
+	 * 
+	 * Useful when manipulating the pixels directly
+	 * 
+	 * @return
+	 */
+	public ByteBuffer newPixels() {
+		return BufferUtils.createByteBuffer(width * height * 4);
 	}
 
 }

@@ -1,4 +1,4 @@
-package de.kostari.demo;
+package de.kostari.demo.sandv1;
 
 import de.kostari.cloud.core.objects.GameObject;
 import de.kostari.cloud.core.window.Window;

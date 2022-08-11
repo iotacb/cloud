@@ -4,8 +4,8 @@
   <artifactId>cloud</artifactId>
   <version>1.0</version>
   <properties>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>16</maven.compiler.source>
+    <maven.compiler.target>16</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven-enforcer-plugin.version>3.0.0-M3</maven-enforcer-plugin.version>
     <maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
@@ -55,9 +55,10 @@
   </dependencyManagement>
   <dependencies>
     <dependency>
-      <groupId>org.joml</groupId>
-      <artifactId>joml</artifactId>
-      <version>${joml.version}</version>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.24</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.lwjgl</groupId>

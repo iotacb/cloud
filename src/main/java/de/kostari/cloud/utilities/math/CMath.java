@@ -237,6 +237,10 @@ public class CMath {
 		return random() * (max - min) + min;
 	}
 
+	public static int fromRange(int min, int max) {
+		return (int) random() * (max - min) + min;
+	}
+
 	public static float random() {
 		return (float) Math.random();
 	}

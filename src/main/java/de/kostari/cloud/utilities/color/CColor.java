@@ -67,10 +67,22 @@ public class CColor {
         this.alpha = CMath.clamp(alpha, 0, 255);
     }
 
+    /**
+     * Changes the alpha of the color
+     * 
+     * @param alpha
+     * @return
+     */
     public CColor setAlpha(int alpha) {
         return new CColor(r, g, b, alpha);
     }
 
+    /**
+     * Converts a color in hex space to a color in rgb space.
+     * 
+     * @param hex
+     * @return
+     */
     public static CColor hexToRgb(int hex) {
         int r = (hex & 0xFF0000) >> 16;
         int g = (hex & 0xFF00) >> 8;
@@ -79,8 +91,37 @@ public class CColor {
         return new CColor(r, g, b, a);
     }
 
+    /**
+     * Generates a random color.
+     * 
+     * @return
+     */
     public static CColor random() {
         return new CColor((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255));
+    }
+
+    /**
+     * Applies a random shade to the color.
+     * The shade will be between the min and max values.
+     * 
+     * @param min
+     * @param max
+     * @return
+     */
+    public static CColor randomShade(CColor color, float min, float max) {
+        return color.randomShade(min, max);
+    }
+
+    /**
+     * Applies a random shade to the color.
+     * The shade will be between the min and max values.
+     * 
+     * @param min
+     * @param max
+     * @return
+     */
+    public CColor randomShade(float min, float max) {
+        return shade(CMath.fromRange(min, max)).clone();
     }
 
     public int getRed() {
@@ -99,18 +140,38 @@ public class CColor {
         return alpha;
     }
 
+    /**
+     * Returns the red channel in a range of 0 to 1.
+     * 
+     * @return
+     */
     public float getRed01() {
         return r / 255.0F;
     }
 
+    /**
+     * Returns the green channel in a range of 0 to 1.
+     * 
+     * @return
+     */
     public float getGreen01() {
         return g / 255.0F;
     }
 
+    /**
+     * Returns the blue channel in a range of 0 to 1.
+     * 
+     * @return
+     */
     public float getBlue01() {
         return b / 255.0F;
     }
 
+    /**
+     * Returns the alpha channel in a range of 0 to 1.
+     * 
+     * @return
+     */
     public float getAlpha01() {
         return alpha / 255.0F;
     }
@@ -166,11 +227,23 @@ public class CColor {
         return new CColor(redTransition, greenTransition, blueTransition, alphaTransition);
     }
 
+    /**
+     * Will shade the color based on the given value.
+     * 
+     * Positive values will make the color brighter.
+     * Negative values will make the color darker.
+     * 
+     * @param percent
+     * @return
+     */
     public CColor shade(float percent) {
+
+        // Apply the shaded value to each color channel.
         int r = (int) (getRed() * (100f + percent) / 100f);
         int g = (int) (getGreen() * (100f + percent) / 100f);
         int b = (int) (getBlue() * (100f + percent) / 100f);
 
+        // Clamp the values in the color space
         r = r < 255 ? r : 255;
         g = g < 255 ? g : 255;
         b = b < 255 ? b : 255;

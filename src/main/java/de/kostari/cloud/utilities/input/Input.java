@@ -48,26 +48,23 @@ public class Input {
         }
     }
 
-    public static float getLeftJoystickX() {
+    /**
+     * Returns the axis of the left gamepad stick.
+     * 
+     * @return
+     */
+    public static Vec getLeftJoystick() {
         if (!hasGamepad)
-            return 0;
+            return Vec.zero;
         FloatBuffer axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1);
-        float a = axes.get(0);
-        if (Math.abs(a) > 0.5) {
-            usingInput = InputTypes.GAMEPAD;
-        }
-        return a;
-    }
+        float x = axes.get(0);
+        float y = axes.get(1);
 
-    public static float getLeftJoystickY() {
-        if (!hasGamepad)
-            return 0;
-        FloatBuffer axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1);
-        float a = axes.get(1);
-        if (Math.abs(a) > 0.5) {
+        // Update input type
+        if (Math.abs(x) > 0.5 || Math.abs(y) > 0.5) {
             usingInput = InputTypes.GAMEPAD;
         }
-        return a;
+        return new Vec(x, y);
     }
 
     public static float getLeftTrigger() {
@@ -78,26 +75,23 @@ public class Input {
         return a;
     }
 
-    public static float getRightJoystickX() {
+    /**
+     * Returns the axis of the left gamepad stick.
+     * 
+     * @return
+     */
+    public static Vec getRightJoystick() {
         if (!hasGamepad)
-            return 0;
+            return Vec.zero;
         FloatBuffer axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1);
-        float a = axes.get(2);
-        if (Math.abs(a) > 0.5) {
-            usingInput = InputTypes.GAMEPAD;
-        }
-        return a;
-    }
+        float x = axes.get(2);
+        float y = axes.get(3);
 
-    public static float getRightJoystickY() {
-        if (!hasGamepad)
-            return 0;
-        FloatBuffer axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1);
-        float a = axes.get(3);
-        if (Math.abs(a) > 0.5) {
+        // Update input type
+        if (Math.abs(x) > 0.5 || Math.abs(y) > 0.5) {
             usingInput = InputTypes.GAMEPAD;
         }
-        return a;
+        return new Vec(x, y);
     }
 
     public static float getRightTrigger() {
@@ -399,10 +393,8 @@ public class Input {
             if (isWindows) {
                 isLeftTriggerPressed();
                 isRightTriggerPressed();
-                getLeftJoystickX();
-                getLeftJoystickY();
-                getRightJoystickX();
-                getRightJoystickY();
+                getLeftJoystick();
+                getRightJoystick();
             }
         }
     }

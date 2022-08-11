@@ -2,7 +2,8 @@ package de.kostari.cloud.utilities.math;
 
 public class Vec {
 
-    public float x, y;
+    public float x;
+    public float y;
 
     public static Vec zero = new Vec(0, 0);
     public static Vec one = new Vec(1, 1);
@@ -277,11 +278,19 @@ public class Vec {
     }
 
     public float getX() {
-        return this.x;
+        return x;
     }
 
     public float getY() {
-        return this.y;
+        return y;
+    }
+
+    public int getXi() {
+        return (int) x;
+    }
+
+    public int getYi() {
+        return (int) y;
     }
 
     public float getAxis(int axis) {

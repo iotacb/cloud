@@ -1,4 +1,4 @@
-package de.kostari.demo.script;
+package de.kostari.demo.sandv1.script;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -4,7 +4,14 @@ public class Timer {
 
 	private long pastMS;
 
-	public boolean havePassed(long milliseconds) {
+	/**
+	 * Will return true if the time provided in milliseconds
+	 * has passed.
+	 * 
+	 * @param milliseconds
+	 * @return
+	 */
+	public boolean hasTimePassed(long milliseconds) {
 		if (System.currentTimeMillis() - pastMS > milliseconds) {
 			reset();
 			return true;
@@ -12,6 +19,9 @@ public class Timer {
 		return false;
 	}
 
+	/**
+	 * Used to manually reset the timer.
+	 */
 	public void reset() {
 		pastMS = System.currentTimeMillis();
 	}

@@ -8,6 +8,8 @@ import javax.naming.ConfigurationException;
 import de.kostari.cloud.core.components.Component;
 import de.kostari.cloud.core.components.Transform;
 import de.kostari.cloud.core.window.Window;
+import lombok.Getter;
+import lombok.Setter;
 
 public class GameObject {
 
@@ -16,13 +18,21 @@ public class GameObject {
     public String tag;
     public Transform transform;
 
+    @Getter
+    @Setter
     private int id;
 
+    @Getter
     private List<Component> components;
+    @Getter
     private boolean ignoreCameraMovement = false;
 
+    @Getter
+    @Setter
     private int zIndex = 0;
 
+    @Getter
+    @Setter
     private boolean drawDebug;
 
     public GameObject(Window window) {
@@ -97,10 +107,6 @@ public class GameObject {
         return null;
     }
 
-    public List<Component> getComponents() {
-        return components;
-    }
-
     /**
      * Add a component to the gameobject.
      * 
@@ -133,34 +139,6 @@ public class GameObject {
             }
         }
         return null;
-    }
-
-    public void setZIndex(int zIndex) {
-        this.zIndex = zIndex;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getzIndex() {
-        return zIndex;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getTag() {
-        return tag;
-    }
-
-    public boolean isIgnoringCameraMovement() {
-        return ignoreCameraMovement;
     }
 
     /**

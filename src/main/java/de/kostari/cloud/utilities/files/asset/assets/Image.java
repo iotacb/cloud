@@ -7,6 +7,7 @@ import org.lwjgl.stb.STBImage;
 import static org.lwjgl.stb.STBImageResize.*;
 import org.lwjgl.system.MemoryStack;
 
+import de.kostari.cloud.utilities.color.CColor;
 import de.kostari.cloud.utilities.files.asset.Asset;
 
 public class Image extends Asset {
@@ -114,11 +115,15 @@ public class Image extends Asset {
                 filter,
                 STBIR_COLORSPACE_SRGB);
 
-        System.out.println(buffer);
-
         pixelBuffer = buffer.duplicate();
         this.width = width;
         this.height = height;
+    }
+
+    public CColor getPixelColor(int x, int y) {
+        int i = (int) (y * width * 4 + x * 4);
+        return new CColor(pixelBuffer.get(i + 0) & 0xFF, pixelBuffer.get(i + 1) & 0xFF,
+                pixelBuffer.get(i + 2) & 0xFF, pixelBuffer.get(i + 3) & 0xFF);
     }
 
     public void resize(float width, float height) {

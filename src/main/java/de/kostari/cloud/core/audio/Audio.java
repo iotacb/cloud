@@ -9,11 +9,14 @@ import org.lwjgl.stb.STBVorbis;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.libc.LibCStdlib;
 
+import lombok.Getter;
+
 public class Audio {
 
     private int bufferId;
     private int sourceId;
 
+    @Getter
     private String filePath;
 
     private boolean playing;
@@ -100,10 +103,6 @@ public class Audio {
             AL10.alSourceStop(sourceId);
             playing = false;
         }
-    }
-
-    public String getFilePath() {
-        return filePath;
     }
 
     /**
