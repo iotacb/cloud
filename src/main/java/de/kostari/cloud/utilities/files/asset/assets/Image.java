@@ -1,7 +1,13 @@
 package de.kostari.cloud.utilities.files.asset.assets;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+
+import javax.imageio.ImageIO;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.stb.STBImage;
 import static org.lwjgl.stb.STBImageResize.*;
@@ -79,6 +85,37 @@ public class Image extends Asset {
                 }
             }
 
+            this.finishedLoading = true;
+        }
+    }
+
+    public Image(InputStream stream) {
+        super("");
+
+        BufferedImage image = null;
+        try {
+            image = ImageIO.read(stream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (image == null)
+            return;
+
+        this.imageId = GL11.glGenTextures();
+
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            pixelBuffer = ByteBuffer.allocateDirect(image.getWidth() * image.getHeight() * 4);
+            if (pixelBuffer == null)
+                return;
+            this.width = image.getWidth();
+            this.height = image.getHeight();
+
+            byte[] data = (byte[]) image.getRaster().getDataElements(0, 0, image.getWidth(),
+                    image.getHeight(), null);
+            pixelBuffer.clear();
+            pixelBuffer.put(data);
+            pixelBuffer.rewind();
             this.finishedLoading = true;
         }
     }

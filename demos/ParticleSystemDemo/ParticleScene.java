@@ -39,7 +39,7 @@ public class ParticleScene extends Scene {
         particleSystem.draw(delta);
 
         // Draw information
-        Fonts.sans32.drawTextShadow("FPS: " + window.getFPS(), 12, 12);
+        Fonts.sans32.drawTextShadow("FPS: " + getWindow().getFPS(), 12, 12);
         Fonts.sans32.drawTextShadow("Particles: " +
                 particleSystem.getCurrentAmountOfParticles(), 12, 44);
         super.draw(delta);

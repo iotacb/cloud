@@ -1,14 +1,9 @@
 package de.kostari.demo.sandv1;
 
 import java.nio.ByteBuffer;
-import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
-
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
 
 import de.kostari.cloud.core.scene.Scene;
 import de.kostari.cloud.core.window.Window;
@@ -26,7 +21,7 @@ import de.kostari.demo.sandv1.points.solids.Wood;
 
 public class SandScene extends Scene {
 
-    private final int CELL_SIZE = 1;
+    private final int CELL_SIZE = 2;
     private final int SIMULATION_SPEED = 1;
 
     private int gridX;
@@ -71,7 +66,6 @@ public class SandScene extends Scene {
                 8, 90);
         String isBatched = "Render type: " + getWindow().getRenderType().name();
         Fonts.sans32.drawTextShadow(isBatched, getWindow().getWidth() - Fonts.sans32.getWidth(isBatched) - 8, 2);
-
     }
 
     @Override
@@ -151,7 +145,6 @@ public class SandScene extends Scene {
             stepSand(delta);
         }
 
-        System.out.println(getPoints() + " " + getWindow().getFPS());
         super.update(delta);
     }
 

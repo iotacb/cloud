@@ -51,8 +51,8 @@ public class Point extends GameObject {
 
     @Override
     public void draw(float delta) {
-        // Render.rect(new Vec(x * size + size / 2, y * size + size / 2), new Vec(size),
-        // color);
+        Render.rect(new Vec(x * size + size / 2, y * size + size / 2), new Vec(size),
+                color);
         lifetime++;
         super.draw(delta);
     }

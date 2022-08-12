@@ -6,11 +6,11 @@
 
 ## What is Cloud?
 
-Cloud is a 2D game engine for Java. It's using [LWJGL]() under the hood. Currently it's still in an early phase and should only be used for small projects.
+Cloud is a 2D game engine for Java. It's using [LWJGL](https://www.lwjgl.org/) under the hood. Currently it's still in an early phase and should only be used for small projects.
 
 ## What's possible?
 
-[Here]() you can find some demo projects.
+[Here](https://github.com/iotacb/cloud/tree/master/demos) you can find some demo projects.
 
 The main focus of Cloud is to make it easier to work with LWJGL.
 
@@ -19,11 +19,11 @@ Which means, if a feature is missing you can easily add it to the engine by eith
 
 ## What's included
 
-Physics engine [Box2D]()
-Particle system
-Font renderer
-Rendering utilities
-UI system and components
+- Physics engine [Box2D](https://box2d.org/)
+- Particle system
+- Font renderer
+- Rendering utilities
+- UI system and components
 
 ## What's missing?
 
@@ -39,7 +39,7 @@ properly on Mac OS devices. This will be fixed when all AWT classes are replaced
 
 Rendering is currently not optimized, because batch rendering is currently not supported. This will also be fixed in a later release.
 
-If you have an issue not listed here, please create an issue on the repository issues page [here]().
+If you have an issue not listed here, please create an issue on the repository issues page [here](https://github.com/iotacb/cloud/issues).
 
 ## How can I get started?
 

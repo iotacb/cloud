@@ -5,6 +5,7 @@ import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL30;
 
+import de.kostari.Cloud;
 import de.kostari.cloud.core.window.Window;
 import de.kostari.cloud.utilities.color.CColor;
 import de.kostari.cloud.utilities.files.asset.assets.Image;
@@ -16,6 +17,9 @@ import de.kostari.cloud.utilities.render.batched.Renderer;
 public class Render {
 
     public static Window window;
+
+    public static final Image SQUARE_SPRITE = new Image(Cloud.class.getResourceAsStream("../../assets/square.png"));
+    public static final Image CIRCLE_SPRITE = new Image(Cloud.class.getResourceAsStream("../../assets/circle.png"));
 
     public static boolean isBatching() {
         return window.getRenderType() == RenderType.BATCHED;

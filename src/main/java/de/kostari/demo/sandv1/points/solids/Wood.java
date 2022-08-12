@@ -10,6 +10,7 @@ public class Wood extends Point {
     public Wood(Window window, int size, int x, int y, GameObject[][] grid) {
         super(window, PointType.WOOD, size, x, y, grid);
         setResistance(1);
+        canBeMoved = false;
     }
 
     @Override

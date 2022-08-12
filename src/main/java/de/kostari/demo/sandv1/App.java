@@ -9,11 +9,12 @@ public class App {
         // Create a new window
         Window window = new Window(800, 800, "Sand", false, false);
 
+        // gai&
         // Enable vsync
-        // window.setFpsCap(60);
+        window.setFpsCap(60);
         window.setScene(SandScene.class);
 
-        window.setRenderType(RenderType.PIXELS);
+        window.setRenderType(RenderType.BATCHED);
 
         // Show the window
         try {
