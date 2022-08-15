@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import de.kostari.cloud.core.scene.Camera;
 import de.kostari.cloud.core.scene.Scene;
 import de.kostari.cloud.core.window.Window;
 import de.kostari.cloud.utilities.color.CColor;
@@ -34,6 +35,8 @@ public class SandScene extends Scene {
 
     private boolean isSpout = false;
 
+    private Camera cam;
+
     public SandScene(Window window) {
         super(window);
 
@@ -41,10 +44,13 @@ public class SandScene extends Scene {
         this.gridY = window.getHeight() / CELL_SIZE;
 
         this.grid = new Point[gridX][gridY];
+
+        this.cam = new Camera();
     }
 
     @Override
     public void draw(float delta) {
+        Render.beginCam(cam);
         for (int x = 0; x < gridX; x++) {
             for (int y = 0; y < gridY; y++) {
                 if (grid[x][y] != null) {
@@ -52,6 +58,7 @@ public class SandScene extends Scene {
                 }
             }
         }
+        Render.endCam();
 
         Render.rect(Input.getMousePosition(), new Vec(brushSize * CELL_SIZE),
                 CColor.WHITE.setAlpha(200));
@@ -70,6 +77,15 @@ public class SandScene extends Scene {
 
     @Override
     public void update(float delta) {
+
+        cam.zoom += Input.getScrollY() * 0.01f;
+        cam.offset = new Vec(0, 0);
+
+        if (cam.zoom > 3)
+            cam.zoom = 3;
+        if (cam.zoom < 0.25f)
+            cam.zoom = 0.25f;
+
         if (Input.mouseButtonStrength(0) == 1 || Input.mouseButtonPressed(2)) {
             if (isSpout && Input.mouseButtonPressed(2)) {
                 int x = (Input.getMouseX() / CELL_SIZE);

@@ -2,10 +2,12 @@ package de.kostari.cloud.utilities.render;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL30;
 
 import de.kostari.Cloud;
+import de.kostari.cloud.core.scene.Camera;
 import de.kostari.cloud.core.window.Window;
 import de.kostari.cloud.utilities.color.CColor;
 import de.kostari.cloud.utilities.files.asset.assets.Image;
@@ -82,6 +84,17 @@ public class Render {
 
     public static void end() {
         glEnd();
+    }
+
+    public static void beginCam(Camera cam) {
+        GL11.glLoadIdentity();
+        GL11.glMultMatrixf(CMath.MatrixToFloat(cam.getMatrix()));
+        GL11.glMultMatrixf(CMath.MatrixToFloat(window.getScreenScale()));
+    }
+
+    public static void endCam() {
+        GL11.glLoadIdentity();
+        GL11.glMultMatrixf(CMath.MatrixToFloat(window.getScreenScale()));
     }
 
     public static void vertex(float x, float y) {
@@ -438,13 +451,15 @@ public class Render {
         disable(GL_LIGHTING);
         glBindTexture(GL_TEXTURE_2D, image.getImageId());
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, (int) image.getWidth(), (int) image.getHeight(), 0, GL_RGBA,
-                GL_UNSIGNED_BYTE,
-                image.getPixelBuffer());
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+        // GL_LINEAR_MIPMAP_LINEAR);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
+        // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, (int) image.getWidth(), (int)
+        // image.getHeight(), 0, GL_RGBA,
+        // GL_UNSIGNED_BYTE,
+        // image.getPixelBuffer());
 
         begin(GL_QUADS);
         {
@@ -459,7 +474,7 @@ public class Render {
         }
         end();
 
-        GL30.glGenerateMipmap(image.getImageId());
+        // GL30.glGenerateMipmap(image.getImageId());
 
         enable(GL_LIGHTING);
         disable(GL_BLEND);

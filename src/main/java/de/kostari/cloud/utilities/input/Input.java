@@ -299,6 +299,11 @@ public class Input {
         return isPressed;
     }
 
+    /**
+     * Return true when no button on a gamepad is pressed;
+     * 
+     * @return
+     */
     public static boolean noButtonPressed() {
         if (!hasGamepad)
             return true;

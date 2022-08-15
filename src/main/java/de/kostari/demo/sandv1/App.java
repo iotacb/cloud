@@ -14,7 +14,7 @@ public class App {
         window.setFpsCap(60);
         window.setScene(SandScene.class);
 
-        window.setRenderType(RenderType.BATCHED);
+        window.setRenderType(RenderType.SIMPLE);
 
         // Show the window
         try {

@@ -2,7 +2,6 @@ package de.kostari.cloud.core.scene;
 
 import java.util.ArrayList;
 
-import de.kostari.cloud.core.components.Transform;
 import de.kostari.cloud.core.objects.GameObject;
 import de.kostari.cloud.core.observers.EventSystem;
 import de.kostari.cloud.core.observers.events.Event;
@@ -11,7 +10,6 @@ import de.kostari.cloud.core.physics.PhysicsEngine;
 import de.kostari.cloud.core.physics.Rigidbody;
 import de.kostari.cloud.core.ui.UIComponent;
 import de.kostari.cloud.core.window.Window;
-import de.kostari.cloud.utilities.math.Vec;
 import de.kostari.cloud.utilities.render.RenderType;
 import de.kostari.cloud.utilities.render.batched.Renderer;
 
@@ -26,7 +24,6 @@ public abstract class Scene {
 
 	private ArrayList<GameObject> objectsToRemove;
 	private ArrayList<UIComponent> uiComponentsToRemove;
-	private Camera camera;
 
 	private boolean isPlaying = false;
 
@@ -40,8 +37,6 @@ public abstract class Scene {
 
 		this.objectsToRemove = new ArrayList<>();
 		this.uiComponentsToRemove = new ArrayList<>();
-
-		this.camera = new Camera(window);
 
 		this.physicsEngine = new PhysicsEngine();
 
@@ -94,19 +89,7 @@ public abstract class Scene {
 	public void drawGameObjects(float delta) {
 		for (int i = 0; i < objects.size(); i++) {
 			GameObject object = objects.get(i);
-
-			if (object.isIgnoreCameraMovement()) {
-				object.draw(delta);
-			} else {
-				Transform oldTransform = new Transform(object.transform.position);
-				oldTransform.rotation = object.transform.rotation;
-				object.transform.position = new Vec(object.transform.position.x -
-						camera.transform.position.x,
-						object.transform.position.y - camera.transform.position.y);
-
-				object.draw(delta);
-				object.transform = oldTransform;
-			}
+			object.draw(delta);
 		}
 		if (window.getRenderType() == RenderType.BATCHED) {
 			Renderer.render();
@@ -251,10 +234,6 @@ public abstract class Scene {
 
 	public ArrayList<GameObject> getObjects() {
 		return objects;
-	}
-
-	public Camera getCamera() {
-		return camera;
 	}
 
 	public PhysicsEngine getPhysicsEngine() {

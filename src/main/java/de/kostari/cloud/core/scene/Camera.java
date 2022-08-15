@@ -1,71 +1,37 @@
 package de.kostari.cloud.core.scene;
 
-import de.kostari.cloud.core.components.Bounds;
-import de.kostari.cloud.core.components.Transform;
-import de.kostari.cloud.core.objects.GameObject;
-import de.kostari.cloud.core.window.Window;
-import de.kostari.cloud.utilities.color.CColor;
 import de.kostari.cloud.utilities.math.CMath;
-import de.kostari.cloud.utilities.render.Render;
+import de.kostari.cloud.utilities.math.Matrix;
+import de.kostari.cloud.utilities.math.Vec;
 
-public class Camera extends GameObject {
+public class Camera {
 
-    private float posXDiff, posYDiff;
+    public Vec target;
+    public Vec offset;
+    public float zoom;
+    public float rotation;
 
-    public Camera(Window window) {
-        super(window);
-        ignoreCameraMovement();
+    public Camera() {
+        this.target = Vec.zero;
+        this.offset = Vec.zero;
+        this.zoom = 1;
+        this.rotation = 0;
     }
 
-    /**
-     * Will center the camera to a specific GameObject
-     * 
-     * @param object  the object to center the camera to
-     * @param damping the damping of the camera movement
-     */
-    public void followObject(GameObject object, float damping) {
-        float xOffset = getWindow().getWidth() / 2;
-        float yOffset = getWindow().getHeight() / 2;
-
-        float objCenterWidth = object.getComponent(Bounds.class).getWidth() / 2;
-        float objCenterHeight = object.getComponent(Bounds.class).getHeight() / 2;
-
-        posXDiff = object.transform.position.x - transform.position.x - xOffset + objCenterWidth;
-        posYDiff = object.transform.position.y - transform.position.y - yOffset + objCenterHeight;
-
-        transform.position.x = CMath.lerp(transform.position.x,
-                object.transform.position.x - xOffset + objCenterWidth,
-                damping);
-        transform.position.y = CMath.lerp(transform.position.y,
-                object.transform.position.y - yOffset + objCenterHeight,
-                damping);
+    public Matrix getMatrix() {
+        return Camera.GetCameraMatrix(this);
     }
 
-    /**
-     * Will center the camera to a specific GameObject
-     * 
-     * @param object the object to center the camera to
-     */
-    public void followObject(GameObject object) {
-        followObject(object, 0.1F);
-    }
+    public static Matrix GetCameraMatrix(Camera cam) {
+        Matrix matTransform = new Matrix();
+        Matrix matOrigin = CMath.MatrixTranslate(-cam.target.x, -cam.target.getY(), 0);
+        Matrix matRotation = CMath.MatrixRotate(0, 0, 1, cam.rotation * CMath.DEG2RAD);
+        Matrix matScale = CMath.MatrixScale(cam.zoom, cam.zoom, 1);
+        Matrix matTranslation = CMath.MatrixTranslate(cam.offset.x, cam.offset.y, 0);
 
-    @Override
-    public void update(float delta) {
-        super.update(delta);
-    }
-
-    @Override
-    public void draw(float delta) {
-        if (!doDrawDebug())
-            return;
-        Render.rect(getWindow().getWidth() / 2, getWindow().getHeight() / 2, posXDiff, 2, CColor.GREEN);
-        Render.rect(getWindow().getWidth() / 2, getWindow().getHeight() / 2, 2, posYDiff, CColor.RED);
-        super.draw(delta);
-    }
-
-    public Transform getTransform() {
-        return transform;
+        matTransform = CMath.MatrixMultiply(
+                CMath.MatrixMultiply(matOrigin, CMath.MatrixMultiply(matScale, matRotation)), matTranslation);
+        return matTransform;
     }
 
 }

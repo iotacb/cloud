@@ -24,8 +24,6 @@ public class GameObject {
 
     @Getter
     private List<Component> components;
-    @Getter
-    private boolean ignoreCameraMovement = false;
 
     @Getter
     @Setter
@@ -139,17 +137,6 @@ public class GameObject {
             }
         }
         return null;
-    }
-
-    /**
-     * Ignore the camera movement if the camera is following a object.
-     * Use it to decouple a gameobject from the camera movement.
-     * 
-     * @return
-     */
-    public GameObject ignoreCameraMovement() {
-        ignoreCameraMovement = true;
-        return this;
     }
 
     public boolean doDrawDebug() {

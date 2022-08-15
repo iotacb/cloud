@@ -39,6 +39,8 @@ import de.kostari.cloud.core.scene.Scene;
 import de.kostari.cloud.core.window.icon.ImageParser;
 import de.kostari.cloud.utilities.color.CColor;
 import de.kostari.cloud.utilities.input.Input;
+import de.kostari.cloud.utilities.math.CMath;
+import de.kostari.cloud.utilities.math.Matrix;
 import de.kostari.cloud.utilities.math.Vec;
 import de.kostari.cloud.utilities.render.Render;
 import de.kostari.cloud.utilities.render.RenderType;
@@ -63,6 +65,9 @@ public class Window implements Observer {
 	private int width;
 	@Getter
 	private int height;
+
+	@Getter
+	private Matrix screenScale;
 
 	@Getter
 	private float deltaTime;
@@ -132,6 +137,8 @@ public class Window implements Observer {
 		this.sampling = 0;
 		this.size = new Vec(width, height);
 
+		this.screenScale = CMath.MatrixIdentity();
+
 		this.clearColor = CColor.BLACK;
 		this.renderType = RenderType.SIMPLE;
 
@@ -152,6 +159,7 @@ public class Window implements Observer {
 		setWindowHints();
 		makeWindow();
 		initGLFW();
+		initDrawing();
 		timer = new FrameTimer();
 		pixels = BufferUtils.createByteBuffer(width * height * 4);
 		Input.initInput(this, Platform.get() == Platform.WINDOWS);
@@ -169,11 +177,18 @@ public class Window implements Observer {
 		glfwSetErrorCallback(null).free();
 	}
 
-	private void drawScreen() throws Exception {
+	private void initDrawing() {
+		glViewport(0, 0, width, height);
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		glViewport(0, 0, width, height);
-		glOrtho(0, width, height, 0, -1, 1);
+		glOrtho(0, width, height, 0, 0, 1);
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+	}
+
+	private void drawScreen() throws Exception {
+		glLoadIdentity();
+		glMultMatrixf(CMath.MatrixToFloat(screenScale));
 
 		deltaTime = timer.getDelta();
 		if (deltaTime >= 0) {
@@ -225,6 +240,8 @@ public class Window implements Observer {
 		glfwSetFramebufferSizeCallback(windowId, (id, newWidth, newHeight) -> {
 			framebufferWidth = newWidth;
 			framebufferHeight = newHeight;
+
+			screenScale = CMath.MatrixScale(framebufferWidth / getWidth(), framebufferHeight / getHeight(), 1);
 		});
 
 		glfwSetWindowSizeCallback(windowId, (id, newWidth, newHeight) -> {
